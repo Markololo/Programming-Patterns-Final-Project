@@ -1,17 +1,25 @@
-Hotel: name, total Rooms, available rooms, address - 
+(M) Hotel: name, total Rooms, available rooms, address - 
 
-Room: roomNo, capacity, availability, clientID, bookStart, bookend, price, ArrayList<Clients> members - viewMembers(), 
+(M) Room: roomNo, capacity, availability, clientID, bookStart, bookend, price, ArrayList<Clients> members - viewMembers(), 
 
-Member: name, age, groupID
+(M) Member: name, age, groupID
 
-Group: groupID, groupSize, clientID
+(M) Group: groupID, groupSize
 
-Client(extends Member): clientID, groupID() - viewClients() - contactNumber - age
+(M) Client(extends Member): clientID, groupID, contact, age - viewClients()
 
-Management: hotel, Arraylist<Client> - main(), addClient(), book(), checkout(), viewClients(), 
+(C) Management: hotel, Arraylist<Client>, Arraylist<Client> - addClient(), book(), checkout(), sendConfirmation(notificationType, confirmationType)
 
-Service (abstract): name, cost, availabilitiy : (cleaning Service, outdoorPool, breakfast, dinner, babysiiting, city Touring)
+(V) Controller: handles GUI or Console I/O
 
-Interface EventHandler: will handle data reading and writing
+(M) Service: name, cost, availabilitiy : (cleaning Service, outdoorPool, breakfast, dinner, babysiiting, city Touring)
+
+(C) Interface EventHandler: will handle data reading and writing
 
 
+*Send a notification sms/email to confirm booking and to send receipt after checkout (2 confirmation types)
+
+MVC Architecture:
+  -Model(M): Manages the data and business logic of the application.
+  -View(V): Handles the layout and display of the user interface.
+  -Controller(C): Routes commands to the model and view parts, managing user interactions.
