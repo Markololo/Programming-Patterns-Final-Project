@@ -1,0 +1,17 @@
+Hotel: name, total Rooms, available rooms, address - 
+
+Room: roomNo, capacity, availability, clientID, bookStart, bookend, price, ArrayList<Clients> members - viewMembers(), 
+
+Member: name, age, groupID
+
+Group: groupID, groupSize, clientID
+
+Client(extends Member): clientID, groupID() - viewClients() - contactNumber - age
+
+Management: hotel, Arraylist<Client> - main(), addClient(), book(), checkout(), viewClients(), 
+
+Service (abstract): name, cost, availabilitiy : (cleaning Service, outdoorPool, breakfast, dinner, babysiiting, city Touring)
+
+Interface EventHandler: will handle data reading and writing
+
+
