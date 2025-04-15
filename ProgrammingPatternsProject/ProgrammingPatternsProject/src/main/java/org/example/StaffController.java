@@ -14,7 +14,7 @@ public class StaffController {
     private List<Room> rooms;
     private List<Booking> bookings;
 
-    public void addRoom(int roomNum, RoomTypeEnum roomType, double price, boolean available, Date addedDate) {
+    public void addRoom(int roomNum, String roomType, double price, boolean available, Date addedDate) {
         Room newRoom = new Room(roomNum, roomType, price, available, addedDate);
         rooms.add(newRoom);
     }
