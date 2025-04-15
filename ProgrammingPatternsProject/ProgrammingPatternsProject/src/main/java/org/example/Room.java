@@ -10,8 +10,8 @@ import java.util.Date;
 @Getter
 @Setter
 public class Room {
-    private int roomNum;;
-    private String roomType;
+    private int roomNum;
+    private RoomTypeEnum roomType;
     private double price;//Price per night
     private boolean available;
     private Date addedDate;

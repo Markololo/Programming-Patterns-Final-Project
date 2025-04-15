@@ -1,5 +1,5 @@
 package org.example;
 
-public class BookingController {
+public class BookingController extends Controller{
 
 }
