@@ -20,8 +20,8 @@ public class Main {
         //jdbc:sqlite is a jdbc connection URL to connect to a SQLite database in java
         //after the '.' is where you want your db to be(.src/...). But the '.' didn't work, so we removed it.
         //We made the database folder before
-      //  String DB_Path = Base_Path + "Hotel_DB.db";//Making our database file
-        String DB_Path = Base_Path + "hotelmanagement.db";
+        String DB_Path = Base_Path + "Hotel_DB.db";//Making our database file
+        //String DB_Path = Base_Path + "hotelmanagement.db";
         Connection connection;
         try {
             //try to connect to the db:
@@ -44,29 +44,7 @@ public class Main {
 //        }
     }
 
-    /**
-     * To create a table in the database
-     */
-    public static void createTable() {
-        String sql = """
-                CREATE TABLE IF NOT EXISTS students
-                (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                age INTEGER
-                );
-                """;
-        //In java, triple quotes are called text blocks, so that we don't write long strings like "abc" + "..." + ...
 
-        try {
-            Connection con = connect();
-            Statement statement =  con.createStatement();
-            statement.execute(sql);
-            System.out.println("Table Created Successfully");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Adds a column to a table
@@ -101,30 +79,6 @@ public class Main {
         }
     }
 
-    /**
-     * Adds a row to the students table
-     */
-    public static void insertStudentRecord(String name, int age) {
-        String sql = "INSERT INTO students(name, age) VALUES(?,?)";
-        //This is an SQL query with placeholders instead of inserting raw values directly.
-        //This is for security. The '?' are parameter markers that'll be safely filled later.
-        //This helps prevent SQL injection attacks and make the code cleaner.
-
-        try {
-            Connection con = connect();
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, name); //Set student name in the placeholder
-            preparedStatement.setInt(2, age); //Set student age in the placeholder
-            preparedStatement.executeUpdate();
-            System.out.println("Row Added");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     *
-     */
     public static void updateStudent(int id, String name, int age) {
         String sql = "UPDATE students SET name=?, age=? WHERE id=?";
 
@@ -172,7 +126,7 @@ public class Main {
      * and we can use getters such as getInt, getString, etc. to retrieve each field from it.
      */
     public static String selectPlainText() {
-        String sql = "SELECT * FROM students";
+        String sql = "SELECT * FROM Client";
         StringBuilder builder = new StringBuilder();
         //StringBuilder class is to append/build strings efficiently
 
@@ -182,12 +136,19 @@ public class Main {
 
             ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
 
+            /*
+                clientID INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                contact TEXT NOT NULL,
+                numOfMembers INTEGER
+            */
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("clientID");
                 String name = rs.getString("name");
-                int age = rs.getInt("age");
+                String contact = rs.getString("contact");
+                int numOfMembers = rs.getInt("numOfMembers");
 
-                builder.append(String.format("ID: %d, Name: %s, Age: %d%n", id, name, age));//For new line, we use '\n' or %n
+                builder.append(String.format("ID: %d, Name: %s, Contact: %s, Members Count: %d%n", id, name, contact, numOfMembers));//For new line, we use '\n' or %n
 
             }
 
@@ -248,18 +209,57 @@ public class Main {
         return studentList;
    }
 
+    public static void createTable() {
+        String sql = """
+                CREATE TABLE IF NOT EXISTS Client
+                (
+                clientID INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                contact TEXT NOT NULL,
+                numOfMembers INTEGER
+                );
+                """;
+        try {
+            Connection con = connect();
+            Statement statement =  con.createStatement();
+            statement.execute(sql);
+            System.out.println("Table Created Successfully");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void insertClientRecord(int clientID, String name, String contact, int numOfMembers) {
+        String sql = "INSERT INTO Client(clientID,name,contact,numOfMembers) VALUES(?,?,?,?)";
+
+        try {
+            Connection con = connect();
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, clientID);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, contact);
+            preparedStatement.setInt(4, numOfMembers);
+            preparedStatement.executeUpdate();
+            System.out.println("Client Row Added");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void main(String[] args) {
         //Test the connection jdbc connect()
         try {
             Connection con = connect();
             if (con != null) {
-                System.out.println("...Successfully connected to mySQL!");
+                System.out.println("...Successfully connected to SQLite!");
             }
         } catch (Exception e ) {
             System.out.println("Connection Failure... :(");
             System.out.println(e.getMessage());
         }
-        //createTable();
+        //createTable();//client table made
+        //insertClientRecord(1234, "Marko", "514-331-9023", 3);
+        System.out.println(selectPlainText());
+
         //addColumn("email", "TEXT", "students");
         //dropTable("students");
         //insertStudentRecord("Alex", 25);//id is 1 by default I think
@@ -276,24 +276,24 @@ public class Main {
        //GSON Builder let us customize JSON and is a helper class used to customize how Gson behaves
         //setPrettyPrinting() tells GSON "when converting objects to JSON, make it easy to read using indentation and line breaks"
        // .create() finalizes the configuration and returns a JSON object that you can use.
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        List<Room> rooms = selectJson();//JSON Format
-        //System.out.println(students);
-        String prettyJson = gson.toJson(rooms);
-
-//        //Create textArea
-        JTextArea textArea = new JTextArea(prettyJson);
-        textArea.setLineWrap(true); //Automatically wraps lines
-        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
-        textArea.setEditable(false); //Make it read-only
-        //Add scrolling:
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        //Create the swing window (JFrame):
-        JFrame frame = new JFrame("Students in JSON");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(scrollPane);
-        frame.setSize(600,200);
-        frame.setVisible(true);
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//        List<Room> rooms = selectJson();//JSON Format
+//        //System.out.println(students);
+//        String prettyJson = gson.toJson(rooms);
+//
+////        //Create textArea
+//        JTextArea textArea = new JTextArea(prettyJson);
+//        textArea.setLineWrap(true); //Automatically wraps lines
+//        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
+//        textArea.setEditable(false); //Make it read-only
+//        //Add scrolling:
+//        JScrollPane scrollPane = new JScrollPane(textArea);
+//        //Create the swing window (JFrame):
+//        JFrame frame = new JFrame("Students in JSON");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.getContentPane().add(scrollPane);
+//        frame.setSize(600,200);
+//        frame.setVisible(true);
     }
 }
