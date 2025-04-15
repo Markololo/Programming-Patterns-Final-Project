@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 public class Room {
     private int roomNum;
-    private RoomTypeEnum roomType;
+    private String roomType;
     private double price;//Price per night
     private boolean available;
     private Date addedDate;

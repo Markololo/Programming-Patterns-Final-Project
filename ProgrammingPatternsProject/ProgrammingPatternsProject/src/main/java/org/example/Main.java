@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -19,8 +20,8 @@ public class Main {
         //jdbc:sqlite is a jdbc connection URL to connect to a SQLite database in java
         //after the '.' is where you want your db to be(.src/...). But the '.' didn't work, so we removed it.
         //We made the database folder before
-        String DB_Path = Base_Path + "Hotel_DB.db";//Making our database file
-
+      //  String DB_Path = Base_Path + "Hotel_DB.db";//Making our database file
+        String DB_Path = Base_Path + "hotelmanagement.db";
         Connection connection;
         try {
             //try to connect to the db:
@@ -200,42 +201,52 @@ public class Main {
     /**
      * Retrieves student sata amd returns it as a list of student objects.
      */
-//    public static List<Student> selectJson() {
+    public static List<Room> selectJson() {
 //        //Create a JSON object in sql for each row:
-//        String sql = """
-//                SELECT json_object(
-//                'id', id,
-//                'name', name,
-//                'age', age
-//                ) AS json_result
-//                FROM students;
-//                """;
-//        List<Student> studentList = new ArrayList<>();
-//        Gson gson = new Gson();//Gson class is to parse JSON strings into objects (Gson = Google's json library for java)
+//        private int roomNum;
+//        private String roomType;
+//        private double price;//Price per night
+//        private boolean available;
+//        private Date addedDate;
+//    }
+
+
+        String sql = """
+                SELECT json_object(
+                'Room No', Room_No,
+                'Type', Type,
+                'Price', Price,
+                'Available', Available
+                'AddedDate', Added_Date
+                ) AS json_result
+                FROM Rooms;
+                """;
+        List<Room> studentList = new ArrayList<>();
+        Gson gson = new Gson();//Gson class is to parse JSON strings into objects (Gson = Google's json library for java)
         //Allows you to convert java objects to JSON strings, vice-versa.
         //serialize (write): converts java object to JSON
         //deserialize(read): converts JSON to java objects
 
-//        try {
-//            Connection con = connect();
-//            Statement stmt = con.createStatement();
-//
-//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-//
-//            while (rs.next()) {
-//                String jsonResult = rs.getString("json_result");
-//                Student student = gson.fromJson(jsonResult, Student.class);
-//                //converts json string to java object like {"id":1, "name":Mey, "age":17}
-//                //It's deserialization
-//                //The second parameter is the class you want to convert the json into.
-//                studentList.add(student);
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return studentList;
-//    }
+        try {
+            Connection con = connect();
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+
+            while (rs.next()) {
+                String jsonResult = rs.getString("json_result");
+                Room student = gson.fromJson(jsonResult, Room.class);
+                //converts json string to java object like {"id":1, "name":Mey, "age":17}
+                //It's deserialization
+                //The second parameter is the class you want to convert the json into.
+                studentList.add(student);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return studentList;
+   }
 
     public static void main(String[] args) {
         //Test the connection jdbc connect()
@@ -262,27 +273,27 @@ public class Main {
 
         //JSON-GUI
         //Convert list of students to a nicely formatted JSON string(PrettyPrinting)
-        //GSON Builder let us customize JSON and is a helper class used to customize how Gson behaves
+       //GSON Builder let us customize JSON and is a helper class used to customize how Gson behaves
         //setPrettyPrinting() tells GSON "when converting objects to JSON, make it easy to read using indentation and line breaks"
-        //.create() finalizes the configuration and returns a JSON object that you can use.
-       // Gson gson = new GsonBuilder().setPrettyPrinting().create();
+       // .create() finalizes the configuration and returns a JSON object that you can use.
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-//        List<Student> students = selectJson();//JSON Format
-//        //System.out.println(students);
-//        String prettyJson = gson.toJson(students);
-//
+        List<Room> rooms = selectJson();//JSON Format
+        //System.out.println(students);
+        String prettyJson = gson.toJson(rooms);
+
 //        //Create textArea
-//        JTextArea textArea = new JTextArea(prettyJson);
-//        textArea.setLineWrap(true); //Automatically wraps lines
-//        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
-//        textArea.setEditable(false); //Make it read-only
-//        //Add scrolling:
-//        JScrollPane scrollPane = new JScrollPane(textArea);
-//        //Create the swing window (JFrame):
-//        JFrame frame = new JFrame("Students in JSON");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(scrollPane);
-//        frame.setSize(600,200);
-//        frame.setVisible(true);
+        JTextArea textArea = new JTextArea(prettyJson);
+        textArea.setLineWrap(true); //Automatically wraps lines
+        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
+        textArea.setEditable(false); //Make it read-only
+        //Add scrolling:
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        //Create the swing window (JFrame):
+        JFrame frame = new JFrame("Students in JSON");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(scrollPane);
+        frame.setSize(600,200);
+        frame.setVisible(true);
     }
 }

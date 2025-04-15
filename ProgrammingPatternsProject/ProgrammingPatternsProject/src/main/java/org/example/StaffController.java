@@ -10,15 +10,21 @@ import java.util.List;
  * Hotel staff can add new room details, check room availability,
  * books rooms, check guests in and out, and view booking records.
  */
-public class StaffController {
+public class StaffController
+{
     private List<Room> rooms;
     private List<Booking> bookings;
 
-    public void addRoom(int roomNum, String roomType, double price, boolean available, Date addedDate) {
+
+    /* adds room */
+    public void addRoom(int roomNum, String roomType, double price, boolean available, Date addedDate)
+    {
         Room newRoom = new Room(roomNum, roomType, price, available, addedDate);
         rooms.add(newRoom);
     }
 
+
+    //returns list of available rooms
     public ArrayList<Room> checkRoomAvailability() {
         ArrayList<Room> availableRooms = new ArrayList<>();
         for (Room room : rooms) {
@@ -28,4 +34,25 @@ public class StaffController {
         }
         return availableRooms;
     }
+
+//book client with a specified room type
+public void book(Client client)
+{
+if(client != null)
+{
+
 }
+}
+
+
+
+//cancels booking
+public void cancelBooking(int bookingID)
+{
+
+}
+
+
+
+}
+
