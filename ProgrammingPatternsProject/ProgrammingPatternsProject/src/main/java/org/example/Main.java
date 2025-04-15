@@ -200,42 +200,42 @@ public class Main {
     /**
      * Retrieves student sata amd returns it as a list of student objects.
      */
-    public static List<Student> selectJson() {
-        //Create a JSON object in sql for each row:
-        String sql = """
-                SELECT json_object(
-                'id', id,
-                'name', name,
-                'age', age
-                ) AS json_result
-                FROM students;
-                """;
-        List<Student> studentList = new ArrayList<>();
-        Gson gson = new Gson();//Gson class is to parse JSON strings into objects (Gson = Google's json library for java)
+//    public static List<Student> selectJson() {
+//        //Create a JSON object in sql for each row:
+//        String sql = """
+//                SELECT json_object(
+//                'id', id,
+//                'name', name,
+//                'age', age
+//                ) AS json_result
+//                FROM students;
+//                """;
+//        List<Student> studentList = new ArrayList<>();
+//        Gson gson = new Gson();//Gson class is to parse JSON strings into objects (Gson = Google's json library for java)
         //Allows you to convert java objects to JSON strings, vice-versa.
         //serialize (write): converts java object to JSON
         //deserialize(read): converts JSON to java objects
 
-        try {
-            Connection con = connect();
-            Statement stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-
-            while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Student student = gson.fromJson(jsonResult, Student.class);
-                //converts json string to java object like {"id":1, "name":Mey, "age":17}
-                //It's deserialization
-                //The second parameter is the class you want to convert the json into.
-                studentList.add(student);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return studentList;
-    }
+//        try {
+//            Connection con = connect();
+//            Statement stmt = con.createStatement();
+//
+//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+//
+//            while (rs.next()) {
+//                String jsonResult = rs.getString("json_result");
+//                Student student = gson.fromJson(jsonResult, Student.class);
+//                //converts json string to java object like {"id":1, "name":Mey, "age":17}
+//                //It's deserialization
+//                //The second parameter is the class you want to convert the json into.
+//                studentList.add(student);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return studentList;
+//    }
 
     public static void main(String[] args) {
         //Test the connection jdbc connect()
