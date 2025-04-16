@@ -7,7 +7,7 @@ package org.example;
 import java.util.Date;
 
 //model layer
-public class Room 
+public class Room
 {
  private int roomNo;
 
@@ -15,25 +15,33 @@ private String type ;
 
 private double price;
 
-private String availability ;
+private boolean availability ;
 
-private Date addedDate; 
+private Date addedDate;
 
-
-
-//Availability: status (“Yes”, “No”)
- public boolean isAvailable()
+ public Room(int roomNum, String type, double price, boolean availability, Date addedDate)
  {
-  if(availability.equalsIgnoreCase("yes"))
-  {
-      return true;
-  }
-  
-  else
-  {
-    availability.equalsIgnoreCase("no");
-     return false;
-  }
-  }
+  this.roomNo = roomNum;
+  this.type = type;
+  this.price = price;
+  this.availability = availability;
+  this.addedDate = addedDate;
+ }
+
+
+ //Availability: status (“Yes”, “No”)
+// public boolean isAvailable()
+// {
+//  if(availability.equalsIgnoreCase("yes"))
+//  {
+//      return true;
+//  }
+//
+//  else
+//  {
+//    availability.equalsIgnoreCase("no");
+//     return false;
+//  }
+ // }
 }
 
