@@ -41,17 +41,17 @@ public class DBManager {
      * @param columnName name of the column
      * @param columnType data type
      * @param tableName name of the updated table
+     * @param constraints constraints of the column, use empty string if there isn't
      */
-    public static void addColumn(String columnName, String columnType, String tableName) {
-        String sql = "ALTER TABLE "+tableName+ " ADD COLUMN " + columnName + " " + columnType;
-
+    public static void addColumn(String columnName, String columnType, String tableName, String constraints) {
+        String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType + " " + constraints + ";";
         try {
             Connection con = connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
             System.out.println("Column " + columnName + " added in table " + tableName);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Something went wrong while trying to add a column: " + e.getMessage());;
         }
     }
 
@@ -66,7 +66,7 @@ public class DBManager {
             Connection con = connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
-            System.out.println("Dropped Table " + tableName);
+            System.out.println("Success: Table " + tableName + " does not exist now.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -151,7 +151,7 @@ public class DBManager {
                 default: throw new IllegalArgumentException("Invalid table name. No row can be deleted. Table: " + table);
             };
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Connection Failure. Make sure the table exists.");
         }
         return builder.toString();
     }
@@ -193,7 +193,8 @@ public class DBManager {
      * @param tableName name of the new table
      */
     public static void createTable(String tableName) {
-        String sql = "CREATE TABLE IF NOT EXISTS " + tableName;
+        //Using a placeholder that can be ignored to create an empty table:
+        String sql = "CREATE TABLE IF NOT EXISTS " + tableName + "(placeholder INTEGER);";
         try {
             Connection con = connect();
             Statement statement =  con.createStatement();
@@ -232,19 +233,26 @@ public class DBManager {
 
     public static void main(String[] args) {
         //Test the connection jdbc connect()
-        try {
-            Connection con = connect();
-            if (con != null) {
-                System.out.println("...Successfully connected to SQLite!");
-            }
-        } catch (Exception e ) {
-            System.out.println("Connection Failure... :(");
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            Connection con = connect();
+//            if (con != null) {
+//                System.out.println("...Successfully connected to SQLite!");
+//            }
+//        } catch (Exception e ) {
+//            System.out.println("Connection Failure... :(");
+//            System.out.println(e.getMessage());
+//        }
+/*     * @param clientID primary key of the table (the id of the client)
+ * @param name name of the client
+ * @param contact contact of the client
+ * @param numOfMembers*/
+        //dropTable("Client");
+        createTable("Client");
+        addColumn("clientID", "INTEGER", "Client", "PRIMARY KEY");
 
-        //createTable();//client table made
         //insertClientRecord(1234, "Marko", "514-331-9023", 3);
-        System.out.println(selectPlainText("client"));
+        //System.out.println(selectPlainText("client"));
+        //dropTable("Client");
 
         //addColumn("email", "TEXT", "students");
         //dropTable("students");
