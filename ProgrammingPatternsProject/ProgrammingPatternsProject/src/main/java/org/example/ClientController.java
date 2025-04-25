@@ -1,6 +1,4 @@
 package org.example;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,9 +7,8 @@ import java.util.Scanner;
  * Guests can search for available rooms based on type (single, double, suite, etc.) or price,
  * request a room, and view their booking history
  */
-public class ClientController extends Controller
+public class ClientController
 {
-    //****Why do we need HashMap for rooms?
     List<Room> rooms;
 
     public boolean requestRoom(int roomID)
@@ -43,9 +40,13 @@ public class ClientController extends Controller
     }
 
     private void viewBookingHistory(Client client)
-    {}
+    {
+
+    }
 
     private void sendBookingCancelRequest(Client client)
-    {}
+    {
+
+    }
 }
 
