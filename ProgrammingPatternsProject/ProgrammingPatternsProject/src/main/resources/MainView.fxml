@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="org.example.GUIcontroller">
+   <children>
+      <ComboBox fx:id="languageComboBox" layoutX="436.0" layoutY="14.0" onAction="#languageUpdate" prefWidth="150.0" />
+      <Label layoutX="329.0" layoutY="18.0" text="Langue/Language:" />
+      <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="18.0" text="Welcome To The Hotel Manager App!" />
+   </children>
+</AnchorPane>
