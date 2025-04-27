@@ -13,7 +13,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent appWindow = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MainView.fxml")));
-        primaryStage.setTitle("Hotel Manager");
+        primaryStage.setTitle("Hotel Management System");
         primaryStage.setScene(new Scene(appWindow));
         primaryStage.show();
     }

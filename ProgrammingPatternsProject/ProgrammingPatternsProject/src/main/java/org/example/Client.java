@@ -14,5 +14,6 @@ private int clientID;
     private String name;
     private String contact;
     private int numOfMembers;
-    private List<Booking> bookings;
+    private boolean isInHotel;//Whether the client is still in the hotel or if he checked out.
+    private List<Booking> bookings;//All client bookings
 }
