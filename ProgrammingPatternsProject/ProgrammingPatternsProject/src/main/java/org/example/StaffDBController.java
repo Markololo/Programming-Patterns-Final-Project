@@ -10,7 +10,7 @@ import java.util.List;
  * Hotel staff can add new room details, check room availability,
  * books rooms, check guests in and out, and view booking records.
  */
-public class StaffController
+public class StaffDBController
 {
     private List<Room> rooms;
     private List<Booking> bookings;

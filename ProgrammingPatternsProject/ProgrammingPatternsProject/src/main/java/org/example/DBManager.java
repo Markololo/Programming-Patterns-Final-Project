@@ -10,24 +10,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static javax.management.remote.JMXConnectorFactory.connect;
+
 public class DBManager {
+    DbController db;
 
-    /**
-     * Connect to JDBC driver
-     * @return jdbc connection
-     */
-    public static Connection connect() {
-        String Base_Path = "jdbc:sqlite:src/main/resources/database";
-        String DB_Path = Base_Path + "Hotel_DB.db";//Making our database file
-        Connection connection;
-        try {
-            //try to connect to the db:
-            connection = DriverManager.getConnection(DB_Path);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public DBManager() {
+        db = DbController.getInstance();
+        initialiseDB();
+    }
 
-        return connection;
+    private void initialiseDB() {
+
     }
 
     /**
@@ -37,10 +31,10 @@ public class DBManager {
      * @param tableName name of the updated table
      * @param constraints constraints of the column, use empty string if there isn't
      */
-    public static void addColumn(String columnName, String columnType, String tableName, String constraints) {
+    public void addColumn(String columnName, String columnType, String tableName, String constraints) {
         String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType + " " + constraints + ";";
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
             System.out.println("Column " + columnName + " added in table " + tableName);
@@ -53,11 +47,11 @@ public class DBManager {
      * Drops a table from the db
      * @param tableName table to remove
      */
-    public static void dropTable(String tableName) {
+    public void dropTable(String tableName) {
         String sql = "DROP TABLE IF EXISTS " + tableName;
 
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
             System.out.println("Success: Table " + tableName + " does not exist now.");
@@ -72,11 +66,11 @@ public class DBManager {
      * @param table name of the table of the row to be deleted
      * @param pkValue the value of the primary key or ID of the row
      */
-    public static void deleteRow(String table, int pkValue, String pkColumn) {
+    public void deleteRow(String table, int pkValue, String pkColumn) {
         String sql = "DELETE FROM " + table + " WHERE "+pkColumn+"=?";
 
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, pkValue);
             int rowsUpdated = preparedStatement.executeUpdate();
@@ -96,11 +90,11 @@ public class DBManager {
      * and we can use getters such as getInt, getString, etc. to retrieve each field from it.
      * @param table name of the table
      */
-    public static String selectPlainText(String table) {
+    public String selectPlainText(String table) {
         String sql = "SELECT * FROM " + table;
         StringBuilder builder = new StringBuilder();
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             Statement stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
@@ -153,7 +147,7 @@ public class DBManager {
     /**
      * Retrieves student sata amd returns it as a list of student objects.
      */
-    public static List<Room> selectJsonRooms() {
+    public List<Room> selectJsonRooms() {
         String sql = """
                 SELECT json_object(
                 'Room Num', roomNum,
@@ -167,7 +161,7 @@ public class DBManager {
         List<Room> rooms = new ArrayList<>();
         Gson gson = new Gson();
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
             while (rs.next()) {
@@ -187,11 +181,11 @@ public class DBManager {
      * Add columns later to complete table creation
      * @param tableName name of the new table
      */
-    public static void createTable(String tableName) {
+    private void createTable(String tableName) {
         //Using a placeholder that can be ignored to create an empty table:
         String sql = "CREATE TABLE IF NOT EXISTS " + tableName + "(placeholder INTEGER);";
         try {
-            Connection con = connect();
+            Connection con = db.connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
             System.out.println("Table " + tableName + "Created Successfully");
@@ -207,11 +201,11 @@ public class DBManager {
      * @param contact contact of the client
      * @param numOfMembers number of members with the client
      */
-    public static void insertClientRecord(int clientID, String name, String contact, int numOfMembers) {
+    public void insertClientRecord(int clientID, String name, String contact, int numOfMembers) {
         try {
             String sql = "INSERT INTO Client(clientID,name,contact,numOfMembers) VALUES(?,?,?,?)";
 
-            Connection con = connect();
+            Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, clientID);
             preparedStatement.setString(2, name);
@@ -226,8 +220,8 @@ public class DBManager {
         }
     }
 
-    public static void main(String[] args) {
-        //Test the connection jdbc connect()
+//    public static void main(String[] args) {
+//        //Test the connection jdbc connect()
 //        try {
 //            Connection con = connect();
 //            if (con != null) {
@@ -238,51 +232,51 @@ public class DBManager {
 //            System.out.println(e.getMessage());
 //        }
 /*     * @param clientID primary key of the table (the id of the client)
- * @param name name of the client
- * @param contact contact of the client
- * @param numOfMembers*/
-        //dropTable("Client");
-        createTable("Client");
-        addColumn("clientID", "INTEGER", "Client", "PRIMARY KEY");
-
-        //insertClientRecord(1234, "Marko", "514-331-9023", 3);
-        //System.out.println(selectPlainText("client"));
-        //dropTable("Client");
-
-        //addColumn("email", "TEXT", "students");
-        //dropTable("students");
-        //insertStudentRecord("Alex", 25);//id is 1 by default I think
-        //insertStudentRecord("Alex", 19);//id is 2
-        //updateStudent(2, "Alex", 17);// -> An existing student was updated successfully
-        //updateStudent(2, "Alex", 17);
-        //deleteStudent(2);
-        //insertStudentRecord("Martin", 19);
-        //updateStudent(3, "Mark", 18);
-        //System.out.println(selectPlainText());//Plain text Format
-
-        //JSON-GUI
-        //Convert list of students to a nicely formatted JSON string(PrettyPrinting)
-        //GSON Builder let us customize JSON and is a helper class used to customize how Gson behaves
-        //setPrettyPrinting() tells GSON "when converting objects to JSON, make it easy to read using indentation and line breaks"
-        // .create() finalizes the configuration and returns a JSON object that you can use.
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+// * @param name name of the client
+// * @param contact contact of the client
+// * @param numOfMembers*/
+//        //dropTable("Client");
+//        createTable("Client");
+//        addColumn("clientID", "INTEGER", "Client", "PRIMARY KEY");
 //
-//        List<Room> rooms = selectJson();//JSON Format
-//        //System.out.println(students);
-//        String prettyJson = gson.toJson(rooms);
+//        //insertClientRecord(1234, "Marko", "514-331-9023", 3);
+//        //System.out.println(selectPlainText("client"));
+//        //dropTable("Client");
 //
-////        //Create textArea
-//        JTextArea textArea = new JTextArea(prettyJson);
-//        textArea.setLineWrap(true); //Automatically wraps lines
-//        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
-//        textArea.setEditable(false); //Make it read-only
-//        //Add scrolling:
-//        JScrollPane scrollPane = new JScrollPane(textArea);
-//        //Create the swing window (JFrame):
-//        JFrame frame = new JFrame("Students in JSON");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.getContentPane().add(scrollPane);
-//        frame.setSize(600,200);
-//        frame.setVisible(true);
-    }
+//        //addColumn("email", "TEXT", "students");
+//        //dropTable("students");
+//        //insertStudentRecord("Alex", 25);//id is 1 by default I think
+//        //insertStudentRecord("Alex", 19);//id is 2
+//        //updateStudent(2, "Alex", 17);// -> An existing student was updated successfully
+//        //updateStudent(2, "Alex", 17);
+//        //deleteStudent(2);
+//        //insertStudentRecord("Martin", 19);
+//        //updateStudent(3, "Mark", 18);
+//        //System.out.println(selectPlainText());//Plain text Format
+//
+//        //JSON-GUI
+//        //Convert list of students to a nicely formatted JSON string(PrettyPrinting)
+//        //GSON Builder let us customize JSON and is a helper class used to customize how Gson behaves
+//        //setPrettyPrinting() tells GSON "when converting objects to JSON, make it easy to read using indentation and line breaks"
+//        // .create() finalizes the configuration and returns a JSON object that you can use.
+////        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+////
+////        List<Room> rooms = selectJson();//JSON Format
+////        //System.out.println(students);
+////        String prettyJson = gson.toJson(rooms);
+////
+//////        //Create textArea
+////        JTextArea textArea = new JTextArea(prettyJson);
+////        textArea.setLineWrap(true); //Automatically wraps lines
+////        textArea.setWrapStyleWord(true); //To wrap at word boundaries, not in the middle of the word
+////        textArea.setEditable(false); //Make it read-only
+////        //Add scrolling:
+////        JScrollPane scrollPane = new JScrollPane(textArea);
+////        //Create the swing window (JFrame):
+////        JFrame frame = new JFrame("Students in JSON");
+////        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+////        frame.getContentPane().add(scrollPane);
+////        frame.setSize(600,200);
+////        frame.setVisible(true);
+//    }
 }

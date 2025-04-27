@@ -1,6 +1,5 @@
 package org.example;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -66,13 +65,13 @@ public class GUIcontroller {
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
     private String selectedLanguage = "english"; //Default
-    ClientController clientController;
-    StaffController staffController;
+    ClientDBController clientController;
+    StaffDBController staffDBController;
     MessageService messageService;
 
     public GUIcontroller() {
-        clientController = new ClientController();
-        staffController = new StaffController();
+        clientController = new ClientDBController();
+        staffDBController = new StaffDBController();
         messageService = new MessageService();
     }
 
