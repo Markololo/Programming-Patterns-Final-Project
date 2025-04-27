@@ -11,7 +11,8 @@ import java.util.Date;
 @Setter
 public class Booking {
     private int bookingNum;
+    private int clientId;
+    private int roomNum;
     private Date startDate;
     private Date endDate;
-    private int clientId;
 }//If time allows, add buttons to update records

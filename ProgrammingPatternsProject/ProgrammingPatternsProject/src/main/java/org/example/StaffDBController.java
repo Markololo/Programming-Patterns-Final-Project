@@ -35,24 +35,16 @@ public class StaffDBController
         return availableRooms;
     }
 
-//book client with a specified room type
-public void book(Client client)
-{
-if(client != null)
-{
+    //book client with a specified room type
+    public void book(Client client) {
+        if (client != null) {
 
-}
-}
+        }
+    }
 
+    //cancels booking
+    public void cancelBooking(int bookingID) {
 
-
-//cancels booking
-public void cancelBooking(int bookingID)
-{
-
-}
-
-
-
+    }
 }
 
