@@ -48,6 +48,7 @@ public class DBManager {
                     roomId INTEGER NOT NULL,
                     startDate DATE NOT NULL,
                     endDate DATE NOT NULL,
+                    isActive BOOLEAN NOT NULL,
                     FOREIGN KEY(clientId) REFERENCES clients(id),
                     FOREIGN KEY(roomId) REFERENCES rooms(roomNo)
                 );
@@ -175,7 +176,7 @@ public class DBManager {
 
     public boolean insertBookingRecord(int bookingNum, int clientId, int roomId, Date startDate, Date endDate) {
         try {
-            String sql = "INSERT INTO bookings(bookingNum, clientId, roomId, startDate, endDate) VALUES(?,?,?,?,?)";
+            String sql = "INSERT INTO bookings(bookingNum, clientId, roomId, startDate, endDate, isActive) VALUES(?,?,?,?,?,?)";
 
             Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -184,6 +185,7 @@ public class DBManager {
             preparedStatement.setInt(3, roomId);
             preparedStatement.setDate(4, new java.sql.Date(startDate.getTime()));//autocorrected date to match sql
             preparedStatement.setDate(5, new java.sql.Date(endDate.getTime()));
+            preparedStatement.setBoolean(6, true);//Booking is Active when added
             preparedStatement.executeUpdate();
             System.out.println("Booking Row Added.");
             return true;
@@ -221,25 +223,37 @@ public class DBManager {
                 if (rowsUpdated > 0) {
                     System.out.println("Client checked out successfully.");
 
-                    // Optionally, update the bookings table to mark this booking as checked-out or completed.
-                    // You can modify the `bookings` table if necessary.
+                    // modify bookings
+                    String updateBookingSql = "UPDATE bookings SET endDate = ?, isActive = ? WHERE clientId = ? AND isActive = true";
+                    PreparedStatement updateBookingStatement = con.prepareStatement(updateBookingSql);
 
-                    //Mark the room as available again
+                    java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+                    updateBookingStatement.setDate(1, today);  // Set the endDate to today's date
+                    updateBookingStatement.setBoolean(2, false);
+                    updateBookingStatement.setInt(3, clientID);
+
+                    int rowsUpdatedBooking = updateBookingStatement.executeUpdate();
+
+                    if (rowsUpdatedBooking <= 0) {
+                        return false;
+                    }
+
+                    //Mark the room as available
                     String updateRoomAvailabilitySql = "UPDATE rooms SET isAvailable = ? WHERE roomNum IN (SELECT roomId FROM bookings WHERE clientId = ? AND endDate >= DATE('now'))";
                     PreparedStatement updateRoomStatement = con.prepareStatement(updateRoomAvailabilitySql);
                     updateRoomStatement.setBoolean(1, true);  // Mark the room as available.
                     updateRoomStatement.setInt(2, clientID);
                     updateRoomStatement.executeUpdate();
 
-                    return true;  // Checkout Successful.
+                    return true;  //Checkout Successful.
                 } else {
-                    return false;  // Something went wrong.
+                    return false;  //Something went wrong.
                 }
             } else {
-                return false;  // Client not found since rs.next() is false
+                return false;  //Client not found since rs.next() is false
             }
         } catch (SQLException e) {
-            return false;  // Error occurred
+            return false;  //Error occurred
         }
     }
 

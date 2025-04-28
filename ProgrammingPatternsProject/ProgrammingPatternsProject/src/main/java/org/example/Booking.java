@@ -15,4 +15,5 @@ public class Booking {
     private int roomNum;
     private Date startDate;
     private Date endDate;
+    private boolean isActive;
 }//If time allows, add buttons to update records
