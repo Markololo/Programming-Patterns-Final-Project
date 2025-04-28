@@ -45,12 +45,12 @@ public class DBManager {
                 CREATE TABLE IF NOT EXISTS bookings (
                     bookingNum INTEGER PRIMARY KEY,
                     clientId INTEGER NOT NULL,
-                    roomId INTEGER NOT NULL,
+                    roomNum INTEGER NOT NULL,
                     startDate DATE NOT NULL,
                     endDate DATE NOT NULL,
                     isActive BOOLEAN NOT NULL,
                     FOREIGN KEY(clientId) REFERENCES clients(id),
-                    FOREIGN KEY(roomId) REFERENCES rooms(roomNo)
+                    FOREIGN KEY(roomNum) REFERENCES rooms(roomNo)
                 );
                 """;
         String staffTable = """
@@ -174,15 +174,15 @@ public class DBManager {
         }
     }
 
-    public boolean insertBookingRecord(int bookingNum, int clientId, int roomId, Date startDate, Date endDate) {
+    public boolean insertBookingRecord(int bookingNum, int clientId, int roomNum, Date startDate, Date endDate) {
         try {
-            String sql = "INSERT INTO bookings(bookingNum, clientId, roomId, startDate, endDate, isActive) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO bookings(bookingNum, clientId, roomNum, startDate, endDate, isActive) VALUES(?,?,?,?,?,?)";
 
             Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, bookingNum);
             preparedStatement.setInt(2, clientId);
-            preparedStatement.setInt(3, roomId);
+            preparedStatement.setInt(3, roomNum);
             preparedStatement.setDate(4, new java.sql.Date(startDate.getTime()));//autocorrected date to match sql
             preparedStatement.setDate(5, new java.sql.Date(endDate.getTime()));
             preparedStatement.setBoolean(6, true);//Booking is Active when added
@@ -239,7 +239,7 @@ public class DBManager {
                     }
 
                     //Mark the room as available
-                    String updateRoomAvailabilitySql = "UPDATE rooms SET isAvailable = ? WHERE roomNum IN (SELECT roomId FROM bookings WHERE clientId = ? AND endDate >= DATE('now'))";
+                    String updateRoomAvailabilitySql = "UPDATE rooms SET isAvailable = ? WHERE roomNo IN (SELECT roomNum FROM bookings WHERE clientId = ? AND isActive = false)";
                     PreparedStatement updateRoomStatement = con.prepareStatement(updateRoomAvailabilitySql);
                     updateRoomStatement.setBoolean(1, true);  // Mark the room as available.
                     updateRoomStatement.setInt(2, clientID);
