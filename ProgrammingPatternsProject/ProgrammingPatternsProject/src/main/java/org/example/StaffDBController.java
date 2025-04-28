@@ -47,11 +47,18 @@ public void book(Client client, int  bookingID, String desiredRoomType) {
             // found a matching available room
             room.setAvailable(false);
 
+            Date startDate = new Date();  // current date as start date
+            Date endDate = new Date(System.currentTimeMillis() + 86400000L);  // +1 day from current time as end date
+            boolean isActive = true;  // the booking is active when it's created
+
+            // create the Booking object with the updated constructor
             Booking booking = new Booking(
                     bookingID,
-                    new Date(),
-                    new Date(System.currentTimeMillis() + 86400000), // +1 day
-                    client.getId()
+                    client.getId(),
+                    room.getRoomNum(),
+                    startDate,
+                    endDate,
+                    isActive            // active status
             );
 
             //add to list of hotel bookings
