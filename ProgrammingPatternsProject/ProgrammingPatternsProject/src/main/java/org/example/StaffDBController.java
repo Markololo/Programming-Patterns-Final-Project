@@ -35,24 +35,67 @@ public class StaffDBController
         return availableRooms;
     }
 
-//book client with a specified room type
-public void book(Client client)
-{
-if(client != null)
-{
+//book client with a specified room type and bookingID
+public void book(Client client, int  bookingID, String desiredRoomType) {
+    if (client == null) {
+        System.out.println("Client is null.");
+        return;
+    }
+
+    for (Room room : rooms) {
+        if (room.isAvailable() && room.getRoomType().equalsIgnoreCase(desiredRoomType)) {
+            // found a matching available room
+            room.setAvailable(false);
+
+            Booking booking = new Booking(
+                    bookingID,
+                    new Date(),
+                    new Date(System.currentTimeMillis() + 86400000), // +1 day
+                    client.getId()
+            );
+
+            //add to list of hotel bookings
+            bookings.add(booking);
+
+            //adds to the clients list of personal booking
+            client.getBookings().add(booking);
+
+          //  Marks that the client is currently in the hotel.
+            client.setInHotel(true);
+
+            System.out.println("Booking successful: Client = " + client.getName() + ", Room = " + room.getRoomNum());
+            return;
+        }
+    }
+    System.out.println("No available room of type: " + desiredRoomType);
 
 }
-}
-
 
 
 //cancels booking
 public void cancelBooking(int bookingID)
 {
+    for (Booking booking : bookings)
+    {
+        if (booking.getBookingNum() == bookingID)
+        {
+            bookings.remove(booking);
+            for (Room room : rooms)
+            {
+                if (!room.isAvailable())
 
+                    room.setAvailable(true);
+                    break;
+                }
+            }
+            System.out.println("Booking canceled.");
+            return;
+        }
+    System.out.println("Booking ID not found.");
+
+}
 }
 
 
 
-}
 

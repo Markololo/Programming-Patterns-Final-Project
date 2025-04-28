@@ -8,4 +8,13 @@ public abstract class User {
         this.id = id;
         this.name = name;
     }
+
+//    for accessing in booking class the id
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
