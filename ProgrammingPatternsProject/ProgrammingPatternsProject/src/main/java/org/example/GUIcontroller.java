@@ -65,13 +65,11 @@ public class GUIcontroller {
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
     private String selectedLanguage = "english"; //Default
-    ClientDBController clientController;
-    StaffDBController staffDBController;
     MessageService messageService;
+    private DBManager dbManager;
 
     public GUIcontroller() {
-        clientController = new ClientDBController();
-        staffDBController = new StaffDBController();
+        dbManager = new DBManager();
         messageService = new MessageService();
     }
 
