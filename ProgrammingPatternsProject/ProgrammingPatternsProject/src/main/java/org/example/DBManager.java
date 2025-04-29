@@ -252,6 +252,24 @@ public class DBManager {
         }
     }
 
+    private <T> List<T> selectJSONRows(Class<T> selectedClass, String sql) {
+        List<T> rows = new ArrayList<T>();
+        Gson gson = new Gson();
+        try {
+            Connection con = db.connect();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+            while (rs.next()) {
+                String jsonResult = rs.getString("json_result");
+                T row = gson.fromJson(jsonResult, selectedClass);
+                rows.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rows;
+    }
+
     /**
      * Retrieves student data amd returns it as a list of student objects.
      */
@@ -266,21 +284,7 @@ public class DBManager {
                 ) AS json_result
                 FROM Rooms;
                 """;
-        List<Room> rooms = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-            while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Room room = gson.fromJson(jsonResult, Room.class);
-                rooms.add(room);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return rooms;
+        return selectJSONRows(Room.class, sql);
     }
 
     public List<Booking> selectJsonBookings() {
@@ -294,22 +298,9 @@ public class DBManager {
                 ) AS json_result
                 FROM Rooms;
                 """;
-        List<Booking> bookings = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-            while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Booking booking = gson.fromJson(jsonResult, Booking.class);
-                bookings.add(booking);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return bookings;
+        return selectJSONRows(Booking.class, sql);
     }
+
     public List<Client> selectJsonClients() {
         String sql = """
                 SELECT json_object(
@@ -321,21 +312,7 @@ public class DBManager {
                 ) AS json_result
                 FROM Rooms;
                 """;
-        List<Client> clients = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-            while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Client client = gson.fromJson(jsonResult, Client.class);
-                clients.add(client);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return clients;
+        return selectJSONRows(Client.class, sql);
     }
 
     /**
