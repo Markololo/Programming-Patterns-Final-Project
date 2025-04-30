@@ -95,8 +95,6 @@ public class DBManager {
         }
     }
 
-
-
     /**
      * Inserts a row to the client table
      * @param name name of the client
@@ -337,9 +335,9 @@ public class DBManager {
                         String name = rs.getString("name");
                         String contact = rs.getString("contact");
                         int numOfMembers = rs.getInt("numOfMembers");
+                        boolean isInHotel = rs.getBoolean("isInHotel");
 
                         builder.append(String.format("ID: %d, Name: %s, Contact: %s, Members Count: %d%n", id, name, contact, numOfMembers));//For new line, we use '\n' or %n
-
                     }
                     break;
                 }
@@ -409,5 +407,16 @@ public class DBManager {
         } catch (SQLException e) {
             System.out.println("Something went wrong while trying to add a column: " + e.getMessage());;
         }
+    }
+    public List<String> selectTableString(String tableName) {
+        List<String> tableAsString = new ArrayList<>();
+        switch (tableName) {
+            case "clients" : {
+                List<Client> clients = selectJsonClients();
+                //make client into an array of strings of his attributes
+                break;
+            }
+        };
+        return tableAsString;
     }
 }

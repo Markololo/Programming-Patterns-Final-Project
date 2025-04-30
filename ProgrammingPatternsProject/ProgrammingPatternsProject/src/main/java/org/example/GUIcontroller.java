@@ -5,10 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class GUIcontroller {
     @FXML
@@ -61,6 +64,16 @@ public class GUIcontroller {
     private Button staffLoginBtn;
     @FXML
     private Label displayTableLabel;
+    @FXML
+    private TableColumn<Integer, String> column1;
+    @FXML
+    private TableColumn<Integer, String> column2;
+    @FXML
+    private TableColumn<Integer, String> column3;
+    @FXML
+    private TableColumn<Integer, String> column4;
+    @FXML
+    private TableColumn<Integer, String> column5;
     @FXML
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
@@ -154,6 +167,28 @@ public class GUIcontroller {
         welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
         staffLoginBtn.setText(messageService.useLangService(selectedLanguage, "staffLoginBtn"));
     }
+    /*
+    }
+
+    @FXML
+    private void handleAddProduct() {
+        try {
+            String name = nameField.getText();
+            double price = Double.parseDouble(priceField.getText());
+            String category = categoryField.getText();
+            int quantity = Integer.parseInt(qttField.getText());
+
+            boolean conditionAndAction = dbController.addProduct(name, price, category, quantity);
+            if (conditionAndAction) {
+                loadProducts(); // Refresh table view if product added
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert("Please Enter The Correct Data Types In The Fields.");
+        }
+    }
+     */
 
     @FXML
     public void handleViewAllRoomsBtn() {
@@ -167,7 +202,21 @@ public class GUIcontroller {
 
     @FXML
     private void handleViewAllClientsBtn(){
+        tableView.getItems().clear();
 
+        column1.setCellValueFactory(new PropertyValueFactory<>("Id"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("Contact"));
+        column4.setCellValueFactory(new PropertyValueFactory<>("Party Size"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("Is In Hotel"));
+
+        tableView.getItems().addAll(dbManager.selectJsonClients());
+        List<Client> clients = dbManager.selectJsonClients();
+
+        Stream stream = clients.stream().map(client -> c);
+        for (Client client : clients) {
+
+        }
     }
 
     @FXML
