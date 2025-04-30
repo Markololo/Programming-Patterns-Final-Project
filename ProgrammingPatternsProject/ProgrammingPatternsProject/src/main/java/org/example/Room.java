@@ -32,6 +32,10 @@ public class Room {
             case "Suite" -> {
                 return 4;
             }
+            case "Big Family" -> {
+                return 10;//The hotel will give the family a big suite or many smaller rooms.
+                // Any number bigger than this requires at least 2 clients responsible.
+            }
             default -> {
                 return 0;
             }

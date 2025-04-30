@@ -1,13 +1,11 @@
 package org.example;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import javax.swing.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static javax.management.remote.JMXConnectorFactory.connect;
@@ -139,20 +137,22 @@ public class DBManager {
         }
     }
 
-    public boolean insertBookingRecord(int clientId, int roomNum, Date startDate) {
+    public String insertBookingRecord(int clientId, int roomNum, LocalDate startDate) {
         try {
             Client client = findClient(clientId);
             Room room = findRoom(roomNum);
-            if (client == null || room == null)//client or/and room does not exist
-                return false;
+            if (client == null)//client does not exist
+            {
+                return "A client with this ID does not exist. Please register first!"; //The problem is with the client id
+            }
+            if (room == null || room.getIsAvailable().equalsIgnoreCase("False")) {
+                return "The room you want to book is not available."; //the problem is the room no.
+            }
 
             if (client.getNumOfMembers() > room.getSize()) {
                 //Cannot book this room based on the number of members:
-                return false;
+                return "The party size cannot is too big for the room.\nChoose a bigger room or contact the hotel if your party exceeds 10 members!";
             }
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            String formattedStartDate = simpleDateFormat.format(startDate);
 
             String sql = "INSERT INTO bookings(clientId, roomNum, startDate) VALUES(?,?,?)";
 
@@ -161,15 +161,12 @@ public class DBManager {
 //            preparedStatement.setInt(1, bookingNum);
             preparedStatement.setInt(1, clientId);
             preparedStatement.setInt(2, roomNum);
-            preparedStatement.setString(3, formattedStartDate);
+            preparedStatement.setString(3, startDate.toString());
             preparedStatement.executeUpdate();
             System.out.println("Booking Row Added.");
-            return true;
+            return "";//empty string means no problems occurred
         } catch (SQLException e) {
-            System.out.println("Cannot find the Bookings table or Booking already exists.");
-            return false;
-        } catch (Exception e1) {
-            return false;
+            return "A database problem occurred while trying to add a booking.\nContact the hotel for help or try again later.";
         }
     }
 

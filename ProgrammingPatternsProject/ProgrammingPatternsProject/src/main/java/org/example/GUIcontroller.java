@@ -231,15 +231,17 @@ public class GUIcontroller {
     private void handleBookRoomBtn() {
         try {
             int clientId = Integer.parseInt(clientIdField.getText());
-            int roomNUm = Integer.parseInt(roomNoField.getText());
-//            LocalDate startDate = bookingStartDatePicker.getValue();
+            int roomNum = Integer.parseInt(roomNoField.getText());
+            LocalDate startDate = bookingStartDatePicker.getValue();
 
-            /*
-            (int clientId, int roomNum, Date startDate)
-             */
-//            boolean conditionAndAction = dbManager.insertBookingRecord(clientId, roomNUm, startDate);
+            String conditionAndAction = dbManager.insertBookingRecord(clientId, roomNum, startDate);
+
+            if (!conditionAndAction.isEmpty()) {
+                throw new IllegalArgumentException(conditionAndAction);
+            }
+            handleViewAllBookingsBtn();
         } catch (Exception e) {
-            showAlert("Error", "A problem occurred, cannot book room!\nMake sure the client and the room are valid and the party size corresponds to the room type.");
+            showAlert("Error", "A problem occurred during booking request:\n" + e.getMessage());
         }
     }
 
