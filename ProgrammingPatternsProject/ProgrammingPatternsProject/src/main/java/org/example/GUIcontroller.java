@@ -9,11 +9,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class GUIcontroller {
+    @FXML
+    private Button bookRoomBtn;
     @FXML
     private Button viewAllBookingsBtn;
     @FXML
@@ -47,9 +50,7 @@ public class GUIcontroller {
     @FXML
     private TextField numOfMembersField;
     @FXML
-    private TextField roomNoField;
-    @FXML
-    private TextField roomTypeField;
+    private TextField roomNoField;;
     @FXML
     private TextField roomPriceField;
     @FXML
@@ -59,7 +60,9 @@ public class GUIcontroller {
     @FXML
     private ComboBox<String> isInHotelComboBox;
     @FXML
-    private ComboBox<Boolean> availabilityComboBox;
+    private ComboBox<String> roomTypeComboBox;
+    @FXML
+    private ComboBox<String> availabilityComboBox;
     @FXML
     private Button clientLoginBtn;
     @FXML
@@ -68,6 +71,8 @@ public class GUIcontroller {
     private Label displayTableLabel;
     @FXML
     private Label isInHotelLabel;
+    @FXML
+    private DatePicker bookingStartDatePicker;
     @FXML
     private TableColumn<Object, ?> column1;
     @FXML
@@ -81,12 +86,34 @@ public class GUIcontroller {
     @FXML
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
+    private String selectedLanguage = "english"; //Default
+    MessageService messageService;
+    private DBManager dbManager;
+
+    public GUIcontroller() {
+        dbManager = new DBManager();
+        messageService = new MessageService();
+    }
+
     @FXML
     public void initialize() {
         languageComboBox.getItems().addAll("English", "French");
-        isInHotelComboBox.getItems().addAll("True", "False");
         languageComboBox.setValue("English"); //default
-        isInHotelComboBox.setValue("True");
+        isInHotelComboBox.getItems().addAll("True", "False");
+        isInHotelComboBox.setValue("True"); //default
+        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite");//Capacity: 1, 2, 2, 2, 4
+        roomTypeComboBox.setValue("Single"); //default
+        availabilityComboBox.getItems().addAll("True", "False");
+        availabilityComboBox.setValue("True"); //default
+        //I did not know how to do the following block of code to restrict DatePicker values, so I referenced online sources:
+        bookingStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
+            }
+        });
+
     }
 
     @FXML
@@ -113,19 +140,6 @@ public class GUIcontroller {
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-    }
-
-    /**
-     * To display popup messages to inform the user about something.
-     * @param type The type of the message, like "Error", "Warning", etc.
-     * @param msg The message to display
-     */
-    private void showAlert(String type, String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(type);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.show();
     }
 
     /**
@@ -164,6 +178,87 @@ public class GUIcontroller {
         staffLoginBtn.setText(messageService.useLangService(selectedLanguage, "staffLoginBtn"));
     }
 
+    @FXML
+    private void handleViewAvailableRoomsBtn(){
+        tableView.getItems().clear();
+
+        column1.setText("Room Num.");
+        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+        column2.setText("Room Type");
+        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+        column3.setText("Price Per Night ($)");
+        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        column4.setText("Available");
+        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+        column5.setText("Added Date");
+        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+        tableView.getItems().addAll(dbManager.selectAvailableRooms());
+    }
+
+    @FXML
+    private void handleViewCurrentClientsBtn(){
+        tableView.getItems().clear();
+
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        tableView.getItems().addAll(dbManager.selectCurrentClients());
+    }
+
+    @FXML
+    private void handleSearchForClientBtn(){
+        tableView.getItems().clear();
+
+        int id = Integer.parseInt(clientIdField.getText());
+
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        try {
+            tableView.getItems().add(dbManager.selectJsonClients().stream().filter(client -> client.getId() == id).findFirst());
+        } catch (Exception e) {
+            showAlert("Error", "Can't find the client you're looking for.");
+        }
+    }
+
+    @FXML
+    private void handleCheckoutClientBtn(){
+
+    }
+
+    @FXML
+    private void handleBookRoomBtn() {
+
+    }
     @FXML
     private void handleViewAllClientsBtn(){
         tableView.getItems().clear();
@@ -210,64 +305,49 @@ public class GUIcontroller {
         }
     }
 
-    private String selectedLanguage = "english"; //Default
-    MessageService messageService;
-    private DBManager dbManager;
-
-    public GUIcontroller() {
-        dbManager = new DBManager();
-        messageService = new MessageService();
-    }
-
     @FXML
     public void handleViewAllRoomsBtn() {
         tableView.getItems().clear();
 
-        column1.setText("ID");
-        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+        column1.setText("Room Num.");
+        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
-        column2.setText("Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setText("Room Type");
+        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
 
-        column3.setText("Contact");
-        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        column3.setText("Price Per Night ($)");
+        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        column4.setText("Party Size");
-        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+        column4.setText("Available");
+        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
 
-        column5.setText("Is In Hotel");
-        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+        column5.setText("Added Date");
+        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
         tableView.getItems().addAll(dbManager.selectJsonRooms());
     }
 
     @FXML
     private void handleViewAllBookingsBtn(){
+        tableView.getItems().clear();
 
+        column1.setText("Booking Num.");
+        column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
+
+        column2.setText("Client ID");
+        column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
+
+        column3.setText("Room Num.");
+        column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+        column4.setText("Start Date");
+        column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+
+        column5.setText("End Date");
+        column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+        tableView.getItems().addAll(dbManager.selectJsonBookings());
     }
-
-
-    @FXML
-    private void handleViewAvailableRoomsBtn(){
-
-    }
-
-
-    @FXML
-    private void handleViewCurrentClientsBtn(){
-
-    }
-
-    @FXML
-    private void handleSearchForClientBtn(){
-
-    }
-
-    @FXML
-    private void handleCheckoutClientBtn(){
-
-    }
-
     @FXML
     private void handleDeleteClientBtn(){
         int id = Integer.parseInt(clientIdField.getText());
@@ -277,23 +357,31 @@ public class GUIcontroller {
     }
 
     @FXML
+    private void handleDeleteRoomBtn(){
+        int id = Integer.parseInt(roomNoField.getText());
+
+        dbManager.deleteRow("rooms", "roomNum", id);
+        handleViewAllClientsBtn();
+    }
+
+    @FXML
     private void handleAddRoomBtn(){
         try {
-            String name = clientNameField.getText();
-            String contact = clientContactField.getText();
-            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
-            String isInHotel = isInHotelComboBox.getValue();
+            int roomNum = Integer.parseInt(roomNoField.getText());
+            String roomType = roomTypeComboBox.getValue();
+            double price = Double.parseDouble(roomPriceField.getText());
+            String isAvailable = availabilityComboBox.getValue();
 
-            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
+            boolean conditionAndAction = dbManager.insertRoomRecord(roomNum, roomType, price, isAvailable);
             if (!conditionAndAction)//If failed to add client
             {
                 throw new IllegalArgumentException();
             } else {
-                clientNameField.clear();
-                clientContactField.clear();
-                numOfMembersField.clear();
-                isInHotelComboBox.setValue("True");
-                handleViewAllClientsBtn();
+                roomNoField.clear();
+                roomPriceField.clear();
+                isInHotelComboBox.setValue("True");//back to default
+                availabilityComboBox.setValue("True");//back to default
+                handleViewAllRoomsBtn();
             }
         } catch (IllegalArgumentException e) {
             showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
@@ -302,11 +390,20 @@ public class GUIcontroller {
 
     @FXML
     private void handleSearchForRoomBtn(){
+        tableView.getItems().clear();
 
     }
 
-    @FXML
-    private void handleDeleteRoomBtn(){
-
+    /**
+     * To display popup messages to inform the user about something.
+     * @param type The type of the message, like "Error", "Warning", etc.
+     * @param msg The message to display
+     */
+    private void showAlert(String type, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(type);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.show();
     }
 }

@@ -14,5 +14,5 @@ public class Room {
     private String roomType;
     private double price;//Price per night
     private String isAvailable;
-    private Date addedDate;
+    private String addedDate;
 }

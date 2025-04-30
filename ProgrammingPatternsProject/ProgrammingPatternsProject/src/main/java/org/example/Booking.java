@@ -13,8 +13,8 @@ public class Booking {
     private int bookingNum;
     private int clientId;
     private int roomNum;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 //    private boolean isActive;
 
 

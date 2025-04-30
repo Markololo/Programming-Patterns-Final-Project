@@ -38,7 +38,7 @@ public class DBManager {
                     roomType TEXT NOT NULL,
                     price REAL NOT NULL,
                     isAvailable TEXT NOT NULL,
-                    addedDate DATE DEFAULT (DATE('now'))
+                    addedDate TEXT DEFAULT (DATE('now'))
                 );
                 """;
         String bookingsTable = """
@@ -46,10 +46,10 @@ public class DBManager {
                     bookingNum INTEGER PRIMARY KEY,
                     clientId INTEGER NOT NULL,
                     roomNum INTEGER NOT NULL,
-                    startDate DATE NOT NULL,
-                    endDate DATE,
+                    startDate TEXT NOT NULL,
+                    endDate TEXT,
                     FOREIGN KEY(clientId) REFERENCES clients(id),
-                    FOREIGN KEY(roomNum) REFERENCES rooms(roomNo)
+                    FOREIGN KEY(roomNum) REFERENCES rooms(roomNum)
                 );
                 """;
         String staffTable = """
@@ -134,16 +134,21 @@ public class DBManager {
             preparedStatement.executeUpdate();
             System.out.println("Room Row Added.");
             return true;
-        } catch (SQLException e) {
-            System.out.println("Cannot find the Rooms table or Room Already exists:");
-            return false;
-        } catch (Exception e1) {
+        } catch (Exception e) {
             return false;
         }
     }
 
     public boolean insertBookingRecord(int bookingNum, int clientId, int roomNum, Date startDate) {
         try {
+//            Date today = new Date();
+//            if (startDate.compareTo(today) < 0) {
+//                return false; //Cannot book today since yesterday
+//            }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+//            String formattedToday = simpleDateFormat.format(today);
+            String formattedStartDate = simpleDateFormat.format(startDate);
+
             String sql = "INSERT INTO bookings(bookingNum, clientId, roomNum, startDate) VALUES(?,?,?,?)";
 
             Connection con = db.connect();
@@ -151,10 +156,7 @@ public class DBManager {
             preparedStatement.setInt(1, bookingNum);
             preparedStatement.setInt(2, clientId);
             preparedStatement.setInt(3, roomNum);
-            preparedStatement.setDate(4, new java.sql.Date(startDate.getTime()));//autocorrected date to match sql
-//            preparedStatement.setDate(5, new java.sql.Date(endDate.getTime()));
-            //preparedStatement.setDate(5, null);//End date will be updated at checkout
-//            preparedStatement.setBoolean(6, true);//Booking is Active when added
+            preparedStatement.setString(4, formattedStartDate);
             preparedStatement.executeUpdate();
             System.out.println("Booking Row Added.");
             return true;
@@ -204,7 +206,7 @@ public class DBManager {
                     PreparedStatement updateBookingStatement = con.prepareStatement(updateBookingSql);
 
                     java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
-                    updateBookingStatement.setDate(1, today);  // Set the endDate to today's date
+                    updateBookingStatement.setString(1, today+"");  // Set the endDate to today's date
                     updateBookingStatement.setInt(2, clientID);
 
                     int rowsUpdatedBooking = updateBookingStatement.executeUpdate();
@@ -249,14 +251,24 @@ public class DBManager {
         }
     }
 
+    public List<Room> selectAvailableRooms() {
+        List<Room> allRooms = selectJsonRooms();
+        return allRooms.stream().filter(room -> room.getIsAvailable().equalsIgnoreCase("true")).toList();
+    }
+
+    public List<Client> selectCurrentClients() {
+        List<Client> allClients = selectJsonClients();
+        return allClients.stream().filter(client -> client.getIsInHotel().equalsIgnoreCase("true")).toList();
+    }
+
     public List<Room> selectJsonRooms() {
         String sql = """
                 SELECT json_object(
-                'Room Num', roomNum,
-                'Type', roomType,
-                'Price', price,
-                'Available', available
-                'AddedDate', addedDate
+                'roomNum', roomNum,
+                'roomType', roomType,
+                'price', price,
+                'isAvailable', isAvailable,
+                'addedDate', addedDate
                 ) AS json_result
                 FROM Rooms;
                 """;
@@ -283,10 +295,10 @@ public class DBManager {
                 'bookingNum', bookingNum,
                 'clientId', clientId,
                 'roomNum', roomNum,
-                'startDate', startDate
+                'startDate', startDate,
                 'endDate', endDate
                 ) AS json_result
-                FROM Rooms;
+                FROM bookings;
                 """;
         List<Booking> bookings = new ArrayList<>();
         Gson gson = new Gson();
@@ -304,6 +316,7 @@ public class DBManager {
         }
         return bookings;
     }
+
     public List<Client> selectJsonClients() {
 
         String sql = """
@@ -333,161 +346,5 @@ public class DBManager {
         return clients;
     }
 
-//    private <T> List<T> selectJSONRows(Class<T> selectedClass, String sql) {
-//        List<T> rows = new ArrayList<T>();
-//        Gson gson = new Gson();
-//        try {
-//            Connection con = db.connect();
-//            Statement stmt = con.createStatement();
-//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-//            while (rs.next()) {
-//                String jsonResult = rs.getString("json_result");
-//                T row = gson.fromJson(jsonResult, selectedClass);
-//                rows.add(row);
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return rows;
-//    }
-//    public List<Client> selectJsonClients() {
-//        String sql = """
-//            SELECT json_object(
-//            'id', id,
-//            'name', name,
-//            'contact', contact,
-//            'numOfMembers', numOfMembers,
-//            'isInHotel', isInHotel
-//            ) AS json_result
-//            FROM clients;
-//            """;
-//        return selectJSONRows(Client.class, sql);
-//    }
-//
-//    /**
-//     * Retrieves student data amd returns it as a list of student objects.
-//     */
-//    public List<Room> selectJsonRooms() {
-//        String sql = """
-//                SELECT json_object(
-//                'Room Num', roomNum,
-//                'Type', roomType,
-//                'Price', price,
-//                'Available', available
-//                'AddedDate', addedDate
-//                ) AS json_result
-//                FROM Rooms;
-//                """;
-//        return selectJSONRows(Room.class, sql);
-//    }
-//
-//    public List<Booking> selectJsonBookings() {
-//        String sql = """
-//                SELECT json_object(
-//                'bookingNum', bookingNum,
-//                'clientId', clientId,
-//                'roomNum', roomNum,
-//                'startDate', startDate
-//                'endDate', endDate
-//                ) AS json_result
-//                FROM Rooms;
-//                """;
-//        return selectJSONRows(Booking.class, sql);
-//    }
 
-    /**
-     * You can query all data in plain text and display them instead of using execute or execute update.
-     * Here executeQuery is used. The result's stored in a ResultSet object,
-     * and we can use getters such as getInt, getString, etc. to retrieve each field from it.
-     * @param table name of the table
-     */
-    public String selectPlainText(String table) {
-        String sql = "SELECT * FROM " + table;
-        StringBuilder builder = new StringBuilder();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-
-            switch (table.toLowerCase()) {
-                case "client" : {
-                    while (rs.next()) {
-                        int id = rs.getInt("clientID");
-                        String name = rs.getString("name");
-                        String contact = rs.getString("contact");
-                        int numOfMembers = rs.getInt("numOfMembers");
-                        String isInHotel = rs.getString("isInHotel");
-
-                        builder.append(String.format("ID: %d, Name: %s, Contact: %s, Members Count: %d, Is In Hotel: %s%n", id, name, contact, numOfMembers, isInHotel));//For new line, we use '\n' or %n
-                    }
-                    break;
-                }
-                case "room" : {
-                    while (rs.next()) {
-                        int id = rs.getInt("roomNum");
-                        String roomType = rs.getString("roomType");
-                        double price = rs.getDouble("price");
-                        boolean available = rs.getBoolean("available");
-                        //Date addedDate = rs.getDate("addedDate");
-                        Date addedDate = rs.getDate("addedDate");
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                        String formattedDate = formatter.format(addedDate);
-
-                        builder.append(String.format("Room Number: %d, Room Type: %s, Price Per Night: %.2f, Available: %b, Added Date: %s%n", id, roomType, price, available, formattedDate));
-                    }
-                    break;
-                }
-                case "booking" : {
-                    while (rs.next()) {
-                        int bookingNum = rs.getInt("bookingNum");
-                        int clientId = rs.getInt("clientId");
-
-                        builder.append(String.format("Booking Number: %d, Client ID: %d%n", bookingNum, clientId));
-                    }
-                    break;
-                }
-                default: throw new IllegalArgumentException("Invalid table name. No row can be deleted. Table: " + table);
-            };
-        } catch (SQLException e) {
-            System.out.println("Connection Failure. Make sure the table exists.");
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Creates an empty table.
-     * Add columns later to complete table creation
-     * @param tableName name of the new table
-     */
-    private void createTable(String tableName) {
-        //Using a placeholder that can be ignored to create an empty table:
-        String sql = "CREATE TABLE IF NOT EXISTS " + tableName + "(placeholder INTEGER);";
-        try {
-            Connection con = db.connect();
-            Statement statement =  con.createStatement();
-            statement.execute(sql);
-            System.out.println("Table " + tableName + "Created Successfully");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    /**
-     * Adds a column to a table
-     * @param columnName name of the column
-     * @param columnType data type
-     * @param tableName name of the updated table
-     * @param constraints constraints of the column, use empty string if there isn't
-     */
-    public void addColumn(String columnName, String columnType, String tableName, String constraints) {
-        String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType + " " + constraints + ";";
-        try {
-            Connection con = db.connect();
-            Statement statement =  con.createStatement();
-            statement.execute(sql);
-            System.out.println("Column " + columnName + " added in table " + tableName);
-        } catch (SQLException e) {
-            System.out.println("Something went wrong while trying to add a column: " + e.getMessage());;
-        }
-    }
 }
