@@ -74,15 +74,15 @@ public class GUIcontroller {
     @FXML
     private DatePicker bookingStartDatePicker;
     @FXML
-    private TableColumn<Object, ?> column1;
+    private TableColumn column1;
     @FXML
-    private TableColumn<Object, ?> column2;
+    private TableColumn column2;
     @FXML
-    private TableColumn<Object, ?> column3;
+    private TableColumn column3;
     @FXML
-    private TableColumn<Object, ?> column4;
+    private TableColumn column4;
     @FXML
-    private TableColumn<Object, ?> column5;
+    private TableColumn column5;
     @FXML
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
@@ -113,7 +113,6 @@ public class GUIcontroller {
                 setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
             }
         });
-
     }
 
     @FXML
@@ -244,8 +243,13 @@ public class GUIcontroller {
         column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
 
         try {
-            tableView.getItems().add(dbManager.selectJsonClients().stream().filter(client -> client.getId() == id).findFirst());
-        } catch (Exception e) {
+            Client client = dbManager.findClient(id);
+            if (client == null) {
+                throw new IllegalArgumentException();
+            }
+            tableView.getItems().add(client);
+            clientIdField.clear();
+        } catch (IllegalArgumentException e) {
             showAlert("Error", "Can't find the client you're looking for.");
         }
     }
@@ -257,6 +261,11 @@ public class GUIcontroller {
 
     @FXML
     private void handleBookRoomBtn() {
+
+    }
+
+    @FXML
+    private void handleUpdateRoomBtn() {
 
     }
     @FXML

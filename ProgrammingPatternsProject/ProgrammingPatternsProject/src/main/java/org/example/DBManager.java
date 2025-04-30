@@ -261,6 +261,15 @@ public class DBManager {
         return allClients.stream().filter(client -> client.getIsInHotel().equalsIgnoreCase("true")).toList();
     }
 
+    public Client findClient(int id) {
+        List<Client> clients = selectJsonClients();
+        for (Client client : clients){
+            if (client.getId() == id)
+                return client;
+        }
+        return null;
+    }
+
     public List<Room> selectJsonRooms() {
         String sql = """
                 SELECT json_object(
