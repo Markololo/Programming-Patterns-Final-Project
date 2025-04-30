@@ -13,6 +13,6 @@ public class Room {
     private int roomNum;
     private String roomType;
     private double price;//Price per night
-    private boolean isAvailable;
+    private String isAvailable;
     private Date addedDate;
 }

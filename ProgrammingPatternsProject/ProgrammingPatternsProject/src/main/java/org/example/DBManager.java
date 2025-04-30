@@ -37,7 +37,7 @@ public class DBManager {
                     roomNum INTEGER PRIMARY KEY,
                     roomType TEXT NOT NULL,
                     price REAL NOT NULL,
-                    isAvailable BOOLEAN NOT NULL,
+                    isAvailable TEXT NOT NULL,
                     addedDate DATE DEFAULT (DATE('now'))
                 );
                 """;
@@ -77,7 +77,7 @@ public class DBManager {
      * @param table name of the table of the row to be deleted
      * @param pkValue the value of the primary key or ID of the row
      */
-    public void deleteRow(String table, int pkValue, String pkColumn) {
+    public void deleteRow(String table, String pkColumn, int pkValue) {
         String sql = "DELETE FROM " + table + " WHERE "+pkColumn+"=?";
 
         try {
@@ -121,7 +121,7 @@ public class DBManager {
         }
     }
 
-    public boolean insertRoomRecord(int roomNum, String roomType, double price, boolean isAvailable) {
+    public boolean insertRoomRecord(int roomNum, String roomType, double price, String isAvailable) {
         try {
             String sql = "INSERT INTO rooms(roomNum, roomType, price, isAvailable) VALUES(?,?,?,?)";
 
@@ -130,7 +130,7 @@ public class DBManager {
             preparedStatement.setInt(1, roomNum);
             preparedStatement.setString(2, roomType);
             preparedStatement.setDouble(3, price);
-            preparedStatement.setBoolean(4, isAvailable);
+            preparedStatement.setString(4, isAvailable);
             preparedStatement.executeUpdate();
             System.out.println("Room Row Added.");
             return true;
@@ -216,7 +216,7 @@ public class DBManager {
                     //Mark the room as available
                     String updateRoomAvailabilitySql = "UPDATE rooms SET isAvailable = ? WHERE roomNo IN (SELECT roomNum FROM bookings WHERE clientId = ? AND endDate IS NULL)";
                     PreparedStatement updateRoomStatement = con.prepareStatement(updateRoomAvailabilitySql);
-                    updateRoomStatement.setBoolean(1, true);  // Mark the room as available.
+                    updateRoomStatement.setString(1, "True");  // Mark the room as available.
                     updateRoomStatement.setInt(2, clientID);
                     updateRoomStatement.executeUpdate();
 

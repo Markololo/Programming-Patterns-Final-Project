@@ -82,57 +82,6 @@ public class GUIcontroller {
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
 
     @FXML
-    private void handleViewAllClientsBtn(){
-        tableView.getItems().clear();
-
-        column1.setText("ID");
-        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        column2.setText("Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        column3.setText("Contact");
-        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
-
-        column4.setText("Party Size");
-        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
-
-        column5.setText("Is In Hotel");
-        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
-
-        tableView.getItems().addAll(dbManager.selectJsonClients());
-//        List<Client> clients = dbManager.selectJsonClients();
-//        tableView.getItems().setAll(clients);
-    }
-
-    @FXML
-    private void handleAddClientBtn(){
-        try {
-            String name = clientNameField.getText();
-            String contact = clientContactField.getText();
-            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
-            String isInHotel = isInHotelComboBox.getValue();
-
-            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
-            if (!conditionAndAction)//If failed to add client
-            {
-                throw new IllegalArgumentException();
-            }
-        } catch (IllegalArgumentException e) {
-            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
-        }
-    }
-
-    private String selectedLanguage = "english"; //Default
-    MessageService messageService;
-    private DBManager dbManager;
-
-    public GUIcontroller() {
-        dbManager = new DBManager();
-        messageService = new MessageService();
-    }
-
-    @FXML
     public void initialize() {
         languageComboBox.getItems().addAll("English", "French");
         isInHotelComboBox.getItems().addAll("True", "False");
@@ -216,8 +165,80 @@ public class GUIcontroller {
     }
 
     @FXML
-    public void handleViewAllRoomsBtn() {
+    private void handleViewAllClientsBtn(){
+        tableView.getItems().clear();
 
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        tableView.getItems().addAll(dbManager.selectJsonClients());
+    }
+
+    @FXML
+    private void handleAddClientBtn(){
+        try {
+            String name = clientNameField.getText();
+            String contact = clientContactField.getText();
+            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
+            String isInHotel = isInHotelComboBox.getValue();
+
+            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
+            if (!conditionAndAction)//If failed to add client
+            {
+                throw new IllegalArgumentException();
+            } else {
+                clientNameField.clear();
+                clientContactField.clear();
+                numOfMembersField.clear();
+                isInHotelComboBox.setValue("True");
+                handleViewAllClientsBtn();
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
+        }
+    }
+
+    private String selectedLanguage = "english"; //Default
+    MessageService messageService;
+    private DBManager dbManager;
+
+    public GUIcontroller() {
+        dbManager = new DBManager();
+        messageService = new MessageService();
+    }
+
+    @FXML
+    public void handleViewAllRoomsBtn() {
+        tableView.getItems().clear();
+
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        tableView.getItems().addAll(dbManager.selectJsonRooms());
     }
 
     @FXML
@@ -249,12 +270,34 @@ public class GUIcontroller {
 
     @FXML
     private void handleDeleteClientBtn(){
+        int id = Integer.parseInt(clientIdField.getText());
 
+        dbManager.deleteRow("clients", "id", id);
+        handleViewAllClientsBtn();
     }
 
     @FXML
     private void handleAddRoomBtn(){
+        try {
+            String name = clientNameField.getText();
+            String contact = clientContactField.getText();
+            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
+            String isInHotel = isInHotelComboBox.getValue();
 
+            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
+            if (!conditionAndAction)//If failed to add client
+            {
+                throw new IllegalArgumentException();
+            } else {
+                clientNameField.clear();
+                clientContactField.clear();
+                numOfMembersField.clear();
+                isInHotelComboBox.setValue("True");
+                handleViewAllClientsBtn();
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
+        }
     }
 
     @FXML
