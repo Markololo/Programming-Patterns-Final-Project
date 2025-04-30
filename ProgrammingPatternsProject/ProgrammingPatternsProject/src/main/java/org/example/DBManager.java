@@ -48,8 +48,8 @@ public class DBManager {
                     roomNum INTEGER NOT NULL,
                     startDate TEXT NOT NULL,
                     endDate TEXT,
-                    FOREIGN KEY(clientId) REFERENCES clients(id),
-                    FOREIGN KEY(roomNum) REFERENCES rooms(roomNum)
+                    FOREIGN KEY(clientId) REFERENCES clients(id) ON DELETE CASCADE,
+                    FOREIGN KEY(roomNum) REFERENCES rooms(roomNum) ON DELETE SET NULL
                 );
                 """;
         String staffTable = """
@@ -139,24 +139,29 @@ public class DBManager {
         }
     }
 
-    public boolean insertBookingRecord(int bookingNum, int clientId, int roomNum, Date startDate) {
+    public boolean insertBookingRecord(int clientId, int roomNum, Date startDate) {
         try {
-//            Date today = new Date();
-//            if (startDate.compareTo(today) < 0) {
-//                return false; //Cannot book today since yesterday
-//            }
+            Client client = findClient(clientId);
+            Room room = findRoom(roomNum);
+            if (client == null || room == null)//client or/and room does not exist
+                return false;
+
+            if (client.getNumOfMembers() > room.getSize()) {
+                //Cannot book this room based on the number of members:
+                return false;
+            }
+
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-//            String formattedToday = simpleDateFormat.format(today);
             String formattedStartDate = simpleDateFormat.format(startDate);
 
-            String sql = "INSERT INTO bookings(bookingNum, clientId, roomNum, startDate) VALUES(?,?,?,?)";
+            String sql = "INSERT INTO bookings(clientId, roomNum, startDate) VALUES(?,?,?)";
 
             Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, bookingNum);
-            preparedStatement.setInt(2, clientId);
-            preparedStatement.setInt(3, roomNum);
-            preparedStatement.setString(4, formattedStartDate);
+//            preparedStatement.setInt(1, bookingNum);
+            preparedStatement.setInt(1, clientId);
+            preparedStatement.setInt(2, roomNum);
+            preparedStatement.setString(3, formattedStartDate);
             preparedStatement.executeUpdate();
             System.out.println("Booking Row Added.");
             return true;
@@ -266,6 +271,14 @@ public class DBManager {
         for (Client client : clients){
             if (client.getId() == id)
                 return client;
+        }
+        return null;
+    }
+    public Room findRoom(int roomNum) {
+        List<Room> rooms = selectJsonRooms();
+        for (Room room : rooms){
+            if (room.getRoomNum() == roomNum)
+                return room;
         }
         return null;
     }

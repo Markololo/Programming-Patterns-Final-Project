@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -222,46 +223,24 @@ public class GUIcontroller {
     }
 
     @FXML
-    private void handleSearchForClientBtn(){
-        tableView.getItems().clear();
-
-        int id = Integer.parseInt(clientIdField.getText());
-
-        column1.setText("ID");
-        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        column2.setText("Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        column3.setText("Contact");
-        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
-
-        column4.setText("Party Size");
-        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
-
-        column5.setText("Is In Hotel");
-        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
-
-        try {
-            Client client = dbManager.findClient(id);
-            if (client == null) {
-                throw new IllegalArgumentException();
-            }
-            tableView.getItems().add(client);
-            clientIdField.clear();
-        } catch (IllegalArgumentException e) {
-            showAlert("Error", "Can't find the client you're looking for.");
-        }
-    }
-
-    @FXML
     private void handleCheckoutClientBtn(){
 
     }
 
     @FXML
     private void handleBookRoomBtn() {
+        try {
+            int clientId = Integer.parseInt(clientIdField.getText());
+            int roomNUm = Integer.parseInt(roomNoField.getText());
+//            LocalDate startDate = bookingStartDatePicker.getValue();
 
+            /*
+            (int clientId, int roomNum, Date startDate)
+             */
+//            boolean conditionAndAction = dbManager.insertBookingRecord(clientId, roomNUm, startDate);
+        } catch (Exception e) {
+            showAlert("Error", "A problem occurred, cannot book room!\nMake sure the client and the room are valid and the party size corresponds to the room type.");
+        }
     }
 
     @FXML
@@ -357,6 +336,7 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(dbManager.selectJsonBookings());
     }
+
     @FXML
     private void handleDeleteClientBtn(){
         int id = Integer.parseInt(clientIdField.getText());
@@ -398,9 +378,71 @@ public class GUIcontroller {
     }
 
     @FXML
-    private void handleSearchForRoomBtn(){
+    private void handleSearchForClientBtn(){
         tableView.getItems().clear();
 
+        int id = Integer.parseInt(clientIdField.getText());
+
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        try {
+            Client client = dbManager.findClient(id);
+            if (client == null) {
+                throw new IllegalArgumentException();
+            }
+            tableView.getItems().add(client);
+            clientIdField.clear();
+        } catch (IllegalArgumentException e) {
+            showAlert("Error", "Can't find the client you're looking for.");
+        }
+    }
+
+    @FXML
+    private void handleSearchForRoomBtn(){
+        try {
+
+        int roomNum = Integer.parseInt(roomNoField.getText());
+
+        tableView.getItems().clear();
+
+        column1.setText("Room Num.");
+        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+        column2.setText("Room Type");
+        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+        column3.setText("Price Per Night ($)");
+        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        column4.setText("Available");
+        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+        column5.setText("Added Date");
+        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+
+            Room room = dbManager.findRoom(roomNum);
+            if (room == null) {
+                throw new IllegalArgumentException();
+            }
+            tableView.getItems().add(room);
+            roomNoField.clear();
+        } catch (Exception e) {
+            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+        }
     }
 
     /**
