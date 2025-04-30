@@ -155,15 +155,14 @@ public class DBManager {
             }
 
             String sql = "INSERT INTO bookings(clientId, roomNum, startDate) VALUES(?,?,?)";
+            String updateClientSql = "UPDATE clients SET isInHotel='True' WHERE id=?";
 
             Connection con = db.connect();
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-//            preparedStatement.setInt(1, bookingNum);
-            preparedStatement.setInt(1, clientId);
-            preparedStatement.setInt(2, roomNum);
-            preparedStatement.setString(3, startDate.toString());
-            preparedStatement.executeUpdate();
-            System.out.println("Booking Row Added.");
+            Statement statement =  con.createStatement();
+            statement.execute(sql);
+            statement.execute(updateClientSql);//check
+//            int rowsUpdated = statement.executeUpdate(); //Returns the number of rows affected
+
             return "";//empty string means no problems occurred
         } catch (SQLException e) {
             return "A database problem occurred while trying to add a booking.\nContact the hotel for help or try again later.";
@@ -235,6 +234,34 @@ public class DBManager {
             return false;//Error occurred
         }
     }
+    public String checkoutClient2(int clientID) {
+        try {
+            List<Client> allClients = selectJsonClients();
+            List<Room> allRooms = selectJsonRooms();
+            List<Booking> allBookings = selectJsonBookings();
+            Client selectedClient = findClient(clientID);
+            Booking bookingToEnd = null;
+
+            if (selectedClient == null)
+                return "A client with this ID does not exist. Please register first.";
+
+
+            for (Booking booking : allBookings) {
+                if(booking.getClientId() == clientID) {//we found a booking of the client (he may have many).
+                    if (booking.getEndDate() == null) {//no end date has been set, meaning the booking is ongoing.
+                        bookingToEnd = booking;//booking to end has been found
+                    }
+                }
+            }
+            if (bookingToEnd == null) {
+                return "This client does not have a current booking.";
+            }
+
+            return "";//Empty String means a success.
+        } catch (Exception e) {
+            return "A database error occurred.!\nPlease try again later or contact the hotel for help.";
+        }
+    }
 
     /**
      * Drops a table from the db
@@ -271,6 +298,7 @@ public class DBManager {
         }
         return null;
     }
+
     public Room findRoom(int roomNum) {
         List<Room> rooms = selectJsonRooms();
         for (Room room : rooms){
