@@ -57,6 +57,8 @@ public class GUIcontroller {
     @FXML
     private ComboBox<String> languageComboBox;
     @FXML
+    private ComboBox<String> isInHotelComboBox;
+    @FXML
     private ComboBox<Boolean> availabilityComboBox;
     @FXML
     private Button clientLoginBtn;
@@ -65,17 +67,61 @@ public class GUIcontroller {
     @FXML
     private Label displayTableLabel;
     @FXML
-    private TableColumn<Integer, String> column1;
+    private Label isInHotelLabel;
     @FXML
-    private TableColumn<Integer, String> column2;
+    private TableColumn<Object, ?> column1;
     @FXML
-    private TableColumn<Integer, String> column3;
+    private TableColumn<Object, ?> column2;
     @FXML
-    private TableColumn<Integer, String> column4;
+    private TableColumn<Object, ?> column3;
     @FXML
-    private TableColumn<Integer, String> column5;
+    private TableColumn<Object, ?> column4;
+    @FXML
+    private TableColumn<Object, ?> column5;
     @FXML
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
+
+    @FXML
+    private void handleViewAllClientsBtn(){
+        tableView.getItems().clear();
+
+        column1.setText("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        column2.setText("Name");
+        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        column3.setText("Contact");
+        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        column4.setText("Party Size");
+        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+        column5.setText("Is In Hotel");
+        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
+        tableView.getItems().addAll(dbManager.selectJsonClients());
+//        List<Client> clients = dbManager.selectJsonClients();
+//        tableView.getItems().setAll(clients);
+    }
+
+    @FXML
+    private void handleAddClientBtn(){
+        try {
+            String name = clientNameField.getText();
+            String contact = clientContactField.getText();
+            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
+            String isInHotel = isInHotelComboBox.getValue();
+
+            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
+            if (!conditionAndAction)//If failed to add client
+            {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
+        }
+    }
 
     private String selectedLanguage = "english"; //Default
     MessageService messageService;
@@ -89,8 +135,9 @@ public class GUIcontroller {
     @FXML
     public void initialize() {
         languageComboBox.getItems().addAll("English", "French");
+        isInHotelComboBox.getItems().addAll("True", "False");
         languageComboBox.setValue("English"); //default
-        System.out.println("Empty staff window initialized.");
+        isInHotelComboBox.setValue("True");
     }
 
     @FXML
@@ -167,28 +214,6 @@ public class GUIcontroller {
         welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
         staffLoginBtn.setText(messageService.useLangService(selectedLanguage, "staffLoginBtn"));
     }
-    /*
-    }
-
-    @FXML
-    private void handleAddProduct() {
-        try {
-            String name = nameField.getText();
-            double price = Double.parseDouble(priceField.getText());
-            String category = categoryField.getText();
-            int quantity = Integer.parseInt(qttField.getText());
-
-            boolean conditionAndAction = dbController.addProduct(name, price, category, quantity);
-            if (conditionAndAction) {
-                loadProducts(); // Refresh table view if product added
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } catch (IllegalArgumentException e) {
-            showAlert("Please Enter The Correct Data Types In The Fields.");
-        }
-    }
-     */
 
     @FXML
     public void handleViewAllRoomsBtn() {
@@ -200,34 +225,12 @@ public class GUIcontroller {
 
     }
 
-    @FXML
-    private void handleViewAllClientsBtn(){
-        tableView.getItems().clear();
-
-        column1.setCellValueFactory(new PropertyValueFactory<>("Id"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("Name"));
-        column3.setCellValueFactory(new PropertyValueFactory<>("Contact"));
-        column4.setCellValueFactory(new PropertyValueFactory<>("Party Size"));
-        column5.setCellValueFactory(new PropertyValueFactory<>("Is In Hotel"));
-
-        tableView.getItems().addAll(dbManager.selectJsonClients());
-        List<Client> clients = dbManager.selectJsonClients();
-
-        Stream stream = clients.stream().map(client -> c);
-        for (Client client : clients) {
-
-        }
-    }
 
     @FXML
     private void handleViewAvailableRoomsBtn(){
 
     }
 
-    @FXML
-    private void handleAddClientBtn(){
-
-    }
 
     @FXML
     private void handleViewCurrentClientsBtn(){

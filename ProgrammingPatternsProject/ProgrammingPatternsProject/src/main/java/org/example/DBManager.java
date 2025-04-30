@@ -27,9 +27,9 @@ public class DBManager {
                 (
                 id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
-                contact INTEGER NOT NULL,
+                contact TEXT NOT NULL,
                 numOfMembers INTEGER NOT NULL,
-                isInHotel BOOLEAN NOT NULL
+                isInHotel TEXT NOT NULL
                 );
                 """;
         String roomsTable = """
@@ -101,23 +101,23 @@ public class DBManager {
      * @param contact contact of the client
      * @param numOfMembers number of members with the client
      */
-    public void insertClientRecord(String name, String contact, int numOfMembers, boolean isInHotel) {
+    public boolean insertClientRecord(String name, String contact, int numOfMembers, String isInHotel) {
         try {
             String sql = "INSERT INTO clients(name,contact,numOfMembers, isInHotel) VALUES(?,?,?,?)";
+
+           // int isInHotelInt = (isInHotel)? 0:1;
 
             Connection con = db.connect();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, contact);
             preparedStatement.setInt(3, numOfMembers);
-            preparedStatement.setBoolean(4, isInHotel);
+            preparedStatement.setString(4, isInHotel);
 
             preparedStatement.executeUpdate();
-            System.out.println("Client Row Added.");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e1) {
-            throw new RuntimeException("Error while trying to insert row. Cannot find the Client table.");
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -183,8 +183,8 @@ public class DBManager {
             checkStatement.setInt(1, clientID);
             ResultSet rs = checkStatement.executeQuery();
             if (rs.next()) {
-                boolean isInHotel = rs.getBoolean("isInHotel");
-                if (!isInHotel) {
+                String isInHotel = rs.getString("isInHotel");
+                if (isInHotel.equalsIgnoreCase("false")) {
                     System.out.println("Client is already checked out.");
                     return false;
                 }
@@ -192,7 +192,7 @@ public class DBManager {
                 //Checkout client: no longer in hotel
                 String updateClientStatusSql = "UPDATE clients SET isInHotel = ? WHERE id = ?";
                 PreparedStatement updateStatement = con.prepareStatement(updateClientStatusSql);
-                updateStatement.setBoolean(1, false);
+                updateStatement.setString(1, "false");
                 updateStatement.setInt(2, clientID);
                 int rowsUpdated = updateStatement.executeUpdate();
 
@@ -232,7 +232,6 @@ public class DBManager {
         }
     }
 
-
     /**
      * Drops a table from the db
      * @param tableName table to remove
@@ -250,27 +249,6 @@ public class DBManager {
         }
     }
 
-    private <T> List<T> selectJSONRows(Class<T> selectedClass, String sql) {
-        List<T> rows = new ArrayList<T>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
-            while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                T row = gson.fromJson(jsonResult, selectedClass);
-                rows.add(row);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return rows;
-    }
-
-    /**
-     * Retrieves student data amd returns it as a list of student objects.
-     */
     public List<Room> selectJsonRooms() {
         String sql = """
                 SELECT json_object(
@@ -282,7 +260,21 @@ public class DBManager {
                 ) AS json_result
                 FROM Rooms;
                 """;
-        return selectJSONRows(Room.class, sql);
+        List<Room> rooms = new ArrayList<>();
+        Gson gson = new Gson();
+        try {
+            Connection con = db.connect();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+            while (rs.next()) {
+                String jsonResult = rs.getString("json_result");
+                Room room = gson.fromJson(jsonResult, Room.class);
+                rooms.add(room);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rooms;
     }
 
     public List<Booking> selectJsonBookings() {
@@ -296,22 +288,112 @@ public class DBManager {
                 ) AS json_result
                 FROM Rooms;
                 """;
-        return selectJSONRows(Booking.class, sql);
+        List<Booking> bookings = new ArrayList<>();
+        Gson gson = new Gson();
+        try {
+            Connection con = db.connect();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+            while (rs.next()) {
+                String jsonResult = rs.getString("json_result");
+                Booking booking = gson.fromJson(jsonResult, Booking.class);
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return bookings;
     }
-
     public List<Client> selectJsonClients() {
+
         String sql = """
                 SELECT json_object(
                 'id', id,
                 'name', name,
                 'contact', contact,
-                'numOfMembers', numOfMembers
+                'numOfMembers', numOfMembers,
                 'isInHotel', isInHotel
                 ) AS json_result
-                FROM Rooms;
+                FROM clients;
                 """;
-        return selectJSONRows(Client.class, sql);
+        List<Client> clients = new ArrayList<>();
+        Gson gson = new Gson();
+        try {
+            Connection con = db.connect();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+            while (rs.next()) {
+                String jsonResult = rs.getString("json_result");
+                Client client = gson.fromJson(jsonResult, Client.class);
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return clients;
     }
+
+//    private <T> List<T> selectJSONRows(Class<T> selectedClass, String sql) {
+//        List<T> rows = new ArrayList<T>();
+//        Gson gson = new Gson();
+//        try {
+//            Connection con = db.connect();
+//            Statement stmt = con.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+//            while (rs.next()) {
+//                String jsonResult = rs.getString("json_result");
+//                T row = gson.fromJson(jsonResult, selectedClass);
+//                rows.add(row);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return rows;
+//    }
+//    public List<Client> selectJsonClients() {
+//        String sql = """
+//            SELECT json_object(
+//            'id', id,
+//            'name', name,
+//            'contact', contact,
+//            'numOfMembers', numOfMembers,
+//            'isInHotel', isInHotel
+//            ) AS json_result
+//            FROM clients;
+//            """;
+//        return selectJSONRows(Client.class, sql);
+//    }
+//
+//    /**
+//     * Retrieves student data amd returns it as a list of student objects.
+//     */
+//    public List<Room> selectJsonRooms() {
+//        String sql = """
+//                SELECT json_object(
+//                'Room Num', roomNum,
+//                'Type', roomType,
+//                'Price', price,
+//                'Available', available
+//                'AddedDate', addedDate
+//                ) AS json_result
+//                FROM Rooms;
+//                """;
+//        return selectJSONRows(Room.class, sql);
+//    }
+//
+//    public List<Booking> selectJsonBookings() {
+//        String sql = """
+//                SELECT json_object(
+//                'bookingNum', bookingNum,
+//                'clientId', clientId,
+//                'roomNum', roomNum,
+//                'startDate', startDate
+//                'endDate', endDate
+//                ) AS json_result
+//                FROM Rooms;
+//                """;
+//        return selectJSONRows(Booking.class, sql);
+//    }
 
     /**
      * You can query all data in plain text and display them instead of using execute or execute update.
@@ -335,9 +417,9 @@ public class DBManager {
                         String name = rs.getString("name");
                         String contact = rs.getString("contact");
                         int numOfMembers = rs.getInt("numOfMembers");
-                        boolean isInHotel = rs.getBoolean("isInHotel");
+                        String isInHotel = rs.getString("isInHotel");
 
-                        builder.append(String.format("ID: %d, Name: %s, Contact: %s, Members Count: %d%n", id, name, contact, numOfMembers));//For new line, we use '\n' or %n
+                        builder.append(String.format("ID: %d, Name: %s, Contact: %s, Members Count: %d, Is In Hotel: %s%n", id, name, contact, numOfMembers, isInHotel));//For new line, we use '\n' or %n
                     }
                     break;
                 }
@@ -407,16 +489,5 @@ public class DBManager {
         } catch (SQLException e) {
             System.out.println("Something went wrong while trying to add a column: " + e.getMessage());;
         }
-    }
-    public List<String> selectTableString(String tableName) {
-        List<String> tableAsString = new ArrayList<>();
-        switch (tableName) {
-            case "clients" : {
-                List<Client> clients = selectJsonClients();
-                //make client into an array of strings of his attributes
-                break;
-            }
-        };
-        return tableAsString;
     }
 }

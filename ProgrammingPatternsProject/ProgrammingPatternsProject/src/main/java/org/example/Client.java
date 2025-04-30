@@ -11,21 +11,21 @@ import java.util.Objects;
 public class Client extends User{//make abstract class user as parent
     private String contact;
     private int numOfMembers;
-    private boolean isInHotel;//Whether the client is still in the hotel or if he checked out.
-    private List<Booking> bookings;//All client bookings
+    private String isInHotel;//Whether the client is still in the hotel or if he checked out.
+//    private List<Booking> bookings;//All client bookings
 
-    public Client(int id, String name, String contact, int numOfMembers) {
+    public Client(int id, String name, String contact, int numOfMembers, String isInHotel) {
         super(id, name);
         this.contact = contact;
         this.numOfMembers = numOfMembers;
-        isInHotel = true;
-        bookings = new ArrayList<Booking>();
+        this.isInHotel = isInHotel;
+//        bookings = new ArrayList<Booking>();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
-        return numOfMembers == client.numOfMembers && isInHotel == client.isInHotel && Objects.equals(contact, client.contact) && Objects.equals(bookings, client.bookings);
+        return numOfMembers == client.numOfMembers && isInHotel.equalsIgnoreCase(client.isInHotel) && Objects.equals(contact, client.contact) /*&& Objects.equals(bookings, client.bookings)*/;
     }
 }
