@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -86,18 +87,58 @@ public class GUIcontroller {
     private TableColumn column5;
     @FXML
     private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
+    @FXML
+    private AnchorPane mainViewAnchorPane;
 
     private String selectedLanguage = "english"; //Default
     MessageService messageService;
     private DBManager dbManager;
+    private boolean isInMainView = true;
 
     public GUIcontroller() {
         dbManager = new DBManager();
         messageService = new MessageService();
     }
 
+//    @FXML
+//    public void initialize() {
+//        if (isInMainView) {
+//            System.out.println("In Main View");
+//            initializeStaffView();
+//        } else
+//            System.out.println("Not In Main View.");
+//    }
+//
+//    public void initializeClientView() {
+//        System.out.println("Client View.");
+//    }
+//
+//    public void initializeStaffView() { //MainView.fxml
+//        languageComboBox.getItems().addAll("English", "French");
+//        languageComboBox.setValue("English"); //default
+//        isInHotelComboBox.getItems().addAll("True", "False");
+//        isInHotelComboBox.setValue("True"); //default
+//        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite");//Capacity: 1, 2, 2, 2, 4
+//        roomTypeComboBox.setValue("Single"); //default
+//        availabilityComboBox.getItems().addAll("True", "False");
+//        availabilityComboBox.setValue("True"); //default
+//        //I did not know how to do the following block of code to restrict DatePicker values, so I referenced online sources:
+//        bookingStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+//            @Override
+//            public void updateItem(LocalDate item, boolean empty) {
+//                super.updateItem(item, empty);
+//                setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
+//            }
+//        });
+//    }
+
     @FXML
     public void initialize() {
+//        if (isInMainView) {
+//            System.out.println("In Main View");
+//        } else {
+//            System.out.println("Not In Main View.");
+//        }
         languageComboBox.getItems().addAll("English", "French");
         languageComboBox.setValue("English"); //default
         isInHotelComboBox.getItems().addAll("True", "False");
@@ -116,31 +157,78 @@ public class GUIcontroller {
         });
     }
 
+//    public void initializeClientView() {
+//        System.out.println("Client.");
+//    }
+//
+//    public void initializeStaffView() {
+//        System.out.println("Staff.");
+//        languageComboBox.getItems().addAll("English", "French");
+//        languageComboBox.setValue("English"); //default
+//        isInHotelComboBox.getItems().addAll("True", "False");
+//        isInHotelComboBox.setValue("True"); //default
+//        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite");//Capacity: 1, 2, 2, 2, 4
+//        roomTypeComboBox.setValue("Single"); //default
+//        availabilityComboBox.getItems().addAll("True", "False");
+//        availabilityComboBox.setValue("True"); //default
+//        //I did not know how to do the following block of code to restrict DatePicker values, so I referenced online sources:
+//        bookingStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+//            @Override
+//            public void updateItem(LocalDate item, boolean empty) {
+//                super.updateItem(item, empty);
+//                setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
+//            }
+//        });
+//    }
+
     @FXML
     public void handleStaffLoginButton() throws IOException {
         //1) close previous window:
         Stage prevStage = (Stage) staffLoginBtn.getScene().getWindow();
         prevStage.close();
         //2) open new window for the client:
+        isInMainView = true;
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MainView.fxml")));
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "staffWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+//        initializeStaffView();
     }
 
     @FXML
     public void handleClientLoginButton() throws IOException {
+        isInMainView = false;
+
         //1) close previous window:
         Stage prevStage = (Stage) clientLoginBtn.getScene().getWindow();
         prevStage.close();
         //2) open new window for the client:
+        isInMainView = false;
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientWindow.fxml")));
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        isInMainView = false;
+//        initializeClientView();
     }
+//            languageComboBox.getItems().addAll("English", "French");
+//            languageComboBox.setValue("English"); //default
+//            isInHotelComboBox.getItems().addAll("True", "False");
+//            isInHotelComboBox.setValue("True"); //default
+//            roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite");//Capacity: 1, 2, 2, 2, 4
+//            roomTypeComboBox.setValue("Single"); //default
+//            availabilityComboBox.getItems().addAll("True", "False");
+//            availabilityComboBox.setValue("True"); //default
+//            //I did not know how to do the following block of code to restrict DatePicker values, so I referenced online sources:
+//            bookingStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+//                @Override
+//                public void updateItem(LocalDate item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
+//                }
+//            });
 
     /**
      * updates the labels to conform to the user's chosen language
