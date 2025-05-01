@@ -16,80 +16,66 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class GUIcontroller {
-    @FXML
-    private Button bookRoomBtn;
-    @FXML
-    private Button viewAllBookingsBtn;
-    @FXML
-    private Button viewAllClientsBtn;
-    @FXML
-    private Button viewAllRoomsBtn;
-    @FXML
-    private Button viewAvailableRoomsBtn;
-    @FXML
-    private Button addClientBtn;
-    @FXML
-    private Button viewCurrentClientsBtn;
-    @FXML
-    private Button searchForClientBtn;
-    @FXML
-    private Button checkoutClientBtn;
-    @FXML
-    private Button deleteClientBtn;
-    @FXML
-    private Button addRoomBtn;
-    @FXML
-    private Button searchForRoomBtn;
-    @FXML
-    private Button deleteRoomBtn;
-    @FXML
-    private TextField clientIdField;
-    @FXML
-    private TextField clientNameField;
-    @FXML
-    private TextField clientContactField;
-    @FXML
-    private TextField numOfMembersField;
-    @FXML
-    private TextField roomNoField;;
-    @FXML
-    private TextField roomPriceField;
-    @FXML
-    private TextField bookingNumField;
-    @FXML
-    private Label bookingNumLabel;
-    @FXML
-    private Label welcomeLabel;
-    @FXML
-    private ComboBox<String> languageComboBox;
-    @FXML
-    private ComboBox<String> isInHotelComboBox;
-    @FXML
-    private ComboBox<String> roomTypeComboBox;
-    @FXML
-    private ComboBox<String> availabilityComboBox;
-    @FXML
-    private Button clientLoginBtn;
-    @FXML
-    private Button staffLoginBtn;
-    @FXML
-    private Label displayTableLabel;
-    @FXML
-    private Label isInHotelLabel;
-    @FXML
-    private DatePicker bookingStartDatePicker;
-    @FXML
-    private TableColumn column1;
-    @FXML
-    private TableColumn column2;
-    @FXML
-    private TableColumn column3;
-    @FXML
-    private TableColumn column4;
-    @FXML
-    private TableColumn column5;
-    @FXML
-    private TableView tableView;//I left the data type ambiguous, so that we can change it dynamically.
+    // Buttons
+    @FXML private Button addClientBtn;
+    @FXML private Button addRoomBtn;
+    @FXML private Button bookRoomBtn;
+    @FXML private Button checkoutClientBtn;
+    @FXML private Button clientLoginBtn;
+    @FXML private Button deleteClientBtn;
+    @FXML private Button deleteRoomBtn;
+    @FXML private Button searchForClientBtn;
+    @FXML private Button searchForRoomBtn;
+    @FXML private Button staffLoginBtn;
+    @FXML private Button updateRoomBtn;
+    @FXML private Button viewAllBookingsBtn;
+    @FXML private Button viewAllClientsBtn;
+    @FXML private Button viewAllRoomsBtn;
+    @FXML private Button viewAvailableRoomsBtn;
+    @FXML private Button viewCurrentClientsBtn;
+
+    // TextFields
+    @FXML private TextField bookingNumField;
+    @FXML private TextField clientContactField;
+    @FXML private TextField clientIdField;
+    @FXML private TextField clientNameField;
+    @FXML private TextField numOfMembersField;
+    @FXML private TextField roomNoField;
+    @FXML private TextField roomPriceField;
+
+    // Labels
+    @FXML private Label bookingNumLabel;
+    @FXML private Label bookingStartDateLabel;
+    @FXML private Label clientContactLabel;
+    @FXML private Label clientIdLabel;
+    @FXML private Label clientNameLabel;
+    @FXML private Label displayTableLabel;
+    @FXML private Label isInHotelLabel;
+    @FXML private Label numOfMembersLabel;
+    @FXML private Label roomAvailabilityLabel;
+    @FXML private Label roomNumLabel;
+    @FXML private Label roomPriceLabel;
+    @FXML private Label roomTypeLabel;
+    @FXML private Label welcomeLabel;
+
+    // ComboBoxes
+    @FXML private ComboBox<String> availabilityComboBox;
+    @FXML private ComboBox<String> isInHotelComboBox;
+    @FXML private ComboBox<String> languageComboBox;
+    @FXML private ComboBox<String> roomTypeComboBox;
+
+    // DatePicker
+    @FXML private DatePicker bookingStartDatePicker;
+
+    // TableColumns
+    @FXML private TableColumn column1;
+    @FXML private TableColumn column2;
+    @FXML private TableColumn column3;
+    @FXML private TableColumn column4;
+    @FXML private TableColumn column5;
+
+    // TableView
+    @FXML private TableView tableView; // I left the data type ambiguous, so that we can change it dynamically.
 
     private String selectedLanguage = "english"; //Default
     MessageService messageService;
@@ -106,7 +92,7 @@ public class GUIcontroller {
         languageComboBox.setValue("English"); //default
         isInHotelComboBox.getItems().addAll("True", "False");
         isInHotelComboBox.setValue("True"); //default
-        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite");//Capacity: 1, 2, 2, 2, 4
+        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite", "Big Family");//Capacity: 1, 2, 2, 2, 4
         roomTypeComboBox.setValue("Single"); //default
         availabilityComboBox.getItems().addAll("True", "False");
         availabilityComboBox.setValue("True"); //default
@@ -150,6 +136,7 @@ public class GUIcontroller {
     public void handleSearchByRoomType() {
 
     }
+
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
@@ -168,7 +155,6 @@ public class GUIcontroller {
         welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
         clientLoginBtn.setText(messageService.useLangService(selectedLanguage, "clientLoginBtn"));
     }
-
 
     @FXML
     public void handleSignIn() throws IOException {
