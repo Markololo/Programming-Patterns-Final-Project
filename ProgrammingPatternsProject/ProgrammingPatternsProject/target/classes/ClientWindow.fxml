@@ -10,44 +10,45 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
     <children>
         <ComboBox fx:id="languageComboBox" layoutX="436.0" layoutY="14.0" onAction="#clientLanguageUpdate" prefWidth="150.0" />
         <Label layoutX="329.0" layoutY="18.0" text="Langue/Language:" />
         <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="18.0" text="Welcome To The Hotel Manager App!" />
         <Button fx:id="staffLoginBtn" layoutX="14.0" layoutY="51.0" mnemonicParsing="false" onAction="#handleStaffLoginButton" text="Staff Login" />
-      <VBox layoutX="212.0" layoutY="111.0" prefHeight="153.0" prefWidth="189.0">
-         <children>
-            <Label text="Username">
-               <VBox.margin>
-                  <Insets top="6.0" />
-               </VBox.margin>
-            </Label>
-            <TextField>
-               <VBox.margin>
-                  <Insets top="6.0" />
-               </VBox.margin>
-            </TextField>
-            <Label text="Password">
-               <VBox.margin>
-                  <Insets top="6.0" />
-               </VBox.margin>
-            </Label>
-            <PasswordField>
-               <VBox.margin>
-                  <Insets top="6.0" />
-               </VBox.margin>
-            </PasswordField>
-            <Button mnemonicParsing="false" text="Sign in">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="70.0" right="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-      <ComboBox fx:id="isInHotelComboBox" disable="true" layoutX="412.0" layoutY="338.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
-      <DatePicker fx:id="bookingStartDatePicker" disable="true" layoutX="388.0" layoutY="313.0" opacity="0.0" />
-      <ComboBox fx:id="roomTypeComboBox" disable="true" layoutX="401.0" layoutY="301.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
-      <ComboBox fx:id="availabilityComboBox" disable="true" layoutX="401.0" layoutY="350.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
+        <VBox layoutX="212.0" layoutY="111.0" prefHeight="153.0" prefWidth="189.0">
+            <children>
+                <Label text="Username">
+                    <VBox.margin>
+                        <Insets top="6.0" />
+                    </VBox.margin>
+                </Label>
+                <TextField>
+                    <VBox.margin>
+                        <Insets top="6.0" />
+                    </VBox.margin>
+                </TextField>
+                <Label text="Password">
+                    <VBox.margin>
+                        <Insets top="6.0" />
+                    </VBox.margin>
+                </Label>
+                <PasswordField>
+                    <VBox.margin>
+                        <Insets top="6.0" />
+                    </VBox.margin>
+                </PasswordField>
+                <Button fx:id="clientSignInBtn" mnemonicParsing="false" onAction="#handleSignIn" text="Sign in">
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="70.0" right="10.0" top="10.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+      <ComboBox fx:id="languageComboBox1" layoutX="448.0" layoutY="333.0" onAction="#staffLanguageUpdate" opacity="0.0" prefWidth="150.0" />
+      <ComboBox fx:id="isInHotelComboBox" layoutX="424.0" layoutY="349.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
+      <DatePicker fx:id="bookingStartDatePicker" layoutX="424.0" layoutY="309.0" opacity="0.0" />
+      <ComboBox fx:id="roomTypeComboBox" layoutX="418.0" layoutY="297.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
+      <ComboBox fx:id="availabilityComboBox" layoutX="424.0" layoutY="361.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
     </children>
 </AnchorPane>

@@ -142,6 +142,10 @@ public class GUIcontroller {
         primaryStage.show();
     }
 
+    @FXML
+    public void handleSearchByRoomType() {
+
+    }
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French

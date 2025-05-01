@@ -9,7 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="785.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
+<AnchorPane fx:id="mainViewAnchorPane" prefHeight="785.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
    <children>
       <ComboBox fx:id="languageComboBox" layoutX="593.0" layoutY="14.0" onAction="#staffLanguageUpdate" prefWidth="150.0" />
       <Label layoutX="486.0" layoutY="18.0" text="Langue/Language:" />
@@ -51,7 +51,7 @@
       <Label fx:id="roomAvailabilityLabel" layoutX="16.0" layoutY="719.0" text="Availability:" />
       <Button fx:id="deleteRoomBtn" layoutX="302.0" layoutY="641.0" mnemonicParsing="false" onAction="#handleDeleteRoomBtn" prefWidth="149.0" text="Delete Room" />
       <ComboBox fx:id="availabilityComboBox" layoutX="115.0" layoutY="715.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label fx:id="isInHotelLabell" layoutX="18.0" layoutY="495.0" text="Is In Hotel:" />
+      <Label fx:id="isInHotelLabel" layoutX="18.0" layoutY="495.0" text="Is In Hotel:" />
       <ComboBox fx:id="isInHotelComboBox" layoutX="115.0" layoutY="494.0" prefHeight="25.0" prefWidth="174.0" />
       <ComboBox fx:id="roomTypeComboBox" layoutX="115.0" layoutY="642.0" prefHeight="25.0" prefWidth="174.0" />
       <Button fx:id="updateRoomBtn" layoutX="301.0" layoutY="715.0" mnemonicParsing="false" onAction="#handleUpdateRoomBtn" prefWidth="149.0" text="Update Room" />
