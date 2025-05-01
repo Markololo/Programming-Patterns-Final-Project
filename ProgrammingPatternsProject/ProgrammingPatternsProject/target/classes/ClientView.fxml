@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="mainViewAnchorPane" prefHeight="785.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
+    <children>
+        <ComboBox fx:id="languageComboBox" layoutX="593.0" layoutY="14.0" onAction="#staffLanguageUpdate" prefWidth="150.0" />
+        <Label layoutX="486.0" layoutY="18.0" text="Langue/Language:" />
+        <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="18.0" text="Welcome To The Hotel Manager App!" />
+        <TableView fx:id="tableView" layoutX="15.0" layoutY="100.0" prefHeight="243.0" prefWidth="742.0">
+            <columns>
+                <TableColumn fx:id="column1" prefWidth="148.0" />
+                <TableColumn fx:id="column2" prefWidth="148.0" />
+                <TableColumn fx:id="column3" prefWidth="148.0" />
+                <TableColumn fx:id="column4" prefWidth="148.0" />
+                <TableColumn fx:id="column5" prefWidth="148.0" />
+            </columns></TableView>
+        <Label fx:id="displayTableLabel" layoutX="15.0" layoutY="76.0" />
+        <Label fx:id="roomTypeLabel" layoutX="17.0" layoutY="646.0" text="Room Type:" />
+        <ComboBox fx:id="availabilityComboBox" layoutX="115.0" layoutY="715.0" prefHeight="25.0" prefWidth="174.0" />
+        <Label fx:id="isInHotelLabel" layoutX="18.0" layoutY="495.0" text="Is In Hotel:" />
+        <ComboBox fx:id="isInHotelComboBox" layoutX="115.0" layoutY="494.0" prefHeight="25.0" prefWidth="174.0" />
+        <ComboBox fx:id="roomTypeComboBox" layoutX="115.0" layoutY="642.0" prefHeight="25.0" prefWidth="174.0" />
+        <Label fx:id="bookingStartDateLabel" layoutX="14.0" layoutY="550.0" text="Booking Start:" />
+        <DatePicker fx:id="bookingStartDatePicker" layoutX="115.0" layoutY="549.0" />
+    </children>
+</AnchorPane>
