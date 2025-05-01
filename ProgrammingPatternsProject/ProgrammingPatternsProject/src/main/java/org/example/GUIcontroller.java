@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -81,6 +82,22 @@ public class GUIcontroller {
     MessageService messageService;
     private DBManager dbManager;
 
+    //Organize GUI Components for translation:
+    List<Button> AllButtons = Arrays.asList(
+            addClientBtn, addRoomBtn, bookRoomBtn, checkoutClientBtn,
+            clientLoginBtn, deleteClientBtn, deleteRoomBtn, searchForClientBtn,
+            searchForRoomBtn, staffLoginBtn, updateRoomBtn, viewAllBookingsBtn,
+            viewAllClientsBtn, viewAllRoomsBtn, viewAvailableRoomsBtn, viewCurrentClientsBtn
+    );
+
+    List<Label> allLabels = Arrays.asList(
+            bookingNumLabel, bookingStartDateLabel, clientContactLabel, clientIdLabel,
+            clientNameLabel, displayTableLabel, isInHotelLabel, numOfMembersLabel,
+            roomAvailabilityLabel, roomNumLabel, roomPriceLabel, roomTypeLabel, welcomeLabel
+    );
+
+
+
     public GUIcontroller() {
         dbManager = new DBManager();
         messageService = new MessageService();
@@ -137,6 +154,15 @@ public class GUIcontroller {
 
     }
 
+    @FXML
+    public void handleSignIn() throws IOException {
+
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
+        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
@@ -154,16 +180,6 @@ public class GUIcontroller {
         //**Maybe we can use a foreach loop instead**
         welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
         clientLoginBtn.setText(messageService.useLangService(selectedLanguage, "clientLoginBtn"));
-    }
-
-    @FXML
-    public void handleSignIn() throws IOException {
-
-        Stage primaryStage = new Stage();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
-        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
     }
     /**
      * updates the labels to conform to the user's chosen language
@@ -239,7 +255,6 @@ public class GUIcontroller {
         } catch (Exception e) {
             showAlert("Error", "Error:\n" + e.getMessage());
         }
-        //completeBooking(int)
     }
 
     @FXML
@@ -291,6 +306,7 @@ public class GUIcontroller {
             showAlert("Error", "Error:\n" + e.getMessage());
         }
     }
+
     @FXML
     private void handleViewAllClientsBtn(){
         tableView.getItems().clear();
@@ -502,5 +518,9 @@ public class GUIcontroller {
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.show();
+    }
+
+    private String translate(String msgCategory) {
+        return messageService.useLangService(selectedLanguage, msgCategory);
     }
 }
