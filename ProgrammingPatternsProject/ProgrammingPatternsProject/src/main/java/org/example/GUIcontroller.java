@@ -276,7 +276,34 @@ public class GUIcontroller {
 
     @FXML
     private void handleUpdateRoomBtn() {
+        try {
+            int roomNum = Integer.parseInt(roomNoField.getText());
+            String isAvailable = availabilityComboBox.getValue();
+            double price;
+            Room room = dbManager.findRoom(roomNum);
 
+            if (room == null)
+                showAlert("Error", "Error:\nThis room does not exist! Check the room number.");
+
+            if (roomPriceField.getText().isEmpty()) {//price not updated
+                price = room.getPrice();//keep price
+            } else {
+                price = Double.parseDouble(roomPriceField.getText());
+            }
+
+            String actionAndResult = dbManager.updateRoom(roomNum, price, isAvailable);
+
+            if (!actionAndResult.isEmpty())
+                throw new IllegalArgumentException(actionAndResult);
+            handleSearchForRoomBtn();
+
+            //Reset GUI components:
+            roomNoField.clear();
+            roomPriceField.clear();
+            availabilityComboBox.setValue("True");
+        } catch (IllegalArgumentException e) {
+            showAlert("Error", "Error:\n" + e.getMessage());
+        }
     }
     @FXML
     private void handleViewAllClientsBtn(){
@@ -410,30 +437,32 @@ public class GUIcontroller {
 
     @FXML
     private void handleSearchForClientBtn(){
-        tableView.getItems().clear();
-
-        int id = Integer.parseInt(clientIdField.getText());
-
-        column1.setText("ID");
-        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        column2.setText("Name");
-        column2.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        column3.setText("Contact");
-        column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
-
-        column4.setText("Party Size");
-        column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
-
-        column5.setText("Is In Hotel");
-        column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
-
         try {
+            tableView.getItems().clear();
+
+            int id = Integer.parseInt(clientIdField.getText());
+
+            column1.setText("ID");
+            column1.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+            column2.setText("Name");
+            column2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+            column3.setText("Contact");
+            column3.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+            column4.setText("Party Size");
+            column4.setCellValueFactory(new PropertyValueFactory<>("numOfMembers"));
+
+            column5.setText("Is In Hotel");
+            column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
+
             Client client = dbManager.findClient(id);
+
             if (client == null) {
                 throw new IllegalArgumentException();
             }
+
             tableView.getItems().add(client);
             clientIdField.clear();
         } catch (IllegalArgumentException e) {

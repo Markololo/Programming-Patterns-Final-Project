@@ -69,6 +69,40 @@ public class DBManager {
         }
     }
 
+    public String updateRoom(int roomNum, double price, String isAvailable) {
+        List<Room> allRooms = selectJsonRooms();
+        List<Booking> allBookings = selectJsonBookings();
+        Room roomToUpdate = null;
+
+        //Check if room exists
+        for (Room room : allRooms) {
+            if (room.getRoomNum() == roomNum)
+                roomToUpdate = room;
+        }
+        if (roomToUpdate == null)
+            return "This room does not exist! Check the room number.";
+
+        //Check if the room is booked: it cannot be updated if a client is in it.
+        for (Booking booking : allBookings) {
+            if (booking.getRoomNum() == roomNum) {
+                return "the room is already booked!\nWait until the client check out to change room info.";
+            }
+        }
+
+        try {
+            Connection con = db.connect();
+            String updateRoom = "UPDATE rooms SET price=?, isAvailable=? WHERE roomNum = ?";
+            PreparedStatement updateRoomStmt = con.prepareStatement(updateRoom);
+            updateRoomStmt.setDouble(1, price);
+            updateRoomStmt.setString(2, isAvailable);
+            updateRoomStmt.setInt(3, roomNum);
+            updateRoomStmt.executeUpdate();
+            return "";//empty string means success
+        } catch (SQLException e) {
+            return "An SQL error occured!\nTry again later or contact the hotel for help.";
+        }
+    }
+
     /**
      * Deletes a row from a table using the primary key. Make sure
      * the primary key is the first column of every table, and it's an integer.
@@ -285,20 +319,6 @@ public class DBManager {
         try {
             Connection con = db.connect();
 
-            // Check for booking in bookings
-//            String selectBookingSql = "SELECT clientId, roomNum FROM bookings WHERE bookingNum = ?";
-//            PreparedStatement bookingStmt = con.prepareStatement(selectBookingSql);
-//            bookingStmt.setInt(1, bookingNum);
-//            ResultSet rs = bookingStmt.executeQuery();
-//
-//            if (!rs.next()) {
-//                return "No booking found with this booking number.";
-//            }
-//
-//            //Get the remaining booking fields:
-//            int clientId = rs.getInt("clientId");
-//            int roomNum = rs.getInt("roomNum");
-//
             List<Booking> bookings = selectJsonBookings();
             Booking bookingToEnd = null;
 
