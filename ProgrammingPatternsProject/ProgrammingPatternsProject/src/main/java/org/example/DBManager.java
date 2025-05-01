@@ -313,20 +313,20 @@ public class DBManager {
                 return "Booking does not exist";;
 
 
-            // Step 2: Update endDate in the bookings table
+            //2. Update endDate in the bookings table
             String updateBooking = "UPDATE bookings SET endDate = ? WHERE bookingNum = ?";
             PreparedStatement updateBookingStmt = con.prepareStatement(updateBooking);
             updateBookingStmt.setString(1, LocalDate.now().toString());
             updateBookingStmt.setInt(2, bookingNum);
             updateBookingStmt.executeUpdate();
 
-            // Step 3: Mark room as available
+            //3. Mark room as available
             String updateRoom = "UPDATE rooms SET isAvailable = 'True' WHERE roomNum = ?";
             PreparedStatement updateRoomStmt = con.prepareStatement(updateRoom);
             updateRoomStmt.setInt(1, bookingToEnd.getRoomNum());
             updateRoomStmt.executeUpdate();
 
-            // Step 4: Check for other active bookings
+            //4. Check for other active bookings
             String checkOtherBookings = "SELECT COUNT(*) FROM bookings WHERE clientId = ? AND endDate IS NULL";
             PreparedStatement checkStmt = con.prepareStatement(checkOtherBookings);
             checkStmt.setInt(1, bookingToEnd.getClientId());
@@ -341,11 +341,10 @@ public class DBManager {
             }
 
             System.out.println("Checkout successful for booking number: " + bookingNum);
-            return "true";
+            return "";//empty string means success
 
         } catch (SQLException e) {
-            System.out.println("Error during checkout: " + e.getMessage());
-            return "false";
+            return "Error during checkout: \n" + e.getMessage();
         }
     }
 
@@ -478,6 +477,5 @@ public class DBManager {
         }
         return clients;
     }
-
 
 }

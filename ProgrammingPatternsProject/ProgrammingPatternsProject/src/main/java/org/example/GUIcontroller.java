@@ -55,6 +55,10 @@ public class GUIcontroller {
     @FXML
     private TextField roomPriceField;
     @FXML
+    private TextField bookingNumField;
+    @FXML
+    private Label bookingNumLabel;
+    @FXML
     private Label welcomeLabel;
     @FXML
     private ComboBox<String> languageComboBox;
@@ -174,7 +178,6 @@ public class GUIcontroller {
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-//        initializeClientView();
     }
     /**
      * updates the labels to conform to the user's chosen language
@@ -188,7 +191,7 @@ public class GUIcontroller {
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
         stage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
 
-        //**Maybe we can use a foreach loop instead**
+        //Update
         welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
         staffLoginBtn.setText(messageService.useLangService(selectedLanguage, "staffLoginBtn"));
     }
@@ -239,7 +242,18 @@ public class GUIcontroller {
 
     @FXML
     private void handleCheckoutClientBtn(){
+        try {
+            int bookingNum = Integer.parseInt(bookingNumField.getText());
 
+            String actionAndResult = dbManager.completeBooking(bookingNum);
+
+            if (!actionAndResult.isEmpty())
+                throw new IllegalArgumentException(actionAndResult);
+            handleViewAllBookingsBtn();
+        } catch (Exception e) {
+            showAlert("Error", "Error:\n" + e.getMessage());
+        }
+        //completeBooking(int)
     }
 
     @FXML
