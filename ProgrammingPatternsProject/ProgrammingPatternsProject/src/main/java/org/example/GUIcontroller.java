@@ -67,6 +67,9 @@ public class GUIcontroller {
     private ComboBox<String> availabilityComboBox;
     @FXML
     private Button clientLoginBtn;
+
+    @FXML
+    private Button clientSignInBtn;
     @FXML
     private Button staffLoginBtn;
     @FXML
@@ -229,7 +232,17 @@ public class GUIcontroller {
 //                    setDisable(item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusDays(60)));
 //                }
 //            });
+@FXML
+public void handleSignIn() throws IOException {
 
+    Stage primaryStage = new Stage();
+    Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
+    primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+    primaryStage.setScene(new Scene(root));
+    primaryStage.show();
+    isInMainView = false;
+//        initializeClientView();
+}
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
