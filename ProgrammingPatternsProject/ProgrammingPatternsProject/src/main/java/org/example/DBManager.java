@@ -281,26 +281,36 @@ public class DBManager {
         }
     }
 
-    public String checkoutBooking(int bookingNum) {
+    public String completeBooking(int bookingNum) {//to check out
         try {
             Connection con = db.connect();
-//****************
-            // Check for booking in bookings
-            String selectBookingSql = "SELECT clientId, roomNum FROM bookings WHERE bookingNum = ?";
-            PreparedStatement bookingStmt = con.prepareStatement(selectBookingSql);
-            bookingStmt.setInt(1, bookingNum);
-            ResultSet rs = bookingStmt.executeQuery();
 
-            if (!rs.next()) {
-                return "No booking found with this booking number.";
+            // Check for booking in bookings
+//            String selectBookingSql = "SELECT clientId, roomNum FROM bookings WHERE bookingNum = ?";
+//            PreparedStatement bookingStmt = con.prepareStatement(selectBookingSql);
+//            bookingStmt.setInt(1, bookingNum);
+//            ResultSet rs = bookingStmt.executeQuery();
+//
+//            if (!rs.next()) {
+//                return "No booking found with this booking number.";
+//            }
+//
+//            //Get the remaining booking fields:
+//            int clientId = rs.getInt("clientId");
+//            int roomNum = rs.getInt("roomNum");
+//
+            List<Booking> bookings = selectJsonBookings();
+            Booking bookingToEnd = null;
+
+            //Find booking:
+            for (Booking booking : bookings) {
+                if (booking.getBookingNum() == bookingNum) {
+                    bookingToEnd = booking;
+                }
             }
 
-            //Get the remaining booking fields:
-            int clientId = rs.getInt("clientId");
-            int roomNum = rs.getInt("roomNum");
-            List<Booking> bookings = selectJsonBookings();
-            List<Client> clients = selectCurrentClients();
-            List<Room> rooms = selectJsonRooms();
+            if (bookingToEnd == null)
+                return "Booking does not exist";;
 
 
             // Step 2: Update endDate in the bookings table
@@ -313,20 +323,20 @@ public class DBManager {
             // Step 3: Mark room as available
             String updateRoom = "UPDATE rooms SET isAvailable = 'True' WHERE roomNum = ?";
             PreparedStatement updateRoomStmt = con.prepareStatement(updateRoom);
-            updateRoomStmt.setInt(1, roomNum);
+            updateRoomStmt.setInt(1, bookingToEnd.getRoomNum());
             updateRoomStmt.executeUpdate();
 
             // Step 4: Check for other active bookings
             String checkOtherBookings = "SELECT COUNT(*) FROM bookings WHERE clientId = ? AND endDate IS NULL";
             PreparedStatement checkStmt = con.prepareStatement(checkOtherBookings);
-            checkStmt.setInt(1, clientId);
+            checkStmt.setInt(1, bookingToEnd.getClientId());
             ResultSet countRs = checkStmt.executeQuery();
 
             if (countRs.next() && countRs.getInt(1) == 0) {
                 // No other active bookings – update client's status
                 String updateClient = "UPDATE clients SET isInHotel = 'False' WHERE id = ?";
                 PreparedStatement updateClientStmt = con.prepareStatement(updateClient);
-                updateClientStmt.setInt(1, clientId);
+                updateClientStmt.setInt(1, bookingToEnd.getClientId());
                 updateClientStmt.executeUpdate();
             }
 
