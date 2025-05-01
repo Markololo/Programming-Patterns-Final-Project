@@ -141,6 +141,8 @@ public class DBManager {
         try {
             Client client = findClient(clientId);
             Room room = findRoom(roomNum);
+
+            //1.Check inputs
             if (client == null)//client does not exist
             {
                 return "A client with this ID does not exist. Please register first!"; //The problem is with the client id
@@ -154,14 +156,30 @@ public class DBManager {
                 return "The party size cannot is too big for the room.\nChoose a bigger room or contact the hotel if your party exceeds 10 members!";
             }
 
+            //2.Insert booking
             String sql = "INSERT INTO bookings(clientId, roomNum, startDate) VALUES(?,?,?)";
-            String updateClientSql = "UPDATE clients SET isInHotel='True' WHERE id=?";
-
             Connection con = db.connect();
-            Statement statement =  con.createStatement();
-            statement.execute(sql);
-            statement.execute(updateClientSql);//check
-//            int rowsUpdated = statement.executeUpdate(); //Returns the number of rows affected
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, clientId);
+            preparedStatement.setInt(2, roomNum);
+            preparedStatement.setString(3, startDate.toString());
+            preparedStatement.executeUpdate();
+            System.out.println("Booking Row Added.");
+
+            //3.Update client's isInHotel
+            String updateClientSql = "UPDATE clients SET isInHotel='True' WHERE id=?";
+            PreparedStatement preparedStatement2 = con.prepareStatement(updateClientSql);
+            preparedStatement2.setInt(1, clientId);
+            int rowsUpdated = preparedStatement2.executeUpdate(); //Returns the number of rows affected
+            if (rowsUpdated <= 0) {
+                return "An Error while trying to update the clients table.";
+            }
+
+            //4.Update room availability
+            String updateRoomSql = "UPDATE rooms SET isAvailable='False' WHERE roomNum=?";
+            PreparedStatement updateRoom = con.prepareStatement(updateRoomSql);
+            updateRoom.setInt(1, roomNum);
+            updateRoom.executeUpdate();
 
             return "";//empty string means no problems occurred
         } catch (SQLException e) {
@@ -260,6 +278,64 @@ public class DBManager {
             return "";//Empty String means a success.
         } catch (Exception e) {
             return "A database error occurred.!\nPlease try again later or contact the hotel for help.";
+        }
+    }
+
+    public String checkoutBooking(int bookingNum) {
+        try {
+            Connection con = db.connect();
+//****************
+            // Check for booking in bookings
+            String selectBookingSql = "SELECT clientId, roomNum FROM bookings WHERE bookingNum = ?";
+            PreparedStatement bookingStmt = con.prepareStatement(selectBookingSql);
+            bookingStmt.setInt(1, bookingNum);
+            ResultSet rs = bookingStmt.executeQuery();
+
+            if (!rs.next()) {
+                return "No booking found with this booking number.";
+            }
+
+            //Get the remaining booking fields:
+            int clientId = rs.getInt("clientId");
+            int roomNum = rs.getInt("roomNum");
+            List<Booking> bookings = selectJsonBookings();
+            List<Client> clients = selectCurrentClients();
+            List<Room> rooms = selectJsonRooms();
+
+
+            // Step 2: Update endDate in the bookings table
+            String updateBooking = "UPDATE bookings SET endDate = ? WHERE bookingNum = ?";
+            PreparedStatement updateBookingStmt = con.prepareStatement(updateBooking);
+            updateBookingStmt.setString(1, LocalDate.now().toString());
+            updateBookingStmt.setInt(2, bookingNum);
+            updateBookingStmt.executeUpdate();
+
+            // Step 3: Mark room as available
+            String updateRoom = "UPDATE rooms SET isAvailable = 'True' WHERE roomNum = ?";
+            PreparedStatement updateRoomStmt = con.prepareStatement(updateRoom);
+            updateRoomStmt.setInt(1, roomNum);
+            updateRoomStmt.executeUpdate();
+
+            // Step 4: Check for other active bookings
+            String checkOtherBookings = "SELECT COUNT(*) FROM bookings WHERE clientId = ? AND endDate IS NULL";
+            PreparedStatement checkStmt = con.prepareStatement(checkOtherBookings);
+            checkStmt.setInt(1, clientId);
+            ResultSet countRs = checkStmt.executeQuery();
+
+            if (countRs.next() && countRs.getInt(1) == 0) {
+                // No other active bookings – update client's status
+                String updateClient = "UPDATE clients SET isInHotel = 'False' WHERE id = ?";
+                PreparedStatement updateClientStmt = con.prepareStatement(updateClient);
+                updateClientStmt.setInt(1, clientId);
+                updateClientStmt.executeUpdate();
+            }
+
+            System.out.println("Checkout successful for booking number: " + bookingNum);
+            return "true";
+
+        } catch (SQLException e) {
+            System.out.println("Error during checkout: " + e.getMessage());
+            return "false";
         }
     }
 
