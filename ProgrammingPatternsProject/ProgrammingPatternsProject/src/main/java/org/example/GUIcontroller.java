@@ -161,6 +161,17 @@ public class GUIcontroller {
         clientLoginBtn.setText(messageService.useLangService(selectedLanguage, "clientLoginBtn"));
     }
 
+
+    @FXML
+    public void handleSignIn() throws IOException {
+
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
+        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+//        initializeClientView();
+    }
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French

@@ -38,7 +38,7 @@
                   <Insets top="6.0" />
                </VBox.margin>
             </PasswordField>
-            <Button mnemonicParsing="false" text="Sign in">
+            <Button mnemonicParsing="false" onAction="#handleSignIn" text="Sign in">
                <VBox.margin>
                   <Insets bottom="10.0" left="70.0" right="10.0" top="10.0" />
                </VBox.margin>
