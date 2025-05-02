@@ -78,6 +78,10 @@ public class DBManager {
         }
         return null;
     }
+
+
+
+
     public String updateRoom(int roomNum, double price, String isAvailable) {
         List<Room> allRooms = selectJsonRooms();
         List<Booking> allBookings = selectJsonBookings();
