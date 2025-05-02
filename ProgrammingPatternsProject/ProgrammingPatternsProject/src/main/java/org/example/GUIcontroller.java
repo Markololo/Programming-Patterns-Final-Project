@@ -197,6 +197,104 @@ public class GUIcontroller {
     }
 
     @FXML
+    private void handleCheckoutClientBtn(){
+        try {
+            int bookingNum = Integer.parseInt(bookingNumField.getText());
+
+            String actionAndResult = dbManager.completeBooking(bookingNum);
+
+            if (!actionAndResult.isEmpty())
+                throw new IllegalArgumentException(actionAndResult);
+            handleViewAllBookingsBtn();
+        } catch (Exception e) {
+            if (e.getMessage().isEmpty())
+                showAlert("Error", translate(""));
+            else
+                showAlert("Error", translate(e.getMessage()));
+        }
+    }
+
+    @FXML
+    private void handleBookRoomBtn() {
+        try {
+            int clientId = Integer.parseInt(clientIdField.getText());
+            int roomNum = Integer.parseInt(roomNoField.getText());
+            LocalDate startDate = bookingStartDatePicker.getValue();
+
+            String conditionAndAction = dbManager.insertBookingRecord(clientId, roomNum, startDate);
+
+            if (!conditionAndAction.isEmpty()) {
+                throw new IllegalArgumentException(conditionAndAction);
+            }
+            handleViewAllBookingsBtn();
+        } catch (Exception e) {
+            if (e.getMessage().isEmpty())
+                showAlert("Error", translate("bookError"));
+            else
+                showAlert("Error", translate(e.getMessage()));
+        }
+    }
+
+    @FXML
+    private void handleUpdateRoomBtn() {
+        try {
+            int roomNum = Integer.parseInt(roomNoField.getText());
+            String isAvailable = availabilityComboBox.getValue();
+            double price;
+            Room room = dbManager.findRoom(roomNum);
+
+            if (room == null)
+                showAlert("Error", translate("searchRoomError"));
+
+            if (roomPriceField.getText().isEmpty()) {//price not updated
+                price = room.getPrice();//keep price
+            } else {
+                price = Double.parseDouble(roomPriceField.getText());
+            }
+
+            String actionAndResult = dbManager.updateRoom(roomNum, price, isAvailable);
+
+            if (!actionAndResult.isEmpty())
+                throw new IllegalArgumentException(actionAndResult);
+            handleSearchForRoomBtn();
+
+            //Reset GUI components:
+            roomNoField.clear();
+            roomPriceField.clear();
+            availabilityComboBox.setValue("comboBoxTrue");
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().isEmpty())
+                showAlert("Error", translate("updateRoomError"));
+            else
+                showAlert("Error", translate(e.getMessage()));
+        }
+    }
+
+    @FXML
+    private void handleAddClientBtn(){
+        try {
+            String name = clientNameField.getText();
+            String contact = clientContactField.getText();
+            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
+            String isInHotel = isInHotelComboBox.getValue();
+
+            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
+            if (!conditionAndAction)//If failed to add client
+            {
+                throw new IllegalArgumentException();
+            } else {
+                clientNameField.clear();
+                clientContactField.clear();
+                numOfMembersField.clear();
+                isInHotelComboBox.setValue(translate("comboBoxTrue"));
+                handleViewAllClientsBtn();
+            }
+        } catch (IllegalArgumentException e) {
+            showAlert( "Error", translate("dataTypeError"));
+        }
+    }
+
+    @FXML
     private void handleViewAvailableRoomsBtn(){
         tableView.getItems().clear();
 
@@ -241,71 +339,6 @@ public class GUIcontroller {
     }
 
     @FXML
-    private void handleCheckoutClientBtn(){
-        try {
-            int bookingNum = Integer.parseInt(bookingNumField.getText());
-
-            String actionAndResult = dbManager.completeBooking(bookingNum);
-
-            if (!actionAndResult.isEmpty())
-                throw new IllegalArgumentException(actionAndResult);
-            handleViewAllBookingsBtn();
-        } catch (Exception e) {
-            showAlert("Error", "Error:\n" + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleBookRoomBtn() {
-        try {
-            int clientId = Integer.parseInt(clientIdField.getText());
-            int roomNum = Integer.parseInt(roomNoField.getText());
-            LocalDate startDate = bookingStartDatePicker.getValue();
-
-            String conditionAndAction = dbManager.insertBookingRecord(clientId, roomNum, startDate);
-
-            if (!conditionAndAction.isEmpty()) {
-                throw new IllegalArgumentException(conditionAndAction);
-            }
-            handleViewAllBookingsBtn();
-        } catch (Exception e) {
-            showAlert("Error", "A problem occurred during booking request:\n" + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleUpdateRoomBtn() {
-        try {
-            int roomNum = Integer.parseInt(roomNoField.getText());
-            String isAvailable = availabilityComboBox.getValue();
-            double price;
-            Room room = dbManager.findRoom(roomNum);
-
-            if (room == null)
-                showAlert("Error", "Error:\nThis room does not exist! Check the room number.");
-
-            if (roomPriceField.getText().isEmpty()) {//price not updated
-                price = room.getPrice();//keep price
-            } else {
-                price = Double.parseDouble(roomPriceField.getText());
-            }
-
-            String actionAndResult = dbManager.updateRoom(roomNum, price, isAvailable);
-
-            if (!actionAndResult.isEmpty())
-                throw new IllegalArgumentException(actionAndResult);
-            handleSearchForRoomBtn();
-
-            //Reset GUI components:
-            roomNoField.clear();
-            roomPriceField.clear();
-            availabilityComboBox.setValue("True");
-        } catch (IllegalArgumentException e) {
-            showAlert("Error", "Error:\n" + e.getMessage());
-        }
-    }
-
-    @FXML
     private void handleViewAllClientsBtn(){
         tableView.getItems().clear();
 
@@ -325,30 +358,6 @@ public class GUIcontroller {
         column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
 
         tableView.getItems().addAll(dbManager.selectJsonClients());
-    }
-
-    @FXML
-    private void handleAddClientBtn(){
-        try {
-            String name = clientNameField.getText();
-            String contact = clientContactField.getText();
-            int numOfMembers = Integer.parseInt(numOfMembersField.getText());
-            String isInHotel = isInHotelComboBox.getValue();
-
-            boolean conditionAndAction = dbManager.insertClientRecord(name, contact, numOfMembers, isInHotel);
-            if (!conditionAndAction)//If failed to add client
-            {
-                throw new IllegalArgumentException();
-            } else {
-                clientNameField.clear();
-                clientContactField.clear();
-                numOfMembersField.clear();
-                isInHotelComboBox.setValue("True");
-                handleViewAllClientsBtn();
-            }
-        } catch (IllegalArgumentException e) {
-            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
-        }
     }
 
     @FXML
@@ -396,22 +405,6 @@ public class GUIcontroller {
     }
 
     @FXML
-    private void handleDeleteClientBtn(){
-        int id = Integer.parseInt(clientIdField.getText());
-
-        dbManager.deleteRow("clients", "id", id);
-        handleViewAllClientsBtn();
-    }
-
-    @FXML
-    private void handleDeleteRoomBtn(){
-        int id = Integer.parseInt(roomNoField.getText());
-
-        dbManager.deleteRow("rooms", "roomNum", id);
-        handleViewAllClientsBtn();
-    }
-
-    @FXML
     private void handleAddRoomBtn(){
         try {
             int roomNum = Integer.parseInt(roomNoField.getText());
@@ -426,12 +419,12 @@ public class GUIcontroller {
             } else {
                 roomNoField.clear();
                 roomPriceField.clear();
-                isInHotelComboBox.setValue("True");//back to default
-                availabilityComboBox.setValue("True");//back to default
+                isInHotelComboBox.setValue(translate("comboBoxTrue"));//back to default
+                availabilityComboBox.setValue(translate("comboBoxTrue"));//back to default
                 handleViewAllRoomsBtn();
             }
         } catch (IllegalArgumentException e) {
-            showAlert( "Error", "Please Enter The Correct Data Types In The Fields.");
+            showAlert( "Error", translate("dataTypeError"));
         }
     }
 
@@ -466,7 +459,7 @@ public class GUIcontroller {
             tableView.getItems().add(client);
             clientIdField.clear();
         } catch (IllegalArgumentException e) {
-            showAlert("Error", "Can't find the client you're looking for.");
+            showAlert("Error", translate("searchClientError"));
         }
     }
 
@@ -474,25 +467,24 @@ public class GUIcontroller {
     private void handleSearchForRoomBtn(){
         try {
 
-        int roomNum = Integer.parseInt(roomNoField.getText());
+            int roomNum = Integer.parseInt(roomNoField.getText());
 
-        tableView.getItems().clear();
+            tableView.getItems().clear();
 
-        column1.setText("Room Num.");
-        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+            column1.setText("Room Num.");
+            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
-        column2.setText("Room Type");
-        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+            column2.setText("Room Type");
+            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
 
-        column3.setText("Price Per Night ($)");
-        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+            column3.setText("Price Per Night ($)");
+            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        column4.setText("Available");
-        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+            column4.setText("Available");
+            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
 
-        column5.setText("Added Date");
-        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
-
+            column5.setText("Added Date");
+            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
             Room room = dbManager.findRoom(roomNum);
             if (room == null) {
@@ -501,7 +493,31 @@ public class GUIcontroller {
             tableView.getItems().add(room);
             roomNoField.clear();
         } catch (Exception e) {
-            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+            showAlert("Error", translate("searchRoomError"));
+        }
+    }
+
+    @FXML
+    private void handleDeleteRoomBtn(){
+        try {
+            int id = Integer.parseInt(roomNoField.getText());
+
+            dbManager.deleteRow("rooms", "roomNum", id);
+            handleViewAllClientsBtn();
+        } catch (Exception e) {
+            showAlert("Error", translate("deleteRoomError"));
+        }
+    }
+
+    @FXML
+    private void handleDeleteClientBtn(){
+        try {
+            int id = Integer.parseInt(clientIdField.getText());
+
+            dbManager.deleteRow("clients", "id", id);
+            handleViewAllClientsBtn();
+        } catch (Exception e) {
+            showAlert("Error", translate("deleteClientError"));
         }
     }
 

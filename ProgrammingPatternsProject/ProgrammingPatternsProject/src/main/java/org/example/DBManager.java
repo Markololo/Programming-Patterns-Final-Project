@@ -80,12 +80,12 @@ public class DBManager {
                 roomToUpdate = room;
         }
         if (roomToUpdate == null)
-            return "This room does not exist! Check the room number.";
+            return "searchRoomError";
 
         //Check if the room is booked: it cannot be updated if a client is in it.
         for (Booking booking : allBookings) {
             if (booking.getRoomNum() == roomNum) {
-                return "the room is already booked!\nWait until the client check out to change room info.";
+                return "roomAlreadyBooked";
             }
         }
 
@@ -99,7 +99,7 @@ public class DBManager {
             updateRoomStmt.executeUpdate();
             return "";//empty string means success
         } catch (SQLException e) {
-            return "An SQL error occured!\nTry again later or contact the hotel for help.";
+            return "sqlError";
         }
     }
 
@@ -179,15 +179,15 @@ public class DBManager {
             //1.Check inputs
             if (client == null)//client does not exist
             {
-                return "A client with this ID does not exist. Please register first!"; //The problem is with the client id
+                return "searchClientError"; //The problem is with the client id
             }
             if (room == null || room.getIsAvailable().equalsIgnoreCase("False")) {
-                return "The room you want to book is not available."; //the problem is the room no.
+                return "noRoomAvailable"; //the problem is the room no.
             }
 
             if (client.getNumOfMembers() > room.getSize()) {
                 //Cannot book this room based on the number of members:
-                return "The party size cannot is too big for the room.\nChoose a bigger room or contact the hotel if your party exceeds 10 members!";
+                return "roomSizeError";
             }
 
             //2.Insert booking
@@ -206,7 +206,7 @@ public class DBManager {
             preparedStatement2.setInt(1, clientId);
             int rowsUpdated = preparedStatement2.executeUpdate(); //Returns the number of rows affected
             if (rowsUpdated <= 0) {
-                return "An Error while trying to update the clients table.";
+                return "sqlError";
             }
 
             //4.Update room availability
@@ -217,101 +217,7 @@ public class DBManager {
 
             return "";//empty string means no problems occurred
         } catch (SQLException e) {
-            return "A database problem occurred while trying to add a booking.\nContact the hotel for help or try again later.";
-        }
-    }
-
-    /**
-     * Handles checking out a client from the hotel.
-     * The client table will be updated to indicate the client is not in the hotel anymore
-     * The bookings table will be updated: the end date will be set
-     * The room of the client will be available again.
-     * @param clientID the id of the client to check out.
-     * @return true if the operation was run successfully
-     */
-    public boolean checkoutClient(int clientID) {
-        try {
-            //check if client is in the hotel
-            String checkIfInHotel = "SELECT isInHotel FROM clients WHERE id = ?";
-            Connection con = db.connect();
-            PreparedStatement checkStatement = con.prepareStatement(checkIfInHotel);
-            checkStatement.setInt(1, clientID);
-            ResultSet rs = checkStatement.executeQuery();
-            if (rs.next()) {
-                String isInHotel = rs.getString("isInHotel");
-                if (isInHotel.equalsIgnoreCase("false")) {
-                    System.out.println("Client is already checked out.");
-                    return false;
-                }
-
-                //Checkout client: no longer in hotel
-                String updateClientStatusSql = "UPDATE clients SET isInHotel = ? WHERE id = ?";
-                PreparedStatement updateStatement = con.prepareStatement(updateClientStatusSql);
-                updateStatement.setString(1, "false");
-                updateStatement.setInt(2, clientID);
-                int rowsUpdated = updateStatement.executeUpdate();
-
-                if (rowsUpdated > 0) {
-                    System.out.println("Client checked out successfully.");
-
-                    // modify bookings if the client was able to check out
-                    String updateBookingSql = "UPDATE bookings SET endDate = ? WHERE clientId = ? AND endDate IS NULL";
-                    PreparedStatement updateBookingStatement = con.prepareStatement(updateBookingSql);
-
-                    java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
-                    updateBookingStatement.setString(1, today+"");  // Set the endDate to today's date
-                    updateBookingStatement.setInt(2, clientID);
-
-                    int rowsUpdatedBooking = updateBookingStatement.executeUpdate();
-
-                    if (rowsUpdatedBooking <= 0) {
-                        return false;
-                    }
-
-                    //Mark the room as available
-                    String updateRoomAvailabilitySql = "UPDATE rooms SET isAvailable = ? WHERE roomNo IN (SELECT roomNum FROM bookings WHERE clientId = ? AND endDate IS NULL)";
-                    PreparedStatement updateRoomStatement = con.prepareStatement(updateRoomAvailabilitySql);
-                    updateRoomStatement.setString(1, "True");  // Mark the room as available.
-                    updateRoomStatement.setInt(2, clientID);
-                    updateRoomStatement.executeUpdate();
-
-                    return true;//Checkout Successful.
-                } else {
-                    return false;//Something went wrong.
-                }
-            } else {
-                return false;//Client not found since rs.next() is false
-            }
-        } catch (SQLException e) {
-            return false;//Error occurred
-        }
-    }
-    public String checkoutClient2(int clientID) {
-        try {
-            List<Client> allClients = selectJsonClients();
-            List<Room> allRooms = selectJsonRooms();
-            List<Booking> allBookings = selectJsonBookings();
-            Client selectedClient = findClient(clientID);
-            Booking bookingToEnd = null;
-
-            if (selectedClient == null)
-                return "A client with this ID does not exist. Please register first.";
-
-
-            for (Booking booking : allBookings) {
-                if(booking.getClientId() == clientID) {//we found a booking of the client (he may have many).
-                    if (booking.getEndDate() == null) {//no end date has been set, meaning the booking is ongoing.
-                        bookingToEnd = booking;//booking to end has been found
-                    }
-                }
-            }
-            if (bookingToEnd == null) {
-                return "This client does not have a current booking.";
-            }
-
-            return "";//Empty String means a success.
-        } catch (Exception e) {
-            return "A database error occurred.!\nPlease try again later or contact the hotel for help.";
+            return "sqlError";
         }
     }
 
@@ -330,41 +236,39 @@ public class DBManager {
             }
 
             if (bookingToEnd == null)
-                return "Booking does not exist";;
+                return "searchBookingError";
 
 
-            //2. Update endDate in the bookings table
+            //Update endDate in the bookings table
             String updateBooking = "UPDATE bookings SET endDate = ? WHERE bookingNum = ?";
             PreparedStatement updateBookingStmt = con.prepareStatement(updateBooking);
             updateBookingStmt.setString(1, LocalDate.now().toString());
             updateBookingStmt.setInt(2, bookingNum);
             updateBookingStmt.executeUpdate();
 
-            //3. Mark room as available
+            //Mark room as available
             String updateRoom = "UPDATE rooms SET isAvailable = 'True' WHERE roomNum = ?";
             PreparedStatement updateRoomStmt = con.prepareStatement(updateRoom);
             updateRoomStmt.setInt(1, bookingToEnd.getRoomNum());
             updateRoomStmt.executeUpdate();
 
-            //4. Check for other active bookings
+            //Check for other active bookings
             String checkOtherBookings = "SELECT COUNT(*) FROM bookings WHERE clientId = ? AND endDate IS NULL";
             PreparedStatement checkStmt = con.prepareStatement(checkOtherBookings);
             checkStmt.setInt(1, bookingToEnd.getClientId());
             ResultSet countRs = checkStmt.executeQuery();
 
-            if (countRs.next() && countRs.getInt(1) == 0) {
-                // No other active bookings – update client's status
+            if (countRs.next() && countRs.getInt(1) == 0) {//the count is zero
+                // No other active bookings: update client's status
                 String updateClient = "UPDATE clients SET isInHotel = 'False' WHERE id = ?";
                 PreparedStatement updateClientStmt = con.prepareStatement(updateClient);
                 updateClientStmt.setInt(1, bookingToEnd.getClientId());
                 updateClientStmt.executeUpdate();
             }
-
-            System.out.println("Checkout successful for booking number: " + bookingNum);
             return "";//empty string means success
 
         } catch (SQLException e) {
-            return "Error during checkout: \n" + e.getMessage();
+            return "sqlError";
         }
     }
 
