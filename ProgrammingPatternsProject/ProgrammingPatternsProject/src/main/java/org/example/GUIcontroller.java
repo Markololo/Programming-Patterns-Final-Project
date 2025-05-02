@@ -329,7 +329,7 @@ public class GUIcontroller {
                 throw new IllegalArgumentException(actionAndResult);
             handleViewAllBookingsBtn();
         } catch (Exception e) {
-            if (e.getMessage().isEmpty())
+            if (!e.getMessage().isEmpty())
                 showAlert("Error", translate("checkoutError"));
             else
                 showAlert("Error", translate(e.getMessage()));
@@ -350,7 +350,7 @@ public class GUIcontroller {
             }
             handleViewAllBookingsBtn();
         } catch (Exception e) {
-            if (e.getMessage().isEmpty())
+            if (!e.getMessage().isEmpty())
                 showAlert("Error", translate("bookError"));
             else
                 showAlert("Error", translate(e.getMessage()));
@@ -385,10 +385,10 @@ public class GUIcontroller {
             roomPriceField.clear();
             availabilityComboBox.setValue("comboBoxTrue");
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().isEmpty())
+//            if (e.getMessage().isEmpty())
                 showAlert("Error", translate("updateRoomError"));
-            else
-                showAlert("Error", translate(e.getMessage()));
+//            else
+//                showAlert("Error", translate(e.getMessage()));
         }
     }
 
