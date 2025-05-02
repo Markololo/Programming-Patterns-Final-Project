@@ -70,7 +70,14 @@ public class DBManager {
             throw new RuntimeException(e);
         }
     }
-
+    public Room findRoomByType(String roomType) {
+        List<Room> rooms = selectJsonRooms();
+        for (Room room : rooms){
+            if (room.getRoomType().equals(roomType))
+                return room;
+        }
+        return null;
+    }
     public String updateRoom(int roomNum, double price, String isAvailable) {
         List<Room> allRooms = selectJsonRooms();
         List<Booking> allBookings = selectJsonBookings();
