@@ -28,9 +28,9 @@
       <Button fx:id="viewAllClientsBtn" layoutX="551.0" layoutY="458.0" mnemonicParsing="false" onAction="#handleViewAllClientsBtn" prefHeight="25.0" prefWidth="193.0" text="View All Clients" />
       <Button fx:id="viewAllRoomsBtn" layoutX="551.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleViewAllRoomsBtn" prefHeight="25.0" prefWidth="193.0" text="View All Rooms" />
       <Button fx:id="viewAvailableRoomsBtn" layoutX="551.0" layoutY="387.0" mnemonicParsing="false" onAction="#handleViewAvailableRoomsBtn" prefHeight="25.0" prefWidth="193.0" text="View Available Rooms" />
-      <Button fx:id="addClientBtn" layoutX="300.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleAddClientBtn" prefWidth="149.0" text="Add Client" />
+      <Button fx:id="addClientBtn" layoutX="300.0" layoutY="423.0" mnemonicParsing="false" onAction="#handleAddClientBtn" prefHeight="25.0" prefWidth="193.0" text="Add Client" />
       <Button fx:id="viewCurrentClientsBtn" layoutX="551.0" layoutY="422.0" mnemonicParsing="false" onAction="#handleViewCurrentClientsBtn" prefHeight="25.0" prefWidth="193.0" text="View Current Clients" />
-      <Button fx:id="searchForClientBtn" layoutX="300.0" layoutY="351.0" mnemonicParsing="false" onAction="#handleSearchForClientBtn" prefWidth="149.0" text="Search For Client" />
+      <Button fx:id="searchForClientBtn" layoutX="300.0" layoutY="351.0" mnemonicParsing="false" onAction="#handleSearchForClientBtn" prefHeight="25.0" prefWidth="193.0" text="Search For Client" />
       <TextField fx:id="clientIdField" layoutX="114.0" layoutY="351.0" prefHeight="25.0" prefWidth="174.0" />
       <Label fx:id="clientIdLabel" layoutX="15.0" layoutY="355.0" text="Client ID:" />
       <Label fx:id="clientNameLabel" layoutX="16.0" layoutY="392.0" text="Client Name:" />
@@ -39,23 +39,23 @@
       <Label fx:id="clientContactLabel" layoutX="15.0" layoutY="428.0" text="Client Contact:" />
       <Label fx:id="numOfMembersLabel" layoutX="16.0" layoutY="465.0" text="Client Party Size:" />
       <TextField fx:id="numOfMembersField" layoutX="114.0" layoutY="459.0" prefHeight="25.0" prefWidth="174.0" />
-      <Button fx:id="checkoutClientBtn" layoutX="300.0" layoutY="770.0" mnemonicParsing="false" onAction="#handleCheckoutClientBtn" prefWidth="149.0" text="Checkout" />
-      <Button fx:id="deleteClientBtn" layoutX="300.0" layoutY="387.0" mnemonicParsing="false" onAction="#handleDeleteClientBtn" prefHeight="25.0" prefWidth="149.0" text="Delete Client" />
-      <Button fx:id="addRoomBtn" layoutX="301.0" layoutY="677.0" mnemonicParsing="false" onAction="#handleAddRoomBtn" prefWidth="149.0" text="Add Room" />
-      <Button fx:id="searchForRoomBtn" layoutX="301.0" layoutY="605.0" mnemonicParsing="false" onAction="#handleSearchForRoomBtn" prefWidth="149.0" text="Search For Room" />
+      <Button fx:id="checkoutClientBtn" layoutX="300.0" layoutY="770.0" mnemonicParsing="false" onAction="#handleCheckoutClientBtn" prefHeight="25.0" prefWidth="193.0" text="Check Out" />
+      <Button fx:id="deleteClientBtn" layoutX="300.0" layoutY="387.0" mnemonicParsing="false" onAction="#handleDeleteClientBtn" prefHeight="25.0" prefWidth="193.0" text="Delete Client" />
+      <Button fx:id="addRoomBtn" layoutX="301.0" layoutY="677.0" mnemonicParsing="false" onAction="#handleAddRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Add Room" />
+      <Button fx:id="searchForRoomBtn" layoutX="301.0" layoutY="605.0" mnemonicParsing="false" onAction="#handleSearchForRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Search For Room" />
       <TextField fx:id="roomNoField" layoutX="115.0" layoutY="605.0" prefHeight="25.0" prefWidth="174.0" />
       <Label fx:id="roomNumLabel" layoutX="16.0" layoutY="609.0" text="Room No." />
       <Label fx:id="roomTypeLabel" layoutX="17.0" layoutY="646.0" text="Room Type:" />
       <TextField fx:id="roomPriceField" layoutX="115.0" layoutY="678.0" prefHeight="25.0" prefWidth="174.0" />
       <Label fx:id="roomPriceLabel" layoutX="16.0" layoutY="682.0" text="Price Per Night:" />
       <Label fx:id="roomAvailabilityLabel" layoutX="16.0" layoutY="719.0" text="Availability:" />
-      <Button fx:id="deleteRoomBtn" layoutX="302.0" layoutY="641.0" mnemonicParsing="false" onAction="#handleDeleteRoomBtn" prefWidth="149.0" text="Delete Room" />
+      <Button fx:id="deleteRoomBtn" layoutX="302.0" layoutY="641.0" mnemonicParsing="false" onAction="#handleDeleteRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Delete Room" />
       <ComboBox fx:id="availabilityComboBox" layoutX="115.0" layoutY="715.0" prefHeight="25.0" prefWidth="174.0" />
       <Label fx:id="isInHotelLabel" layoutX="18.0" layoutY="495.0" text="Is In Hotel:" />
       <ComboBox fx:id="isInHotelComboBox" layoutX="115.0" layoutY="494.0" prefHeight="25.0" prefWidth="174.0" />
       <ComboBox fx:id="roomTypeComboBox" layoutX="115.0" layoutY="642.0" prefHeight="25.0" prefWidth="174.0" />
-      <Button fx:id="updateRoomBtn" layoutX="301.0" layoutY="715.0" mnemonicParsing="false" onAction="#handleUpdateRoomBtn" prefWidth="149.0" text="Update Room" />
-      <Button fx:id="bookRoomBtn" layoutX="302.0" layoutY="549.0" mnemonicParsing="false" onAction="#handleBookRoomBtn" prefHeight="25.0" prefWidth="149.0" text="Book A Room" />
+      <Button fx:id="updateRoomBtn" layoutX="301.0" layoutY="715.0" mnemonicParsing="false" onAction="#handleUpdateRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Update Room" />
+      <Button fx:id="bookRoomBtn" layoutX="302.0" layoutY="549.0" mnemonicParsing="false" onAction="#handleBookRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Book A Room" />
       <Label fx:id="bookingStartDateLabel" layoutX="14.0" layoutY="550.0" text="Booking Start:" />
       <DatePicker fx:id="bookingStartDatePicker" layoutX="115.0" layoutY="549.0" />
       <TextField fx:id="bookingNumField" layoutX="115.0" layoutY="771.0" prefHeight="25.0" prefWidth="174.0" />

@@ -27,7 +27,7 @@ public class GUIcontroller {
     @FXML private Button deleteRoomBtn;
     @FXML private Button searchForClientBtn;
     @FXML private Button searchForRoomBtn;
-    @FXML private Button staffLoginBtn;
+    @FXML private Button staffLoginBtn;//
     @FXML private Button updateRoomBtn;
     @FXML private Button viewAllBookingsBtn;
     @FXML private Button viewAllClientsBtn;
@@ -50,7 +50,7 @@ public class GUIcontroller {
     @FXML private Label clientContactLabel;
     @FXML private Label clientIdLabel;
     @FXML private Label clientNameLabel;
-    @FXML private Label displayTableLabel;
+//    @FXML private Label displayTableLabel;
     @FXML private Label isInHotelLabel;
     @FXML private Label numOfMembersLabel;
     @FXML private Label roomAvailabilityLabel;
@@ -81,22 +81,6 @@ public class GUIcontroller {
     private String selectedLanguage = "english"; //Default
     MessageService messageService;
     private DBManager dbManager;
-
-    //Organize GUI Components for translation:
-    List<Button> AllButtons = Arrays.asList(
-            addClientBtn, addRoomBtn, bookRoomBtn, checkoutClientBtn,
-            clientLoginBtn, deleteClientBtn, deleteRoomBtn, searchForClientBtn,
-            searchForRoomBtn, staffLoginBtn, updateRoomBtn, viewAllBookingsBtn,
-            viewAllClientsBtn, viewAllRoomsBtn, viewAvailableRoomsBtn, viewCurrentClientsBtn
-    );
-
-    List<Label> allLabels = Arrays.asList(
-            bookingNumLabel, bookingStartDateLabel, clientContactLabel, clientIdLabel,
-            clientNameLabel, displayTableLabel, isInHotelLabel, numOfMembersLabel,
-            roomAvailabilityLabel, roomNumLabel, roomPriceLabel, roomTypeLabel, welcomeLabel
-    );
-
-
 
     public GUIcontroller() {
         dbManager = new DBManager();
@@ -156,7 +140,6 @@ public class GUIcontroller {
 
     @FXML
     public void handleSignIn() throws IOException {
-
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
@@ -176,11 +159,30 @@ public class GUIcontroller {
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
         stage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
 
-        //Update GUI elements
-        //**Maybe we can use a foreach loop instead**
-        welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
-        clientLoginBtn.setText(messageService.useLangService(selectedLanguage, "clientLoginBtn"));
+        //Organize GUI Components for translation:
+        Button[] staffButtons = {
+                addClientBtn, addRoomBtn, bookRoomBtn, checkoutClientBtn,
+                clientLoginBtn, deleteClientBtn, deleteRoomBtn, searchForClientBtn,
+                searchForRoomBtn, updateRoomBtn, viewAllBookingsBtn,
+                viewAllClientsBtn, viewAllRoomsBtn, viewAvailableRoomsBtn, viewCurrentClientsBtn
+        };
+
+        Label[] staffLabels = {
+                bookingNumLabel, bookingStartDateLabel, clientContactLabel, clientIdLabel,
+                clientNameLabel, isInHotelLabel, numOfMembersLabel,
+                roomAvailabilityLabel, roomNumLabel, roomPriceLabel, roomTypeLabel, welcomeLabel
+        };
+
+        //Update GUI elements:
+        for (Button button : staffButtons) {
+                button.setText(translate(button.getId()));
+        }
+
+        for (Label label : staffLabels) {
+            label.setText(translate(label.getId()));
+        }
     }
+
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
@@ -192,10 +194,6 @@ public class GUIcontroller {
 
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
         stage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
-
-        //Update
-        welcomeLabel.setText(messageService.useLangService(selectedLanguage, "welcomeLabel"));
-        staffLoginBtn.setText(messageService.useLangService(selectedLanguage, "staffLoginBtn"));
     }
 
     @FXML
