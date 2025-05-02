@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
     <children>
         <ComboBox fx:id="languageComboBox" layoutX="436.0" layoutY="14.0" onAction="#clientLanguageUpdate" prefWidth="150.0" />
         <Label layoutX="329.0" layoutY="18.0" text="Langue/Language:" />
@@ -18,7 +18,7 @@
         <Button fx:id="staffLoginBtn" layoutX="14.0" layoutY="51.0" mnemonicParsing="false" onAction="#handleStaffLoginButton" text="Staff Login" />
         <VBox layoutX="212.0" layoutY="111.0" prefHeight="153.0" prefWidth="189.0">
             <children>
-                <Label text="Username">
+                <Label text="User ID">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>

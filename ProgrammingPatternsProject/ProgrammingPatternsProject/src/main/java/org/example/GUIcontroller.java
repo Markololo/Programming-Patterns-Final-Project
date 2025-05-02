@@ -136,7 +136,39 @@ public class GUIcontroller {
     @FXML
     public void handleSearchByRoomType() {
 
+        try {
+
+            String roomType = roomTypeComboBox.getValue();
+
+            tableView.getItems().clear();
+
+            column1.setText("Room Num.");
+            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+            column2.setText("Room Type");
+            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+            column3.setText("Price Per Night ($)");
+            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            column4.setText("Available");
+            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+            column5.setText("Added Date");
+            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+
+            Room room = dbManager.findRoomByType(roomType);
+            if (room == null) {
+                throw new IllegalArgumentException();
+            }
+            tableView.getItems().add(room);
+
+        } catch (Exception e) {
+            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+        }
     }
+
 
     @FXML
     public void handleSignIn() throws IOException {
@@ -145,6 +177,37 @@ public class GUIcontroller {
         primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+
+    @FXML
+    public void handleSortByPrice() throws IOException {
+
+        try {
+
+            tableView.getItems().clear();
+
+            column1.setText("Room Num.");
+            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+            column2.setText("Room Type");
+            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+            column3.setText("Price Per Night ($)");
+            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            column4.setText("Available");
+            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+            column5.setText("Added Date");
+            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+
+            tableView.getItems().setAll(dbManager.findRoomLowToHighPrice());
+
+
+        } catch (Exception e) {
+            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+        }
     }
     /**
      * updates the labels to conform to the user's chosen language
