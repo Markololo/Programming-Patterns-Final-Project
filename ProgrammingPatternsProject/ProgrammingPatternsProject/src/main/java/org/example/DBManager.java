@@ -6,7 +6,9 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.management.remote.JMXConnectorFactory.connect;
 
@@ -496,6 +498,18 @@ public class DBManager {
             throw new RuntimeException(e);
         }
         return clients;
+    }
+
+    public List<Room> findRoomLowToHighPrice() {
+        List<Room> rooms = selectJsonRooms();
+
+        List<Room> availableSortedRooms = rooms.stream()
+                .filter(r -> "true".equalsIgnoreCase(r.getIsAvailable())) // or "yes"
+                .sorted(Comparator.comparing(Room::getPrice))
+                .collect(Collectors.toList());
+
+        System.out.println(availableSortedRooms);
+        return availableSortedRooms;
     }
 
 }
