@@ -23,7 +23,7 @@
                         <Insets top="6.0" />
                     </VBox.margin>
                 </Label>
-                <TextField>
+                <TextField fx:id="clientIdField">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>
@@ -33,7 +33,7 @@
                         <Insets top="6.0" />
                     </VBox.margin>
                 </Label>
-                <PasswordField>
+                <PasswordField fx:id="passwordField">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>

@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -209,6 +210,7 @@ public class GUIcontroller {
             showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
         }
     }
+
     /**
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
@@ -315,6 +317,51 @@ public class GUIcontroller {
             handleViewAllBookingsBtn();
         } catch (Exception e) {
             showAlert("Error", "Error:\n" + e.getMessage());
+        }
+    }
+
+
+
+
+
+    @FXML
+    private void handleViewPastBookingBtn() throws IOException{
+        try {
+            int clientId = Integer.parseInt(clientIdField.getText());
+
+            // Set up table columns for Booking view
+            column1.setText("Booking Num.");
+            column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
+
+            column2.setText("Client ID");
+            column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
+
+            column3.setText("Room Num.");
+            column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+            column4.setText("Start Date");
+            column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+
+            column5.setText("End Date");
+            column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+            // Get all bookings and filter them using the client ID
+            List<Booking> bookings = dbManager.selectJsonBookings();
+            List<Booking> clientBookings = bookings.stream()
+                    .filter(b -> b.getClientId() == clientId)
+                    .toList();
+
+            if (clientBookings.isEmpty()) {
+                showAlert("Info", "No past bookings found for client ID: " + clientId);
+            }
+
+            tableView.getItems().clear();
+            tableView.getItems().addAll(clientBookings);
+
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Invalid client ID format.");
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load past bookings:\n" + e.getMessage());
         }
     }
 
