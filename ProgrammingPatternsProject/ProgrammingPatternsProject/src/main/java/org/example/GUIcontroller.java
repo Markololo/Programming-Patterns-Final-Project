@@ -89,14 +89,20 @@ public class GUIcontroller {
 
     @FXML
     public void initialize() {
-        languageComboBox.getItems().addAll("English", "French");
+        languageComboBox.getItems().addAll("English", "Français");
         languageComboBox.setValue("English"); //default
-        isInHotelComboBox.getItems().addAll("True", "False");
-        isInHotelComboBox.setValue("True"); //default
-        roomTypeComboBox.getItems().addAll("Single", "Double", "Twin", "Queen", "Suite", "Big Family");//Capacity: 1, 2, 2, 2, 4
-        roomTypeComboBox.setValue("Single"); //default
-        availabilityComboBox.getItems().addAll("True", "False");
-        availabilityComboBox.setValue("True"); //default
+        isInHotelComboBox.getItems().addAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
+        isInHotelComboBox.setValue(translate("comboBoxTrue")); //default
+        roomTypeComboBox.getItems().addAll(
+                translate("roomTypeComboBoxSingle"),
+                translate("roomTypeComboBoxDouble"),
+                translate("roomTypeComboBoxTwin"),
+                translate("roomTypeComboBoxQueen"),
+                translate("roomTypeComboBoxSuite"),
+                translate("roomTypeComboBoxBigFamily"));//Capacity: 1, 2, 2, 2, 4
+        roomTypeComboBox.setValue(translate("roomTypeComboBoxSingle")); //default
+        availabilityComboBox.getItems().addAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
+        availabilityComboBox.setValue(translate("comboBoxTrue")); //default
         //I did not know how to do the following block of code to restrict DatePicker values, so I referenced online sources:
         bookingStartDatePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
@@ -115,7 +121,7 @@ public class GUIcontroller {
         //2) open new window for the client:
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MainView.fxml")));
-        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "staffWinTitle"));
+        primaryStage.setTitle(translate("staffWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
@@ -128,7 +134,7 @@ public class GUIcontroller {
         //2) open new window for the client:
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientWindow.fxml")));
-        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        primaryStage.setTitle(translate("clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
@@ -165,7 +171,7 @@ public class GUIcontroller {
             tableView.getItems().add(room);
 
         } catch (Exception e) {
-            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+            showAlert("Error", translate("unexpectedError"));
         }
     }
 
@@ -174,7 +180,7 @@ public class GUIcontroller {
     public void handleSignIn() throws IOException {
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ClientView.fxml")));
-        primaryStage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        primaryStage.setTitle(translate("clientWinTitle"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
@@ -206,7 +212,7 @@ public class GUIcontroller {
 
 
         } catch (Exception e) {
-            showAlert("Error", "Can't find the room you're looking for!\nMake sure it exists.");
+            showAlert("Error", translate("unexpectedError"));
         }
     }
     /**
@@ -220,7 +226,7 @@ public class GUIcontroller {
 
         //Update window title
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
-        stage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        stage.setTitle(translate("clientWinTitle"));
 
         //Organize GUI Components for translation:
         Button[] staffButtons = {
@@ -244,6 +250,19 @@ public class GUIcontroller {
         for (Label label : staffLabels) {
             label.setText(translate(label.getId()));
         }
+
+//        isInHotelComboBox.getItems().setAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
+//
+//        roomTypeComboBox.getItems().setAll(
+//                translate("roomTypeComboBoxSingle"),
+//                translate("roomTypeComboBoxDouble"),
+//                translate("roomTypeComboBoxTwin"),
+//                translate("roomTypeComboBoxQueen"),
+//                translate("roomTypeComboBoxSuite"),
+//                translate("roomTypeComboBoxBigFamily")
+//        );
+//
+//        availabilityComboBox.getItems().setAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
     }
 
     /**
@@ -256,7 +275,7 @@ public class GUIcontroller {
         selectedLanguage = languageComboBox.getValue();
 
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
-        stage.setTitle(messageService.useLangService(selectedLanguage, "clientWinTitle"));
+        stage.setTitle(translate("clientWinTitle"));
     }
 
     @FXML
@@ -271,7 +290,7 @@ public class GUIcontroller {
             handleViewAllBookingsBtn();
         } catch (Exception e) {
             if (e.getMessage().isEmpty())
-                showAlert("Error", translate(""));
+                showAlert("Error", translate("checkoutError"));
             else
                 showAlert("Error", translate(e.getMessage()));
         }

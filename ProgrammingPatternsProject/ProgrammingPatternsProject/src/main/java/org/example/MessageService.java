@@ -28,7 +28,7 @@ class EnglishLang implements Language{
 
 class MessageFactory {
     public static Language returnLang(String type) {
-        if (type.equalsIgnoreCase("french"))
+        if (type.equalsIgnoreCase("french") || type.equalsIgnoreCase("Français"))
             return new FrenchLang();
         else if (type.equalsIgnoreCase("english"))
             return new EnglishLang();
