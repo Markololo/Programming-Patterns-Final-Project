@@ -317,14 +317,14 @@ public class GUIcontroller {
      * updates the labels to conform to the user's chosen language
      * the selectedLanguage is the user's chosen language, English or French
      */
-//    @FXML
-//    private void clientLanguageUpdate() {
-//        // Get the selected language:
-//        selectedLanguage = languageComboBox.getValue();
-//
-//        Stage stage = (Stage) languageComboBox.getScene().getWindow();
-//        stage.setTitle(translate("clientWinTitle"));
-//    }
+    @FXML
+    private void clientLanguageUpdate() {
+        // Get the selected language:
+        selectedLanguage = languageComboBox.getValue();
+
+        Stage stage = (Stage) languageComboBox.getScene().getWindow();
+        stage.setTitle(translate("clientWinTitle"));
+    }
 
     @FXML
     private void handleCheckoutClientBtn(){
