@@ -39,8 +39,8 @@ class GUIcontrollerTest {
 
                     List<Room> rooms = new ArrayList<>();
                     if (type.equals("Deluxe")) {
-                        rooms.add(new Room(228, "Double", 150.0, "True", "2024-5-2"));
-                        rooms.add(new Room(229, "Double", 150.0, "True", "2024-5-3"));
+                        rooms.add(new Room(228, "Double", 150.0, "True", "2024-05-2"));
+                        rooms.add(new Room(229, "Double", 150.0, "True", "2024-05-3"));
                     }
                     return rooms;
                 }
