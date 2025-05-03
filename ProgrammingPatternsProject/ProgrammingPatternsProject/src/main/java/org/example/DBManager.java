@@ -88,13 +88,13 @@ public class DBManager {
      * @param roomType the type of the rooms to look for.
      * @return a list of rooms that match the roomType
      */
-    public Room findRoomByType(String roomType) {
-        List<Room> rooms = selectJsonRooms();
-        for (Room room : rooms){
-            if (room.getRoomType().equals(roomType))
-                return room;
-        }
-        return null;
+    public List<Room> findRoomByType(String roomType) {
+        List<Room> rooms = new ArrayList<>();
+        selectJsonRooms().stream().forEach(room -> {
+            if (room.getRoomType().equalsIgnoreCase(roomType))
+                rooms.add(room);
+        });
+        return rooms;
     }
 
     /**
