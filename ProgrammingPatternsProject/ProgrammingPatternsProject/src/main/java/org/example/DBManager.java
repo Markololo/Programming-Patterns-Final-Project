@@ -77,13 +77,17 @@ public class DBManager {
             throw new RuntimeException(e);
         }
     }
-    public Room findRoomByType(String roomType) {
+    public List<Room> findRoomByType(String roomType) {
         List<Room> rooms = selectJsonRooms();
-        for (Room room : rooms){
-            if (room.getRoomType().equals(roomType))
-                return room;
+        List<Room> matchedRooms = new ArrayList<>();
+
+        for (Room room : rooms) {
+            if (room.getRoomType().equals(roomType) && room.getIsAvailable().equalsIgnoreCase("True")) {
+                matchedRooms.add(room);
+            }
         }
-        return null;
+
+        return matchedRooms;
     }
 
 

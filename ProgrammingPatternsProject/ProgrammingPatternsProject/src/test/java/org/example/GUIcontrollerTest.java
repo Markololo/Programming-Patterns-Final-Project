@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,12 +35,15 @@ class GUIcontrollerTest {
         controller.setDbManager(new DBManager()
         {
             @Override
-            public Room findRoomByType(String type) {
-                if (type.equals("Deluxe")) {
-                    return new Room(228, "Double", 150.0, "True", "2024-5-2");
+            public List<Room>findRoomByType(String type) {
+
+                    List<Room> rooms = new ArrayList<>();
+                    if (type.equals("Deluxe")) {
+                        rooms.add(new Room(228, "Double", 150.0, "True", "2024-5-2"));
+                        rooms.add(new Room(229, "Double", 150.0, "True", "2024-5-3"));
+                    }
+                    return rooms;
                 }
-                return null;
-            }
 
             @Override
             public java.util.List<Room> findRoomLowToHighPrice() {

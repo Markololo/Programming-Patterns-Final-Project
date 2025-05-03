@@ -11,7 +11,7 @@
 
 <AnchorPane fx:id="mainViewAnchorPane" prefHeight="785.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.GUIcontroller">
     <children>
-        <ComboBox fx:id="languageComboBox" layoutX="593.0" layoutY="14.0" onAction="#staffLanguageUpdate" prefWidth="150.0" />
+        <ComboBox fx:id="languageComboBox" layoutX="593.0" layoutY="14.0" onAction="#clientLanguageUpdate2" prefWidth="150.0" />
         <Label layoutX="486.0" layoutY="18.0" text="Langue/Language:" />
         <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="18.0" text="Welcome To The Hotel Manager App!" />
         <TableView fx:id="tableView" layoutX="15.0" layoutY="100.0" prefHeight="243.0" prefWidth="742.0">
@@ -23,25 +23,25 @@
                 <TableColumn fx:id="column5" prefWidth="148.0" />
             </columns></TableView>
         <Label fx:id="displayTableLabel" layoutX="15.0" layoutY="76.0" />
-        <Label fx:id="roomTypeLabel" layoutX="20.0" layoutY="400.0" text="Room Type" />
+        <Label fx:id="roomTypeLabel" layoutX="19.0" layoutY="400.0" prefHeight="17.0" prefWidth="98.0" text="Room Type" />
         <ComboBox fx:id="availabilityComboBox" editable="true" layoutX="115.0" layoutY="715.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
         <Label fx:id="isInHotelLabel" layoutX="18.0" layoutY="495.0" />
         <ComboBox fx:id="isInHotelComboBox" editable="true" layoutX="115.0" layoutY="494.0" opacity="0.0" prefHeight="25.0" prefWidth="174.0" />
-        <ComboBox fx:id="roomTypeComboBox" layoutX="102.0" layoutY="396.0" prefHeight="25.0" prefWidth="174.0" />
+        <ComboBox fx:id="roomTypeComboBox" layoutX="153.0" layoutY="396.0" prefHeight="25.0" prefWidth="150.0" />
         <Label fx:id="bookingStartDateLabel" layoutX="21.0" layoutY="559.0" text="Booking Start:" />
-        <DatePicker fx:id="bookingStartDatePicker" layoutX="116.0" layoutY="555.0" />
-      <Button fx:id="viewPastBookingsBtn" layoutX="604.0" layoutY="432.0" mnemonicParsing="false" onAction="#handleViewPastBookingBtn" prefHeight="25.0" prefWidth="149.0" text="View Bookings" />
-      <Button fx:id="searchByType" layoutX="604.0" layoutY="384.0" mnemonicParsing="false" onAction="#handleViewAvailableRoomsBtn" prefHeight="25.0" prefWidth="149.0" text="View All Rooms" />
-      <Label layoutX="21.0" layoutY="647.0" text="Room Number" />
-      <Label layoutX="36.0" layoutY="599.0" text="Name" />
-      <TextField fx:id="clientNameField" layoutX="115.0" layoutY="599.0" prefHeight="25.0" prefWidth="174.0" />
-      <TextField fx:id="roomNoField" layoutX="115.0" layoutY="643.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="26.0" layoutY="699.0" text="Party Size" />
-      <TextField fx:id="numOfMembersField" layoutX="119.0" layoutY="695.0" prefHeight="25.0" prefWidth="167.0" />
-      <Button fx:id="searchByTypeBtn" layoutX="353.0" layoutY="403.0" mnemonicParsing="false" onAction="#handleSearchByRoomType" prefHeight="25.0" prefWidth="158.0" text="Search By Room Type" />
-      <TextField fx:id="clientIdField" layoutX="115.0" layoutY="517.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="46.0" layoutY="521.0" text="ID" />
-      <Button fx:id="searcByPriceBtn" layoutX="357.0" layoutY="463.0" mnemonicParsing="false" onAction="#handleSortByPrice" prefWidth="149.0" text="Sort By Price" />
-      <Button fx:id="bookRoomBtn" layoutX="326.0" layoutY="559.0" mnemonicParsing="false" onAction="#handleBookRoomBtn" prefHeight="25.0" prefWidth="193.0" text="Book A Room" />
+        <DatePicker fx:id="bookingStartDatePicker" layoutX="153.0" layoutY="555.0" />
+      <Button fx:id="viewPastBookingsBtn" layoutX="539.0" layoutY="463.0" mnemonicParsing="false" onAction="#handleViewPastBookingBtn" prefHeight="25.0" prefWidth="216.0" text="View Bookings" />
+      <Button fx:id="viewAllRoomsBtn" layoutX="535.0" layoutY="396.0" mnemonicParsing="false" onAction="#handleViewAvailableRoomsBtn" prefHeight="25.0" prefWidth="225.0" text="View All Rooms" />
+      <Label fx:id="roomNumLabel" layoutX="13.0" layoutY="647.0" text="Room Number" />
+      <Label fx:id="nameLabel" layoutX="36.0" layoutY="599.0" text="Name" />
+      <TextField fx:id="clientNameField" layoutX="153.0" layoutY="604.0" prefHeight="25.0" prefWidth="174.0" />
+      <TextField fx:id="roomNoField" layoutX="153.0" layoutY="643.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label fx:id="partySizeLabel" layoutX="26.0" layoutY="699.0" text="Party Size" />
+      <TextField fx:id="numOfMembersField" layoutX="157.0" layoutY="695.0" prefHeight="25.0" prefWidth="167.0" />
+      <Button fx:id="searchByTypeBtn" layoutX="312.0" layoutY="396.0" mnemonicParsing="false" onAction="#handleSearchByRoomType" prefHeight="25.0" prefWidth="216.0" text="Search By Room Type" />
+      <TextField fx:id="clientIdField" layoutX="153.0" layoutY="517.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label fx:id="idLabel" layoutX="46.0" layoutY="521.0" text="ID" />
+      <Button fx:id="searchByPriceBtn" layoutX="313.0" layoutY="463.0" mnemonicParsing="false" onAction="#handleSortByPrice" prefHeight="25.0" prefWidth="216.0" text="Sort By Price" />
+      <Button fx:id="bookRoomBtn" layoutX="368.0" layoutY="604.0" mnemonicParsing="false" onAction="#handleBookRoomBtn" prefHeight="25.0" prefWidth="216.0" text="Book A Room" />
     </children>
 </AnchorPane>

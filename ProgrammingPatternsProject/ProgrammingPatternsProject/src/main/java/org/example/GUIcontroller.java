@@ -87,6 +87,26 @@ public class GUIcontroller {
     MessageService messageService;
     private DBManager dbManager;
 
+    @FXML
+    private Button clientSignInBtn;
+    @FXML
+    private Label userIDLabel;
+    @FXML
+    private Label passwordLabel;
+    @FXML
+    private Button searchByTypeBtn;
+
+    @FXML
+    private Button viewPastBookingsBtn;
+    @FXML
+    private Label partySizeLabel;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label idLabel;
+    @FXML
+    private Button searchByPriceBtn;
+
     public GUIcontroller() {
         dbManager = new DBManager();
         messageService = new MessageService();
@@ -147,37 +167,44 @@ public class GUIcontroller {
     @FXML
     public void handleSearchByRoomType() {
 
-        try {
-            //Adapt to English db:
-            String roomType = messageService.useLangService("english", "comboBox" + roomTypeComboBox.getValue());
 
-            tableView.getItems().clear();
+            try {
+                String englishRoomType = roomTypeComboBox.getValue();  // Still English!
 
-            column1.setText("Room Num.");
-            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+                tableView.getItems().clear();
 
-            column2.setText("Room Type");
-            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+                column1.setText("Room Num.");
+                column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
-            column3.setText("Price Per Night ($)");
-            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+                column2.setText("Room Type");
+                column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
 
-            column4.setText("Available");
-            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+                column3.setText("Price Per Night ($)");
+                column3.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-            column5.setText("Added Date");
-            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+                column4.setText("Available");
+                column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
 
-            Room room = dbManager.findRoomByType(roomType);
-            if (room == null) {
-                throw new IllegalArgumentException();
+                column5.setText("Added Date");
+                column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+                List<Room> rooms = dbManager.findRoomByType(englishRoomType);
+
+                if (rooms == null || rooms.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+
+                // Translate each room's fields before displaying
+                for (Room room : rooms) {
+                    room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
+                    room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
+                }
+
+                tableView.getItems().addAll(rooms);
+
+            } catch (Exception e) {
+                showAlert("Error", translate("unexpectedError"));
             }
-
-            tableView.getItems().add(room);
-
-        } catch (Exception e) {
-            showAlert("Error", translate("unexpectedError"));
-        }
     }
 
     @FXML
@@ -331,7 +358,70 @@ public class GUIcontroller {
 
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
         stage.setTitle(translate("clientWinTitle"));
+        Button[] clientButtons = {clientSignInBtn,staffLoginBtn
+        };
+        Label[] clientLabels = {
+                userIDLabel ,passwordLabel, welcomeLabel
+        };
+
+        //Update GUI elements:
+        for (Button button : clientButtons) {
+            button.setText(translate(button.getId()));
+        }
+
+        for (Label label : clientLabels) {
+            label.setText(translate(label.getId()));
+        }
     }
+
+
+    @FXML
+    private void clientLanguageUpdate2()
+    {
+        // Get the selected language:
+        selectedLanguage = languageComboBox.getValue();
+
+        //Update window title
+        Stage stage = (Stage) languageComboBox.getScene().getWindow();
+        stage.setTitle(translate("clientWinTitle"));
+
+        //Organize GUI Components for translation:
+        Button[] clientButtons = {
+                searchByTypeBtn, searchByPriceBtn, viewAllRoomsBtn, viewPastBookingsBtn,
+                bookRoomBtn
+        };
+
+        Label[] clientLabels = {
+                partySizeLabel,nameLabel,bookingStartDateLabel,idLabel, roomNumLabel,roomTypeLabel, welcomeLabel
+        };
+
+        //Update GUI elements:
+        for (Button button : clientButtons) {
+            button.setText(translate(button.getId()));
+        }
+
+        for (Label label : clientLabels) {
+            label.setText(translate(label.getId()));
+        }
+
+        roomTypeComboBox.getItems().setAll(
+                translate("roomTypeComboBoxSingle"),
+                translate("roomTypeComboBoxDouble"),
+                translate("roomTypeComboBoxTwin"),
+                translate("roomTypeComboBoxQueen"),
+                translate("roomTypeComboBoxSuite"),
+                translate("roomTypeComboBoxBig_Family")
+        );
+
+        //Reset empty table:
+        tableView.getItems().clear();
+        TableColumn[] cols = {column1, column2, column3, column4, column5};
+        for (TableColumn column : cols)
+            column.setText("");
+
+    }
+
+
 
     @FXML
     private void handleCheckoutClientBtn(){

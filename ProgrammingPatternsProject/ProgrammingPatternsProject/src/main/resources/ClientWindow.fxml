@@ -18,7 +18,7 @@
         <Button fx:id="staffLoginBtn" layoutX="14.0" layoutY="51.0" mnemonicParsing="false" onAction="#handleStaffLoginButton" text="Staff Login" />
         <VBox layoutX="212.0" layoutY="111.0" prefHeight="153.0" prefWidth="189.0">
             <children>
-                <Label text="User ID">
+                <Label fx:id="userIDLabel" text="User ID">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>
@@ -28,7 +28,7 @@
                         <Insets top="6.0" />
                     </VBox.margin>
                 </TextField>
-                <Label text="Password">
+                <Label fx:id="passwordLabel" text="Password">
                     <VBox.margin>
                         <Insets top="6.0" />
                     </VBox.margin>
