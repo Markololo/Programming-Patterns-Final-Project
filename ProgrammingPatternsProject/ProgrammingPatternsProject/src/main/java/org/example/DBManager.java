@@ -138,11 +138,10 @@ public class DBManager {
             preparedStatement.setInt(1, pkValue);
             int rowsUpdated = preparedStatement.executeUpdate();
 
-            if (rowsUpdated > 0)
-                System.out.println("Row with PrimaryKey " + pkValue + " removed successfully");
-            else
-                System.out.println("No row with the provided ID exists in table "+table+".");
-        } catch (SQLException e) {
+            if (rowsUpdated <= 0)
+                throw new Exception();
+//                System.out.println("No row with the provided ID exists in table "+table+".");
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -184,7 +183,6 @@ public class DBManager {
             preparedStatement.setDouble(3, price);
             preparedStatement.setString(4, isAvailable);
             preparedStatement.executeUpdate();
-            System.out.println("Room Row Added.");
             return true;
         } catch (Exception e) {
             return false;
@@ -218,7 +216,6 @@ public class DBManager {
             preparedStatement.setInt(2, roomNum);
             preparedStatement.setString(3, startDate.toString());
             preparedStatement.executeUpdate();
-            System.out.println("Booking Row Added.");
 
             //3.Update client's isInHotel
             String updateClientSql = "UPDATE clients SET isInHotel='True' WHERE id=?";
@@ -303,7 +300,7 @@ public class DBManager {
             Connection con = db.connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
-            System.out.println("Success: Table " + tableName + " does not exist now.");
+//            System.out.println("Success: Table " + tableName + " does not exist now.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -429,8 +426,6 @@ public class DBManager {
                 .filter(r -> "true".equalsIgnoreCase(r.getIsAvailable())) // or "yes"
                 .sorted(Comparator.comparing(Room::getPrice))
                 .collect(Collectors.toList());
-
-        System.out.println(availableSortedRooms);
         return availableSortedRooms;
     }
 

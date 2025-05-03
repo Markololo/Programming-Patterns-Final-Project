@@ -5,17 +5,17 @@
       <element id="module-output" name="ProgrammingPatternsProject" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/sqlite-jdbc/3.49.1.0/sqlite-jdbc-3.49.1.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx-swt.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.web.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.base.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.fxml.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.media.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.swing.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/jdk.jsobject.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.controls.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/javafx.graphics.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/jfx.incubator.input.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Documents/openjfx-24.0.1_windows-x64_bin-sdk/javafx-sdk-24.0.1/lib/jfx.incubator.richtext.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/jdk.jsobject.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.graphics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/jfx.incubator.input.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/jfx.incubator.richtext.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
