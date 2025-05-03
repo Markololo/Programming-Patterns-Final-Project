@@ -1,6 +1,9 @@
 package org.example;
 
 import com.google.gson.Gson;
+import lombok.*;
+
+
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -11,7 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.management.remote.JMXConnectorFactory.connect;
-
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 public class DBManager {
     DbController db;
 

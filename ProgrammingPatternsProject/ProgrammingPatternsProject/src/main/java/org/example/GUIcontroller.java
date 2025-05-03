@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import lombok.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,6 +16,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 
 public class GUIcontroller {
     // Buttons
