@@ -97,7 +97,7 @@ public class GUIcontroller {
                 translate("roomTypeComboBoxTwin"),
                 translate("roomTypeComboBoxQueen"),
                 translate("roomTypeComboBoxSuite"),
-                translate("roomTypeComboBoxBigFamily"));//Capacity: 1, 2, 2, 2, 4
+                translate("roomTypeComboBoxBig_Family"));//Capacity: 1, 2, 2, 2, 4
         roomTypeComboBox.setValue(translate("roomTypeComboBoxSingle")); //default
         availabilityComboBox.getItems().addAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
         availabilityComboBox.setValue(translate("comboBoxTrue")); //default
@@ -186,7 +186,6 @@ public class GUIcontroller {
     public void handleSortByPrice() throws IOException {
 
         try {
-
             tableView.getItems().clear();
 
             column1.setText("Room Num.");
@@ -204,11 +203,12 @@ public class GUIcontroller {
             column5.setText("Added Date");
             column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
-            //Translate True and False from the English db:
+            //Translate from the English db:
             List<Room> rooms = dbManager.findRoomLowToHighPrice();
             rooms.forEach(room ->
                     room.setIsAvailable(translate("comboBox" + room.getIsAvailable()))
             );
+            rooms.forEach(room -> room.setRoomType(translate("roomTypeComboBox" + room.getRoomType())));
 
             tableView.getItems().setAll(rooms);
 
@@ -301,7 +301,7 @@ public class GUIcontroller {
                 translate("roomTypeComboBoxTwin"),
                 translate("roomTypeComboBoxQueen"),
                 translate("roomTypeComboBoxSuite"),
-                translate("roomTypeComboBoxBigFamily")
+                translate("roomTypeComboBoxBig_Family")
         );
 
         availabilityComboBox.getItems().setAll(translate("comboBoxTrue"), translate("comboBoxFalse"));
@@ -374,8 +374,10 @@ public class GUIcontroller {
             double price;
             Room room = dbManager.findRoom(roomNum);
 
-            if (room == null)
+            if (room == null) {
                 showAlert("Error", translate("searchRoomError"));
+                return;
+            }
 
             if (roomPriceField.getText().isEmpty()) {//price not updated
                 price = room.getPrice();//keep price
@@ -394,7 +396,7 @@ public class GUIcontroller {
             roomPriceField.clear();
             availabilityComboBox.setValue(translate("comboBoxTrue"));
         } catch (IllegalArgumentException e) {
-                showAlert("Error", translate("updateRoomError"));
+            showAlert("Error", translate("updateRoomError"));
         }
     }
 
@@ -441,11 +443,12 @@ public class GUIcontroller {
         column5.setText(translate("addedDate"));
         column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
-        //Translate True and False from the English db:
+        //Translate from the English db:
         List<Room> rooms = dbManager.selectAvailableRooms();
-        rooms.forEach(room ->
-                room.setIsAvailable(translate("comboBox" + room.getIsAvailable()))
-        );
+        rooms.forEach(room -> {
+            room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
+            room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
+        });
 
         tableView.getItems().addAll(rooms);
     }
@@ -491,11 +494,12 @@ public class GUIcontroller {
         column5.setText(translate("addedDate"));
         column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
-        //Translate True and False from the English db:
-        List<Room> rooms = dbManager.selectAvailableRooms();
-        rooms.forEach(room ->
-                room.setIsAvailable(translate("comboBox" + room.getIsAvailable()))
-        );
+        //Translate from the English db:
+        List<Room> rooms = dbManager.selectJsonRooms();
+        rooms.forEach(room -> {
+            room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
+//            room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
+        });
 
         tableView.getItems().addAll(rooms);
     }
@@ -526,7 +530,7 @@ public class GUIcontroller {
     private void handleAddRoomBtn(){
         try {
             int roomNum = Integer.parseInt(roomNoField.getText());
-            String roomType = roomTypeComboBox.getValue();
+            String roomType = messageService.useLangService("english", "roomTypeComboBox" + roomTypeComboBox.getValue());
             double price = Double.parseDouble(roomPriceField.getText());
             String isAvailable = messageService.useLangService("english", "comboBox" + availabilityComboBox.getValue());//db is in English
 
@@ -607,7 +611,7 @@ public class GUIcontroller {
             int id = Integer.parseInt(roomNoField.getText());
 
             dbManager.deleteRow("rooms", "roomNum", id);
-            handleViewAllClientsBtn();
+            handleViewAllRoomsBtn();
         } catch (Exception e) {
             showAlert("Error", translate("deleteRoomError"));
         }
@@ -662,4 +666,9 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(clients);
     }
+//    private void translateRoomType(String type) {
+//        switch (type) {
+//            case "" : return messageService.useLangService(selectedLanguage, "roomTypeComboBoxBigFamily");;
+//        }
+//    }
 }
