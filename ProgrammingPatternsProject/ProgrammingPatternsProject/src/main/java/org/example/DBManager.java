@@ -1,9 +1,6 @@
 package org.example;
 
 import com.google.gson.Gson;
-import lombok.*;
-
-
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -14,19 +11,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.management.remote.JMXConnectorFactory.connect;
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Getter
-@Setter
+
+/**
+ * The DBManager class is the main controller to interact with the database.
+ * It connects to the database through the singleton class DbController.
+ * It has all the CRUD methods for the database.
+ */
 public class DBManager {
     DbController db;
 
+    /**
+     * The constructor of the class calls the database's initialization method initializeDB()
+     * and connects to the instance of DbController singleton class.
+     */
     public DBManager() {
         db = DbController.getInstance();
         initialiseDB();
     }
 
+    /**
+     * Initializes the tables in the database.
+     */
     private void initialiseDB() {
 
         String clientsTable = """
@@ -77,22 +82,28 @@ public class DBManager {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Finds all the rooms that have the same type as the input.
+     * @param roomType the type of the rooms to look for.
+     * @return a list of rooms that match the roomType
+     */
     public List<Room> findRoomByType(String roomType) {
-        List<Room> rooms = selectJsonRooms();
-        List<Room> matchedRooms = new ArrayList<>();
-
-        for (Room room : rooms) {
-            if (room.getRoomType().equals(roomType) && room.getIsAvailable().equalsIgnoreCase("True")) {
-                matchedRooms.add(room);
-            }
-        }
-
-        return matchedRooms;
+        List<Room> rooms = new ArrayList<>();
+        selectJsonRooms().stream().forEach(room -> {
+            if (room.getRoomType().equalsIgnoreCase(roomType))
+                rooms.add(room);
+        });
+        return rooms;
     }
 
-
-
-
+    /**
+     * Updates a room record based on the roomNumber (pk).
+     * @param roomNum the primary key of the room.
+     * @param price the price per night.
+     * @param isAvailable represents a boolean "True" or "False" for the availability of the room.
+     * @return an empty string if the update was successful, or a string of the error that occurred if the operation fails.
+     */
     public String updateRoom(int roomNum, double price, String isAvailable) {
         List<Room> allRooms = selectJsonRooms();
         List<Booking> allBookings = selectJsonBookings();
@@ -176,6 +187,14 @@ public class DBManager {
         }
     }
 
+    /**
+     * Inserts a room row in the rooms table.
+     * @param roomNum the primary key of the record
+     * @param roomType the type of room
+     * @param price the price per night
+     * @param isAvailable represents a boolean "True" or "False" for the availability of the room.
+     * @return true if the insert was successful.
+     */
     public boolean insertRoomRecord(int roomNum, String roomType, double price, String isAvailable) {
         try {
             String sql = "INSERT INTO rooms(roomNum, roomType, price, isAvailable) VALUES(?,?,?,?)";
@@ -193,6 +212,13 @@ public class DBManager {
         }
     }
 
+    /**
+     * Adds a booking record to the database.
+     * @param clientId The id of the client that is booking the room.
+     * @param roomNum The room number for the booking.
+     * @param startDate The starting date of the booking.
+     * @return an empty string if the insert was successful, or a string of the error that occurred if the operation fails.
+     */
     public String insertBookingRecord(int clientId, int roomNum, LocalDate startDate) {
         try {
             Client client = findClient(clientId);
@@ -242,6 +268,12 @@ public class DBManager {
         }
     }
 
+    /**
+     * Completes a booking to check out a client. The booking record is updated to today's date that marks the end
+     * of the booking. If the booking ends before it starts, that means the client is canceling the booking.
+     * @param bookingNum the primary key of the booking record
+     * @return an empty string if the operation was successful, or a string of the error that occurred if the operation fails.
+     */
     public String completeBooking(int bookingNum) {//to check out
         try {
             Connection con = db.connect();
@@ -259,6 +291,9 @@ public class DBManager {
             if (bookingToEnd == null)
                 return "searchBookingError";
 
+//            if (LocalDate.now().isBefore(LocalDate.parse(bookingToEnd.getEndDate()))) {
+//                return "cannotCheckoutEarlier";
+//            }
 
             //Update endDate in the bookings table
             String updateBooking = "UPDATE bookings SET endDate = ? WHERE bookingNum = ?";
@@ -294,8 +329,8 @@ public class DBManager {
     }
 
     /**
-     * Drops a table from the db
-     * @param tableName table to remove
+     * Drops a table from the database.
+     * @param tableName Name of the table to remove.
      */
     public void dropTable(String tableName) {
         String sql = "DROP TABLE IF EXISTS " + tableName;
@@ -304,40 +339,57 @@ public class DBManager {
             Connection con = db.connect();
             Statement statement =  con.createStatement();
             statement.execute(sql);
-//            System.out.println("Success: Table " + tableName + " does not exist now.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Selects all the rooms that are marked as available in the database.
+     * @return the list of available rooms.
+     */
     public List<Room> selectAvailableRooms() {
         List<Room> allRooms = selectJsonRooms();
         return allRooms.stream().filter(room -> room.getIsAvailable().equalsIgnoreCase("true")).toList();
     }
 
+    /**
+     * Selects all clients that are currently in the hotel
+     * @return the list of all clients in the hotel.
+     */
     public List<Client> selectCurrentClients() {
         List<Client> allClients = selectJsonClients();
         return allClients.stream().filter(client -> client.getIsInHotel().equalsIgnoreCase("true")).toList();
     }
 
+    /**
+     * Finds a client
+     * @param id the ID of the client to look for.
+     * @return the found client. If it's not found, then null is returned.
+     */
     public Client findClient(int id) {
-        List<Client> clients = selectJsonClients();
-        for (Client client : clients){
-            if (client.getId() == id)
-                return client;
-        }
-        return null;
+        List<Client> clientList = selectJsonClients().stream().filter(client -> client.getId() == id).toList();
+        if (clientList.isEmpty())
+            return null;
+        return clientList.get(0);
     }
 
+    /**
+     * Finds a room in the database that matches the input room number.
+     * @param roomNum the number of the room to find.
+     * @return the room if it is found, or null if it is not found.
+     */
     public Room findRoom(int roomNum) {
-        List<Room> rooms = selectJsonRooms();
-        for (Room room : rooms){
-            if (room.getRoomNum() == roomNum)
-                return room;
-        }
-        return null;
+        List<Room> rooms = selectJsonRooms().stream().filter(room -> room.getRoomNum() == roomNum).toList();;
+        if (rooms.isEmpty())
+            return null;
+        return rooms.get(0);
     }
 
+    /**
+     * Selects all the rooms in the database using json object.
+     * @return the list of room records in the database.
+     */
     public List<Room> selectJsonRooms() {
         String sql = """
                 SELECT json_object(
@@ -366,6 +418,10 @@ public class DBManager {
         return rooms;
     }
 
+    /**
+     * Selects all the bookings in the database using json object.
+     * @return the list of booking records in the database.
+     */
     public List<Booking> selectJsonBookings() {
         String sql = """
                 SELECT json_object(
@@ -394,6 +450,10 @@ public class DBManager {
         return bookings;
     }
 
+    /**
+     * Selects all the clients in the database using json object.
+     * @return the list of client records in the database.
+     */
     public List<Client> selectJsonClients() {
 
         String sql = """
@@ -423,6 +483,10 @@ public class DBManager {
         return clients;
     }
 
+    /**
+     * Selects all the rooms in the database based on the price, from low to high.
+     * @return the list of sorted room records in the database.
+     */
     public List<Room> findRoomLowToHighPrice() {
         List<Room> rooms = selectJsonRooms();
 
