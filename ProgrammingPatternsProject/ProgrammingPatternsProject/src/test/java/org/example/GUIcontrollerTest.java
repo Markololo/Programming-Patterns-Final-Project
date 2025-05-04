@@ -25,18 +25,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GUIcontrollerTest {
     private GUIcontroller controller;
 
+
     @BeforeAll
-    public static void initJavaFX() {
-        new JFXPanel(); // Initializes the JavaFX toolkit
+    public static void initJavaFX() throws InterruptedException {
+        // This starts the JavaFX Platform
+        Platform.startup(() -> {
+        });
+        Thread.sleep(500); // Give time to finish startup
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
-        // Ensure JavaFX runs on the UI thread
+    public void setUp() throws InterruptedException {
         Platform.runLater(() -> {
             controller = new GUIcontroller();
 
-            // Create and set mock UI components
+            // Set up GUI elements
             ComboBox<String> roomTypeComboBox = new ComboBox<>();
             TableView<Room> tableView = new TableView<>();
             controller.setRoomTypeComboBox(roomTypeComboBox);
@@ -47,7 +50,7 @@ public class GUIcontrollerTest {
             controller.setColumn4(new TableColumn<>("Availability"));
             controller.setColumn5(new TableColumn<>("Booking Date"));
 
-            // Mock DBManager
+            // Set mock DBManager
             controller.setDbManager(new DBManager() {
                 @Override
                 public List<Room> findRoomByType(String type) {
@@ -67,37 +70,28 @@ public class GUIcontrollerTest {
                             new Room(140, "Suite", 150.0, "True", "2024-05-2"));
                 }
             });
-
-            // Set up the Stage and Scene
-            Stage stage = new Stage();
-            stage.setScene(new Scene(tableView)); // add TableView to scene
-            stage.show();
         });
-
-        Thread.sleep(500); // Wait for FX thread to complete setup
+// Wait for the JavaFX setup to complete
+        Thread.sleep(500);
     }
 
     @Test
-    public void testHandleSearchByRoomType() throws Exception {
+    public void testHandleSearchByRoomType() throws InterruptedException {
         Platform.runLater(() -> {
             controller.getRoomTypeComboBox().getItems().add("Deluxe");
             controller.getRoomTypeComboBox().setValue("Deluxe");
-
             controller.handleSearchByRoomType();
-
-            assertEquals(2, controller.getTableView().getItems().size());
-            Room room = (Room) controller.getTableView().getItems().get(0);
-            assertEquals(228, room.getRoomNum());
-            assertEquals("Double", room.getRoomType());
         });
-
-        // Let the JavaFX thread complete
+// Wait for handleSearchByRoomType to finish
         Thread.sleep(500);
+
+        List<Room> rooms = controller.getTableView().getItems();
+        assertEquals(2, rooms.size());
+        Room room = rooms.get(0);
+        assertEquals(228, room.getRoomNum());
+        assertEquals("Double", room.getRoomType());
     }
 }
-
-
-
 
 
 
