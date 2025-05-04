@@ -13,6 +13,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class tests methods from the GUIcontroller class.
+ */
 class GUIcontrollerTest {
 
     private GUIcontroller controller;
