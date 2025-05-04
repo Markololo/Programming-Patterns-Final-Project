@@ -37,7 +37,7 @@ public class GUIcontroller {
     @FXML private Button deleteRoomBtn;
     @FXML private Button searchForClientBtn;
     @FXML private Button searchForRoomBtn;
-    @FXML private Button staffLoginBtn;
+    @FXML private Button staffLoginBtn;//
     @FXML private Button updateRoomBtn;
     @FXML private Button viewAllBookingsBtn;
     @FXML private Button viewAllClientsBtn;
@@ -111,7 +111,6 @@ public class GUIcontroller {
     private Label idLabel;
     @FXML
     private Button searchByPriceBtn;
-
     /**
      * The constructor of the GUI controller.
      * It makes an object of DBManager to access its methods to interact with the database.
@@ -120,6 +119,7 @@ public class GUIcontroller {
         dbManager = new DBManager();
         messageService = new MessageService();
     }
+
 
     /**
      * It initializes everything for the main window (the staff's window) to open.
@@ -150,7 +150,6 @@ public class GUIcontroller {
             }
         });
     }
-
     /**
      * It handles switching from the client window to the staff window.
      * @throws IOException error for failing to open the new window.
@@ -167,7 +166,6 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
     /**
      * It handles switching from the staff window to the client window.
      * @throws IOException error for failing to open the new window.
@@ -184,50 +182,65 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
     /**
      * Handles the event where the button to search room
      * by type is pressed to view all the rooms that have the same type the user wants.
      */
     @FXML
     public void handleSearchByRoomType() {
-            try {
-                String englishRoomType = roomTypeComboBox.getValue();  // Still English!
-
-                tableView.getItems().clear();
-
-                column1.setText("Room Num.");
-                column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-                column2.setText("Room Type");
-                column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-                column3.setText("Price Per Night ($)");
-                column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-                column4.setText("Available");
-                column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-                column5.setText("Added Date");
-                column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
-
-                List<Room> rooms = dbManager.findRoomByType(englishRoomType);
-
-                if (rooms == null || rooms.isEmpty()) {
-                    throw new IllegalArgumentException();
-                }
-
-                // Translate each room's fields before displaying
-                for (Room room : rooms) {
-                    room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
-                    room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
-                }
-
-                tableView.getItems().addAll(rooms);
-
-            } catch (Exception e) {
-                showAlert("Error", translate("unexpectedError"));
+        try {
+            // get the room type selected by the user, then translate it
+            //before in english using console for debug
+            String englishRoomType = roomTypeComboBox.getValue();
+            if (englishRoomType == null || englishRoomType.isEmpty()) {
+                System.out.println("No room type selected!");
+                // Exit if no room type is selected
+                return;
             }
+                    //debug to know the type seletced
+            System.out.println("Selected room type: " + englishRoomType);
+
+            // translate room type for display only
+            String translatedRoomType = translate("roomTypeComboBox" + englishRoomType);
+            System.out.println("Translated room type: " + translatedRoomType);
+
+            tableView.getItems().clear();
+
+            column1.setText(translate("roomNum"));
+            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+            column2.setText(translate("roomType"));
+            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+            column3.setText(translate("pricePerNight"));
+            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+            column4.setText(translate("available"));
+            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+            column5.setText(translate("addedDate"));
+            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+            // fetch rooms based on the English room type using english
+            List<Room> rooms = dbManager.findRoomByType(englishRoomType);
+
+            if (rooms == null || rooms.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+
+            // translate each room fields before displaying
+            for (Room room : rooms) {
+                // Translate fields for display // translate availability
+                room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
+                // translate availability
+                room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
+            }
+
+            tableView.getItems().addAll(rooms);
+
+        } catch (Exception e) {
+            showAlert("Error", translate("unexpectedError"));
+        }
     }
 
     /**
@@ -243,30 +256,30 @@ public class GUIcontroller {
         primaryStage.show();
     }
 
+
     /**
      * When the associated button is pressed, the rooms will be sorted by price.
      */
     @FXML
-    public void handleSortByPrice() {
+    public void handleSortByPrice() throws IOException {
 
         try {
             tableView.getItems().clear();
 
-            column1.setText("Room Num.");
+            column1.setText(translate("roomNum"));
             column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
-            column2.setText("Room Type");
+            column2.setText(translate("roomType"));
             column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
 
-            column3.setText("Price Per Night ($)");
+            column3.setText((translate("pricePerNight")));
             column3.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-            column4.setText("Available");
+            column4.setText((translate("available")));
             column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
 
-            column5.setText("Added Date");
+            column5.setText(translate("addedDate"));
             column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
-
             //Translate from the English db:
             List<Room> rooms = dbManager.findRoomLowToHighPrice();
             rooms.forEach(room ->
@@ -281,28 +294,29 @@ public class GUIcontroller {
         }
     }
 
+
     /**
      * Views all the bookings the client has made when the associated button is pressed.
      */
     @FXML
-    private void handleViewPastBookingBtn() {
+    private void handleViewPastBookingBtn() throws IOException{
         try {
             int clientId = Integer.parseInt(clientIdField.getText());
 
             // Set up table columns for Booking view
-            column1.setText("Booking Num.");
+            column1.setText(translate("bookingNumCol"));
             column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
 
-            column2.setText("Client ID");
+            column2.setText(translate("clientIdCol"));
             column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
 
-            column3.setText("Room Num.");
+            column3.setText(translate("roomNum"));
             column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
-            column4.setText("Start Date");
+            column4.setText(translate("startDateCol"));
             column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
 
-            column5.setText("End Date");
+            column5.setText(translate("endDateCol"));
             column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
             // Get all bookings and filter them using the client ID
@@ -319,15 +333,15 @@ public class GUIcontroller {
             tableView.getItems().addAll(clientBookings);
 
         } catch (NumberFormatException e) {
-            showAlert("Error", "Invalid client ID format.");
+            showAlert("Error", translate("Invalid client ID format."));
         } catch (Exception e) {
-            showAlert("Error", "Failed to load past bookings:\n" + e.getMessage());
+            showAlert("Error",translate( "Failed to load past bookings:\n" + e.getMessage()));
         }
     }
 
     /**
      * Updates the GUI controls to conform to the user's chosen language for the staff window.
-     * The selectedLanguage is the user's chosen language, English or French.
+     *  The selectedLanguage is the user's chosen language, English or French.
      */
     @FXML
     private void staffLanguageUpdate() {
@@ -418,21 +432,21 @@ public class GUIcontroller {
         // Get the selected language:
         selectedLanguage = languageComboBox.getValue();
 
-        //Update window title
+        // Update window title
         Stage stage = (Stage) languageComboBox.getScene().getWindow();
         stage.setTitle(translate("clientWinTitle"));
 
-        //Organize GUI Components for translation:
+        // Organize GUI Components for translation:
         Button[] clientButtons = {
                 searchByTypeBtn, searchByPriceBtn, viewAllRoomsBtn, viewPastBookingsBtn,
                 bookRoomBtn
         };
 
         Label[] clientLabels = {
-                partySizeLabel,nameLabel,bookingStartDateLabel,idLabel, roomNumLabel,roomTypeLabel, welcomeLabel
+                partySizeLabel, nameLabel, bookingStartDateLabel, idLabel, roomNumLabel, roomTypeLabel, welcomeLabel
         };
 
-        //Update GUI elements:
+        // Update GUI elements:
         for (Button button : clientButtons) {
             button.setText(translate(button.getId()));
         }
@@ -450,11 +464,12 @@ public class GUIcontroller {
                 translate("roomTypeComboBoxBig_Family")
         );
 
-        //Reset empty table:
         tableView.getItems().clear();
         TableColumn[] cols = {column1, column2, column3, column4, column5};
         for (TableColumn column : cols)
             column.setText("");
+
+
     }
 
     /**
@@ -477,7 +492,6 @@ public class GUIcontroller {
                 showAlert("Error", translate(e.getMessage()));
         }
     }
-
     /**
      * When the associated button is pressed, a room that matches the provided
      * room number will be booked for the client
@@ -503,7 +517,6 @@ public class GUIcontroller {
                 showAlert("Error", translate(e.getMessage()));
         }
     }
-
     /**
      * When the associated button is pressed, the room will be updated according to fields for price and availability of the room.
      */
@@ -541,7 +554,6 @@ public class GUIcontroller {
             showAlert("Error", translate("updateRoomError"));
         }
     }
-
     /**
      * When the associated button is pressed, a client is added with the information provided in the fields.
      */
@@ -568,7 +580,6 @@ public class GUIcontroller {
             showAlert( "Error", translate("dataTypeError"));
         }
     }
-
     /**
      * When the associated button is pressed, all the available rooms in the database will be displayed in the table view.
      */
@@ -600,7 +611,6 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(rooms);
     }
-
     /**
      * When the associated button is pressed, all the clients that are in the hotel will be displayed in the table view.
      */
@@ -613,10 +623,9 @@ public class GUIcontroller {
 
         clientsDisplay(clients);
     }
-
     /**
      * When the associated button is pressed, all the clients in the database will be displayed in the table view.
-      */
+     */
     @FXML
     private void handleViewAllClientsBtn(){
 
@@ -628,7 +637,6 @@ public class GUIcontroller {
 
         clientsDisplay(clients);
     }
-
     /**
      * When the associated button is pressed, all the rooms in the database will be displayed in the table view.
      */
@@ -660,7 +668,6 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(rooms);
     }
-
     /**
      * When the associated button is pressed, all the bookings in the database will be displayed in the table view.
      */
@@ -685,7 +692,6 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(dbManager.selectJsonBookings());
     }
-
     /**
      * When the associated button is pressed, a room is added with the provided information in the fields.
      */
@@ -712,7 +718,6 @@ public class GUIcontroller {
             showAlert( "Error", translate("dataTypeError"));
         }
     }
-
     /**
      * When the associated button is pressed, the client with the ID provided in the field will be displayed.
      */
@@ -735,7 +740,6 @@ public class GUIcontroller {
             showAlert("Error", translate("searchClientError"));
         }
     }
-
     /**
      * When the associated button is pressed, the room matching the room number provided in the field will be displayed.
      */
@@ -773,7 +777,6 @@ public class GUIcontroller {
             showAlert("Error", translate("searchRoomError"));
         }
     }
-
     /**
      * When the associated button is pressed, the room matching the
      * room number provided in the field will be removed from the database.
@@ -789,7 +792,6 @@ public class GUIcontroller {
             showAlert("Error", translate("deleteRoomError"));
         }
     }
-
     /**
      * When the associated button is pressed, the client matching the
      * client ID provided in the field will be removed from the database.
@@ -818,7 +820,6 @@ public class GUIcontroller {
         alert.setContentText(msg);
         alert.show();
     }
-
     /**
      * A helper method to translate strings into the chosen language of the user.
      * @param msgCategory the message category to look for translation
@@ -827,7 +828,6 @@ public class GUIcontroller {
     private String translate(String msgCategory) {
         return messageService.useLangService(selectedLanguage, msgCategory);
     }
-
     /**
      * helper method to display a list of clients in the table view.
      * @param clients the list of clients to display.
@@ -852,4 +852,9 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(clients);
     }
+//    private void translateRoomType(String type) {
+//        switch (type) {
+//            case "" : return messageService.useLangService(selectedLanguage, "roomTypeComboBoxBigFamily");;
+//        }
+//    }
 }

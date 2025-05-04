@@ -31,7 +31,7 @@
         <Label fx:id="bookingStartDateLabel" layoutX="21.0" layoutY="559.0" text="Booking Start:" />
         <DatePicker fx:id="bookingStartDatePicker" layoutX="153.0" layoutY="555.0" />
       <Button fx:id="viewPastBookingsBtn" layoutX="539.0" layoutY="463.0" mnemonicParsing="false" onAction="#handleViewPastBookingBtn" prefHeight="25.0" prefWidth="216.0" text="View Bookings" />
-      <Button fx:id="viewAllRoomsBtn" layoutX="535.0" layoutY="396.0" mnemonicParsing="false" onAction="#handleViewAvailableRoomsBtn" prefHeight="25.0" prefWidth="225.0" text="View All Rooms" />
+      <Button fx:id="viewAllRoomsBtn" layoutX="535.0" layoutY="396.0" mnemonicParsing="false" onAction="#handleViewAvailableRoomsBtn" prefHeight="25.0" prefWidth="225.0" text="View Available Rooms" />
       <Label fx:id="roomNumLabel" layoutX="13.0" layoutY="647.0" text="Room Number" />
       <Label fx:id="nameLabel" layoutX="36.0" layoutY="599.0" text="Name" />
       <TextField fx:id="clientNameField" layoutX="153.0" layoutY="604.0" prefHeight="25.0" prefWidth="174.0" />
