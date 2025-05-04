@@ -1,12 +1,12 @@
 # Programming-Patterns-Final-Project
 Our final project is a hotel management system.
 
-##Introduction: 
+## Introduction: 
 The ​Ho​tel Management System is a small application that allows hotel staff (e.g.: receptionists) and guests to interact with the system from a graphical interface (GUI) and each have access to a separate window since they have different access levels.  
 
  
 
-##Staff Window Features: 
+### Staff Window Features: 
 
 -Login button to sign in as a client 
 
@@ -30,7 +30,7 @@ The ​Ho​tel Management System is a small application that allows hotel staff
 
 -Add client  
 
-##Client Window Features:
+### Client Window Features:
 
 -Login button to sign in as staff 
 
