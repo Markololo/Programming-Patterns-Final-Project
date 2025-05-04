@@ -16,6 +16,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/javafx.graphics.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/jfx.incubator.input.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../javafx-sdk-24.0.1/lib/jfx.incubator.richtext.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/productData.db" />
     </root>
   </artifact>
 </component>

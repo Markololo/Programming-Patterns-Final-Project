@@ -1,5 +1,11 @@
 package org.example;
 
+/**
+ * This is a superclass to make more specific classes
+ * such as the Client class and the Staff class.
+ * It contains the id field to identify each object and the name field.
+ * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
+ */
 public abstract class User {
     private int id;
     private String name;

@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * It is the View class of the MVC architecture. It takes care of displaying the GUI window.
+ */
 public class MainView extends Application {
 
     @Override

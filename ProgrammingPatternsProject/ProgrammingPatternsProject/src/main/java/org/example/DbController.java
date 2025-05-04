@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Singleton class to manage the database connection.
+ */
 public class DbController {
     private static DbController dbObject;
 
@@ -18,12 +21,14 @@ public class DbController {
     }
 
     /**
-     * Connect to JDBC driver
+     * Connect to JDBC driver for db connection.
      * @return jdbc connection
      */
     public Connection connect() {
-        String Base_Path = "jdbc:sqlite:src/main/resources/database";
-        String DB_Path = Base_Path + "ProductData.db";
+//        String Base_Path = "jdbc:sqlite:src/main/resources/database";
+//        String DB_Path = Base_Path + "ProductData.db";
+//        String DB_Path = "jdbc:sqlite:src/main/resources/productData.db";
+        String DB_Path = "jdbc:sqlite:productData.db";//the jar will locate it in the same folder
 
         Connection connection;
         try {
@@ -35,3 +40,6 @@ public class DbController {
         return connection;
     }
 }
+
+
+

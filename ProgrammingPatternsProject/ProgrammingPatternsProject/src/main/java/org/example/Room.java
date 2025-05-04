@@ -9,6 +9,13 @@ import java.util.Date;
 @EqualsAndHashCode
 @Getter
 @Setter
+/**
+ * This class represents the rooms. It's a model class.
+ * It is identified by the room number that is unique.
+ * In addition, stores the room type, the price per night,
+ * the availability(True/False), and the date when the room was added.
+ * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
+ */
 public class Room {
     private int roomNum;
     private String roomType;
