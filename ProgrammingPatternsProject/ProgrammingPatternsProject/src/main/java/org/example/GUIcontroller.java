@@ -21,6 +21,11 @@ import java.util.Objects;
 @Getter
 @Setter
 
+/**
+ * This class is the GUI controller for the JavaFX view MainView.java .
+ * It calls all the GUI components from the .fxml files to handle event actions and all the
+ * user interface functions.
+ */
 public class GUIcontroller {
     // Buttons
     @FXML private Button addClientBtn;
@@ -106,12 +111,20 @@ public class GUIcontroller {
     private Label idLabel;
     @FXML
     private Button searchByPriceBtn;
-
+    /**
+     * The constructor of the GUI controller.
+     * It makes an object of DBManager to access its methods to interact with the database.
+     */
     public GUIcontroller() {
         dbManager = new DBManager();
         messageService = new MessageService();
     }
 
+
+    /**
+     * It initializes everything for the main window (the staff's window) to open.
+     * Everything is in English at first, but the user can change the language.
+     */
     @FXML
     public void initialize() {
         languageComboBox.getItems().addAll("English", "Français");
@@ -137,7 +150,10 @@ public class GUIcontroller {
             }
         });
     }
-
+    /**
+     * It handles switching from the client window to the staff window.
+     * @throws IOException error for failing to open the new window.
+     */
     @FXML
     public void handleStaffLoginButton() throws IOException {
         //1) close previous window:
@@ -150,7 +166,10 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
+    /**
+     * It handles switching from the staff window to the client window.
+     * @throws IOException error for failing to open the new window.
+     */
     @FXML
     public void handleClientLoginButton() throws IOException {
         //1) close previous window:
@@ -163,7 +182,10 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
+    /**
+     * Handles the event where the button to search room
+     * by type is pressed to view all the rooms that have the same type the user wants.
+     */
     @FXML
     public void handleSearchByRoomType() {
         try {
@@ -220,6 +242,11 @@ public class GUIcontroller {
             showAlert("Error", translate("unexpectedError"));
         }
     }
+
+    /**
+     * handles the sign in of the client to go from staff to client window when the button is pressed.
+     * @throws IOException
+     */
     @FXML
     public void handleSignIn() throws IOException {
         Stage primaryStage = new Stage();
@@ -229,6 +256,10 @@ public class GUIcontroller {
         primaryStage.show();
     }
 
+
+    /**
+     * When the associated button is pressed, the rooms will be sorted by price.
+     */
     @FXML
     public void handleSortByPrice() throws IOException {
 
@@ -263,6 +294,10 @@ public class GUIcontroller {
         }
     }
 
+
+    /**
+     * Views all the bookings the client has made when the associated button is pressed.
+     */
     @FXML
     private void handleViewPastBookingBtn() throws IOException{
         try {
@@ -305,8 +340,8 @@ public class GUIcontroller {
     }
 
     /**
-     * updates the labels to conform to the user's chosen language
-     * the selectedLanguage is the user's chosen language, English or French
+     * Updates the GUI controls to conform to the user's chosen language for the staff window.
+     *  The selectedLanguage is the user's chosen language, English or French.
      */
     @FXML
     private void staffLanguageUpdate() {
@@ -361,8 +396,8 @@ public class GUIcontroller {
     }
 
     /**
-     * updates the labels to conform to the user's chosen language
-     * the selectedLanguage is the user's chosen language, English or French
+     * Updates the GUI controls to conform to the user's chosen language.
+     * The selectedLanguage is the user's chosen language, English or French.
      */
     @FXML
     private void clientLanguageUpdate() {
@@ -387,7 +422,10 @@ public class GUIcontroller {
         }
     }
 
-
+    /**
+     * Updates the GUI controls to conform to the user's chosen language for the client window.
+     * The selectedLanguage is the user's chosen language, English or French.
+     */
     @FXML
     private void clientLanguageUpdate2()
     {
@@ -434,7 +472,9 @@ public class GUIcontroller {
 
     }
 
-
+    /**
+     * When the associated button is pressed, the client will check out from the room using the booking number.
+     */
     @FXML
     private void handleCheckoutClientBtn(){
         try {
@@ -452,7 +492,11 @@ public class GUIcontroller {
                 showAlert("Error", translate(e.getMessage()));
         }
     }
-
+    /**
+     * When the associated button is pressed, a room that matches the provided
+     * room number will be booked for the client
+     * with the id that is provided in the clientId text field as of the date that is selected in the date picker.
+     */
     @FXML
     private void handleBookRoomBtn() {
         try {
@@ -473,7 +517,9 @@ public class GUIcontroller {
                 showAlert("Error", translate(e.getMessage()));
         }
     }
-
+    /**
+     * When the associated button is pressed, the room will be updated according to fields for price and availability of the room.
+     */
     @FXML
     private void handleUpdateRoomBtn() {
         try {
@@ -508,7 +554,9 @@ public class GUIcontroller {
             showAlert("Error", translate("updateRoomError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, a client is added with the information provided in the fields.
+     */
     @FXML
     private void handleAddClientBtn(){
         try {
@@ -532,7 +580,9 @@ public class GUIcontroller {
             showAlert( "Error", translate("dataTypeError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, all the available rooms in the database will be displayed in the table view.
+     */
     @FXML
     private void handleViewAvailableRoomsBtn(){
         tableView.getItems().clear();
@@ -561,7 +611,9 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(rooms);
     }
-
+    /**
+     * When the associated button is pressed, all the clients that are in the hotel will be displayed in the table view.
+     */
     @FXML
     private void handleViewCurrentClientsBtn(){
         List<Client> clients = dbManager.selectCurrentClients();
@@ -571,7 +623,9 @@ public class GUIcontroller {
 
         clientsDisplay(clients);
     }
-
+    /**
+     * When the associated button is pressed, all the clients in the database will be displayed in the table view.
+     */
     @FXML
     private void handleViewAllClientsBtn(){
 
@@ -583,7 +637,9 @@ public class GUIcontroller {
 
         clientsDisplay(clients);
     }
-
+    /**
+     * When the associated button is pressed, all the rooms in the database will be displayed in the table view.
+     */
     @FXML
     public void handleViewAllRoomsBtn() {
         tableView.getItems().clear();
@@ -612,7 +668,9 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(rooms);
     }
-
+    /**
+     * When the associated button is pressed, all the bookings in the database will be displayed in the table view.
+     */
     @FXML
     private void handleViewAllBookingsBtn(){
         tableView.getItems().clear();
@@ -634,7 +692,9 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(dbManager.selectJsonBookings());
     }
-
+    /**
+     * When the associated button is pressed, a room is added with the provided information in the fields.
+     */
     @FXML
     private void handleAddRoomBtn(){
         try {
@@ -658,7 +718,9 @@ public class GUIcontroller {
             showAlert( "Error", translate("dataTypeError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, the client with the ID provided in the field will be displayed.
+     */
     @FXML
     private void handleSearchForClientBtn(){
         try {
@@ -678,7 +740,9 @@ public class GUIcontroller {
             showAlert("Error", translate("searchClientError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, the room matching the room number provided in the field will be displayed.
+     */
     @FXML
     private void handleSearchForRoomBtn(){
         try {
@@ -713,7 +777,10 @@ public class GUIcontroller {
             showAlert("Error", translate("searchRoomError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, the room matching the
+     * room number provided in the field will be removed from the database.
+     */
     @FXML
     private void handleDeleteRoomBtn(){
         try {
@@ -725,7 +792,10 @@ public class GUIcontroller {
             showAlert("Error", translate("deleteRoomError"));
         }
     }
-
+    /**
+     * When the associated button is pressed, the client matching the
+     * client ID provided in the field will be removed from the database.
+     */
     @FXML
     private void handleDeleteClientBtn(){
         try {
@@ -750,11 +820,18 @@ public class GUIcontroller {
         alert.setContentText(msg);
         alert.show();
     }
-
+    /**
+     * A helper method to translate strings into the chosen language of the user.
+     * @param msgCategory the message category to look for translation
+     * @return a translated string
+     */
     private String translate(String msgCategory) {
         return messageService.useLangService(selectedLanguage, msgCategory);
     }
-
+    /**
+     * helper method to display a list of clients in the table view.
+     * @param clients the list of clients to display.
+     */
     private void clientsDisplay(List<Client> clients) {
         tableView.getItems().clear();
 
