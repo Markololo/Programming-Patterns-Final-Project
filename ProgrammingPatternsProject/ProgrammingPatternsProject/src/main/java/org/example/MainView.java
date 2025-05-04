@@ -13,6 +13,11 @@ import java.util.Objects;
  */
 public class MainView extends Application {
 
+    /**
+     * To initiate the GUI window by calling MainView.fxml
+     * @param primaryStage the stage of the sindow
+     * @throws Exception If an error occurs while trying to open the window
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent appWindow = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MainView.fxml")));
@@ -21,6 +26,10 @@ public class MainView extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Launches the GUI window.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

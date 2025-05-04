@@ -15,17 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Getter
-@Setter
-
 /**
  * This class is the GUI controller for the JavaFX view MainView.java .
  * It calls all the GUI components from the .fxml files to handle event actions and all the
  * user interface functions.
  */
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 public class GUIcontroller {
     // Buttons
     @FXML private Button addClientBtn;
@@ -33,7 +32,7 @@ public class GUIcontroller {
     @FXML private Button bookRoomBtn;
     @FXML private Button checkoutClientBtn;
     @FXML private Button clientLoginBtn;
-    @FXML private Button deleteClientBtn;
+//    @FXML private Button deleteClientBtn;
     @FXML private Button deleteRoomBtn;
     @FXML private Button searchForClientBtn;
     @FXML private Button searchForRoomBtn;
@@ -111,6 +110,7 @@ public class GUIcontroller {
     private Label idLabel;
     @FXML
     private Button searchByPriceBtn;
+
     /**
      * The constructor of the GUI controller.
      * It makes an object of DBManager to access its methods to interact with the database.
@@ -150,6 +150,7 @@ public class GUIcontroller {
             }
         });
     }
+
     /**
      * It handles switching from the client window to the staff window.
      * @throws IOException error for failing to open the new window.
@@ -166,6 +167,7 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
+
     /**
      * It handles switching from the staff window to the client window.
      * @throws IOException error for failing to open the new window.
@@ -182,6 +184,7 @@ public class GUIcontroller {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
+
     /**
      * Handles the event where the button to search room
      * by type is pressed to view all the rooms that have the same type the user wants.
@@ -261,8 +264,7 @@ public class GUIcontroller {
      * When the associated button is pressed, the rooms will be sorted by price.
      */
     @FXML
-    public void handleSortByPrice() throws IOException {
-
+    public void handleSortByPrice() {
         try {
             tableView.getItems().clear();
 
@@ -293,7 +295,6 @@ public class GUIcontroller {
             showAlert("Error", translate("unexpectedError"));
         }
     }
-
 
     /**
      * Views all the bookings the client has made when the associated button is pressed.
@@ -355,7 +356,7 @@ public class GUIcontroller {
         //Organize GUI Components for translation:
         Button[] staffButtons = {
                 addClientBtn, addRoomBtn, bookRoomBtn, checkoutClientBtn,
-                clientLoginBtn, deleteClientBtn, deleteRoomBtn, searchForClientBtn,
+                clientLoginBtn, deleteRoomBtn, searchForClientBtn,
                 searchForRoomBtn, updateRoomBtn, viewAllBookingsBtn,
                 viewAllClientsBtn, viewAllRoomsBtn, viewAvailableRoomsBtn, viewCurrentClientsBtn
         };
@@ -663,11 +664,12 @@ public class GUIcontroller {
         List<Room> rooms = dbManager.selectJsonRooms();
         rooms.forEach(room -> {
             room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
-//            room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
+            room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
         });
 
         tableView.getItems().addAll(rooms);
     }
+
     /**
      * When the associated button is pressed, all the bookings in the database will be displayed in the table view.
      */
@@ -692,6 +694,7 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(dbManager.selectJsonBookings());
     }
+
     /**
      * When the associated button is pressed, a room is added with the provided information in the fields.
      */
@@ -718,6 +721,7 @@ public class GUIcontroller {
             showAlert( "Error", translate("dataTypeError"));
         }
     }
+
     /**
      * When the associated button is pressed, the client with the ID provided in the field will be displayed.
      */
@@ -740,6 +744,7 @@ public class GUIcontroller {
             showAlert("Error", translate("searchClientError"));
         }
     }
+
     /**
      * When the associated button is pressed, the room matching the room number provided in the field will be displayed.
      */
@@ -777,6 +782,7 @@ public class GUIcontroller {
             showAlert("Error", translate("searchRoomError"));
         }
     }
+
     /**
      * When the associated button is pressed, the room matching the
      * room number provided in the field will be removed from the database.
@@ -792,21 +798,22 @@ public class GUIcontroller {
             showAlert("Error", translate("deleteRoomError"));
         }
     }
+
     /**
      * When the associated button is pressed, the client matching the
      * client ID provided in the field will be removed from the database.
      */
-    @FXML
-    private void handleDeleteClientBtn(){
-        try {
-            int id = Integer.parseInt(clientIdField.getText());
-
-            dbManager.deleteRow("clients", "id", id);
-            handleViewAllClientsBtn();
-        } catch (Exception e) {
-            showAlert("Error", translate("deleteClientError"));
-        }
-    }
+//    @FXML
+//    private void handleDeleteClientBtn(){
+//        try {
+//            int id = Integer.parseInt(clientIdField.getText());
+//
+//            dbManager.deleteRow("clients", "id", id);
+//            handleViewAllClientsBtn();
+//        } catch (Exception e) {
+//            showAlert("Error", translate("deleteClientError"));
+//        }
+//    }
 
     /**
      * To display popup messages to inform the user about something.
@@ -820,6 +827,7 @@ public class GUIcontroller {
         alert.setContentText(msg);
         alert.show();
     }
+
     /**
      * A helper method to translate strings into the chosen language of the user.
      * @param msgCategory the message category to look for translation
@@ -828,6 +836,7 @@ public class GUIcontroller {
     private String translate(String msgCategory) {
         return messageService.useLangService(selectedLanguage, msgCategory);
     }
+
     /**
      * helper method to display a list of clients in the table view.
      * @param clients the list of clients to display.
@@ -852,9 +861,4 @@ public class GUIcontroller {
 
         tableView.getItems().addAll(clients);
     }
-//    private void translateRoomType(String type) {
-//        switch (type) {
-//            case "" : return messageService.useLangService(selectedLanguage, "roomTypeComboBoxBigFamily");;
-//        }
-//    }
 }

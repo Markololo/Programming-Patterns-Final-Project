@@ -5,16 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@ToString
-@Getter
-@Setter
-
 /**
  * This is a subclass of the User class. It inherits the user class's name and id fields, and adds
  * its own fields  for the contact information, the party size of the user and isInHotel to check
  * if the user is in the hotel currently.
  * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
  */
+@ToString
+@Getter
+@Setter
 public class Client extends User{//make abstract class user as parent
     private String contact;
     private int numOfMembers;

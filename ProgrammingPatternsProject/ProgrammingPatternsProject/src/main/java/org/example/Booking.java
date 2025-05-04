@@ -4,12 +4,6 @@ import lombok.*;
 
 import java.util.Date;
 
-
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Getter
-@Setter
 /**
  * A model class to represent the bookings.
  * It includes the booking number, the ID of the client that is booking,
@@ -17,6 +11,11 @@ import java.util.Date;
  * If the booking ended before starting, it means it was canceled and the client should not be billed.
  * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
  */
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 public class Booking {
     private int bookingNum;
     private int clientId;

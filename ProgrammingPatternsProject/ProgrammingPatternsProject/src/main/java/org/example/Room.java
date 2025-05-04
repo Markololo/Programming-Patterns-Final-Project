@@ -1,14 +1,8 @@
 package org.example;
 
 import lombok.*;
-
 import java.util.Date;
 
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Getter
-@Setter
 /**
  * This class represents the rooms. It's a model class.
  * It is identified by the room number that is unique.
@@ -16,6 +10,11 @@ import java.util.Date;
  * the availability(True/False), and the date when the room was added.
  * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
  */
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 public class Room {
     private int roomNum;
     private String roomType;
