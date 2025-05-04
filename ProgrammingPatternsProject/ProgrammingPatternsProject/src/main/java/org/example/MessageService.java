@@ -3,7 +3,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 interface Language {
-    public String getMessage(String msgCategory);
+    String getMessage(String msgCategory);
 }
 
 //Concrete Classes
