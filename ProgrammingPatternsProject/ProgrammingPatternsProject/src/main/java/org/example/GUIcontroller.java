@@ -85,6 +85,8 @@ public class GUIcontroller {
     @FXML private TableColumn column5;
 
     // TableView
+
+
     @FXML private TableView tableView; // I left the data type ambiguous, so that we can change it dynamically.
 
     private String selectedLanguage = "english"; //Default
