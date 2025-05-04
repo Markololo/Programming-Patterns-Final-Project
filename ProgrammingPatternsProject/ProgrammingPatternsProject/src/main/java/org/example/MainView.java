@@ -15,7 +15,7 @@ public class MainView extends Application {
 
     /**
      * To initiate the GUI window by calling MainView.fxml
-     * @param primaryStage the stage of the sindow
+     * @param primaryStage the stage of the window
      * @throws Exception If an error occurs while trying to open the window
      */
     @Override
