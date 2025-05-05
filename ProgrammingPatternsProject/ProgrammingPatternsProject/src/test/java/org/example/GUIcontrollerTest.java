@@ -118,7 +118,7 @@ public class GUIcontrollerTest
             // the getitems adds the deluxe room type to the list of combo box
             controller.getRoomTypeComboBox().getItems().add("Double");
 
-            //this selects the value deluxe from combo box
+            //this selects the value double from combo box
             controller.getRoomTypeComboBox().setValue("Double");
 
             //call the method from gui
