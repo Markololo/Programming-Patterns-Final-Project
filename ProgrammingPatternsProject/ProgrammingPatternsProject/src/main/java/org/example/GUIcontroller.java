@@ -193,24 +193,38 @@ public class GUIcontroller {
      */
     @FXML
     public void handleSearchByRoomType() {
-        try {
-            // get the room type selected by the user, then translate it
-            //before in english using console for debug
-            String englishRoomType = roomTypeComboBox.getValue();
-            if (englishRoomType == null || englishRoomType.isEmpty()) {
-                System.out.println("No room type selected!");
-                // Exit if no room type is selected
+        try
+        {
+            // get selected room type
+            String selected = roomTypeComboBox.getValue();
+
+            //if we dont have a value for roomtype
+            if (selected == null || selected.isEmpty())
+            {
+                showAlert("Error", translate("noRoomTypeSelected"));
                 return;
             }
-                    //debug to know the type seletced
-            System.out.println("Selected room type: " + englishRoomType);
 
-            // translate room type for display only
-            String translatedRoomType = translate("roomTypeComboBox" + englishRoomType);
-            System.out.println("Translated room type: " + translatedRoomType);
+            //console display
+            System.out.println("Selected room type: " + selected);
 
-            tableView.getItems().clear();
+            // convert selected room type back to English for the db
+            String englishRoomType = messageService.useLangService("english", "roomTypeComboBox" + selected);
 
+            //after translated it displays in english first
+            System.out.println("Translated to English: " + englishRoomType);
+
+            // fetch rooms
+            List<Room> rooms = dbManager.findRoomByType(englishRoomType);
+
+            //check if the room is empty
+            if (rooms == null || rooms.isEmpty())
+            {
+                showAlert("Error", translate("noRoomsFound"));
+                return;
+            }
+
+            // update column headers
             column1.setText(translate("roomNum"));
             column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
 
@@ -226,24 +240,22 @@ public class GUIcontroller {
             column5.setText(translate("addedDate"));
             column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
-            // fetch rooms based on the English room type using english
-            List<Room> rooms = dbManager.findRoomByType(englishRoomType);
-
-            if (rooms == null || rooms.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-
-            // translate each room fields before displaying
-            for (Room room : rooms) {
-                // Translate fields for display // translate availability
+            // translate fields for display
+            for (Room room : rooms)
+            {
+                //to display the combo boxes translating them for each room since it cant have multiple type choice
                 room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
-                // translate availability
                 room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
             }
+          //clear the table after display each time
+            tableView.getItems().clear();
 
+            //after diplaying add items to table
             tableView.getItems().addAll(rooms);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             showAlert("Error", translate("unexpectedError"));
         }
     }
@@ -267,7 +279,9 @@ public class GUIcontroller {
      */
     @FXML
     public void handleSortByPrice() {
-        try {
+        try
+        {
+        //get tableview object
             tableView.getItems().clear();
 
             column1.setText(translate("roomNum"));
@@ -284,7 +298,7 @@ public class GUIcontroller {
 
             column5.setText(translate("addedDate"));
             column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
-            //Translate from the English db:
+            //translate from the English db:
             List<Room> rooms = dbManager.findRoomLowToHighPrice();
             rooms.forEach(room ->
                     room.setIsAvailable(translate("comboBox" + room.getIsAvailable()))
