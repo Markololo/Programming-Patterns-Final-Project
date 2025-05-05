@@ -15,23 +15,18 @@ Mariam's Part:
 -Made the "Resource Bundle 'messages'" with translations
 -Made the window switching from staff window to client window.
 -Made the final report
--made final jar
 
 
 Meerab's part:
--Majority of Deliverable 1
+-Most of Deliverable 1
 -Made db file with Mariam
--Made the model classes' content
--Created model classes' structure
--Made the sign in window and connected it to the client window
+-Created model classes' structure (initiate java classes)
+-Made the sign in window and its controls and connected it to the client window
 -Added controls to the client window and added some GUI methods
 -Made Junit testing
--Make login table with client ID and password
--Handled login feature
+-Made login table with client ID and password (TODO)
+-Handled login feature (TODO: to complete)
 -Made the final report
--The client window and making sure to use translation
--made jar
-
 
 // For "Programming Patterns" Section 2- Winter 2025
 // --------------------------------------------------------
