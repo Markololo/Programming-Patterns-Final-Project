@@ -17,11 +17,11 @@
       <Button fx:id="clientLoginBtn" layoutX="14.0" layoutY="39.0" mnemonicParsing="false" onAction="#handleClientLoginButton" prefHeight="25.0" prefWidth="201.0" text="Client Login" />
       <TableView fx:id="tableView" layoutX="15.0" layoutY="100.0" prefHeight="243.0" prefWidth="797.0">
          <columns>
-            <TableColumn fx:id="column1" prefWidth="148.0" />
-            <TableColumn fx:id="column2" prefWidth="148.0" />
-            <TableColumn fx:id="column3" prefWidth="148.0" />
-            <TableColumn fx:id="column4" prefWidth="148.0" />
-            <TableColumn fx:id="column5" prefWidth="148.0" />
+            <TableColumn fx:id="column1" prefWidth="159.0" />
+            <TableColumn fx:id="column2" prefWidth="159.0" />
+            <TableColumn fx:id="column3" prefWidth="159.0" />
+            <TableColumn fx:id="column4" prefWidth="159.0" />
+            <TableColumn fx:id="column5" prefWidth="159.0" />
          </columns></TableView>
       <Label fx:id="displayTableLabel" layoutX="15.0" layoutY="76.0" />
       <Button fx:id="viewAllBookingsBtn" layoutX="615.0" layoutY="494.0" mnemonicParsing="false" onAction="#handleViewAllBookingsBtn" prefHeight="25.0" prefWidth="193.0" text="View All Bookings" />

@@ -11,6 +11,7 @@ import java.util.Date;
  * Lombok is used to make classical methods like constructors, getters, setters, toString, etc.
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 @Getter

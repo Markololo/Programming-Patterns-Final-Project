@@ -198,7 +198,7 @@ public class GUIcontroller {
             // get selected room type
             String selected = roomTypeComboBox.getValue();
 
-            //if we dont have a value for roomtype
+            //if we don't have a value for room type
             if (selected == null || selected.isEmpty())
             {
                 showAlert("Error", translate("noRoomTypeSelected"));
@@ -225,20 +225,20 @@ public class GUIcontroller {
             }
 
             // update column headers
-            column1.setText(translate("roomNum"));
-            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-            column2.setText(translate("roomType"));
-            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-            column3.setText(translate("pricePerNight"));
-            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            column4.setText(translate("available"));
-            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-            column5.setText(translate("addedDate"));
-            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+//            column1.setText(translate("roomNum"));
+//            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+//
+//            column2.setText(translate("roomType"));
+//            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+//
+//            column3.setText(translate("pricePerNight"));
+//            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+//
+//            column4.setText(translate("available"));
+//            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+//
+//            column5.setText(translate("addedDate"));
+//            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
             // translate fields for display
             for (Room room : rooms)
@@ -247,12 +247,12 @@ public class GUIcontroller {
                 room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
                 room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
             }
-          //clear the table after display each time
-            tableView.getItems().clear();
-
-            //after diplaying add items to table
-            tableView.getItems().addAll(rooms);
-
+//          //clear the table after display each time
+//            tableView.getItems().clear();
+//
+//            //after displaying add items to table
+//            tableView.getItems().addAll(rooms);
+            roomsDisplay(rooms);
         }
         catch (Exception e)
         {
@@ -281,23 +281,6 @@ public class GUIcontroller {
     public void handleSortByPrice() {
         try
         {
-        //get tableview object
-            tableView.getItems().clear();
-
-            column1.setText(translate("roomNum"));
-            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-            column2.setText(translate("roomType"));
-            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-            column3.setText((translate("pricePerNight")));
-            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            column4.setText((translate("available")));
-            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-            column5.setText(translate("addedDate"));
-            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
             //translate from the English db:
             List<Room> rooms = dbManager.findRoomLowToHighPrice();
             rooms.forEach(room ->
@@ -305,7 +288,7 @@ public class GUIcontroller {
             );
             rooms.forEach(room -> room.setRoomType(translate("roomTypeComboBox" + room.getRoomType())));
 
-            tableView.getItems().setAll(rooms);
+            roomsDisplay(rooms);
 
         } catch (Exception e) {
             showAlert("Error", translate("unexpectedError"));
@@ -320,21 +303,21 @@ public class GUIcontroller {
         try {
             int clientId = Integer.parseInt(clientIdField.getText());
 
-            // Set up table columns for Booking view
-            column1.setText(translate("bookingNumCol"));
-            column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
-
-            column2.setText(translate("clientIdCol"));
-            column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
-
-            column3.setText(translate("roomNum"));
-            column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-            column4.setText(translate("startDateCol"));
-            column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-
-            column5.setText(translate("endDateCol"));
-            column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+//            // Set up table columns for Booking view
+//            column1.setText(translate("bookingNumCol"));
+//            column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
+//
+//            column2.setText(translate("clientIdCol"));
+//            column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
+//
+//            column3.setText(translate("roomNum"));
+//            column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+//
+//            column4.setText(translate("startDateCol"));
+//            column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+//
+//            column5.setText(translate("endDateCol"));
+//            column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
             // Get all bookings and filter them using the client ID
             List<Booking> bookings = dbManager.selectJsonBookings();
@@ -346,13 +329,12 @@ public class GUIcontroller {
                 showAlert("Error", translate("noClientBooking") + clientId);
             }
 
-            tableView.getItems().clear();
-            tableView.getItems().addAll(clientBookings);
+//            tableView.getItems().clear();
+//            tableView.getItems().addAll(clientBookings);
+            bookingsDisplay(clientBookings);
 
-        } catch (NumberFormatException e) {
-            showAlert("Error", translate("Invalid client ID format."));
         } catch (Exception e) {
-            showAlert("Error",translate( "Failed to load past bookings:\n" + e.getMessage()));
+            showAlert("Error",translate( "cannotFindBookings"));
         }
     }
 
@@ -602,22 +584,6 @@ public class GUIcontroller {
      */
     @FXML
     private void handleViewAvailableRoomsBtn(){
-        tableView.getItems().clear();
-
-        column1.setText(translate("roomNum"));
-        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-        column2.setText(translate("roomType"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-        column3.setText((translate("pricePerNight")));
-        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        column4.setText((translate("available")));
-        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-        column5.setText(translate("addedDate"));
-        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
         //Translate from the English db:
         List<Room> rooms = dbManager.selectAvailableRooms();
@@ -626,7 +592,7 @@ public class GUIcontroller {
             room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
         });
 
-        tableView.getItems().addAll(rooms);
+        roomsDisplay(rooms);
     }
     /**
      * When the associated button is pressed, all the clients that are in the hotel will be displayed in the table view.
@@ -659,22 +625,6 @@ public class GUIcontroller {
      */
     @FXML
     public void handleViewAllRoomsBtn() {
-        tableView.getItems().clear();
-
-        column1.setText(translate("roomNum"));
-        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-        column2.setText(translate("roomType"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-        column3.setText((translate("pricePerNight")));
-        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        column4.setText((translate("available")));
-        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-        column5.setText(translate("addedDate"));
-        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
         //Translate from the English db:
         List<Room> rooms = dbManager.selectJsonRooms();
@@ -682,8 +632,7 @@ public class GUIcontroller {
             room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
             room.setRoomType(translate("roomTypeComboBox" + room.getRoomType()));
         });
-
-        tableView.getItems().addAll(rooms);
+        roomsDisplay(rooms);
     }
 
     /**
@@ -691,24 +640,32 @@ public class GUIcontroller {
      */
     @FXML
     private void handleViewAllBookingsBtn(){
-        tableView.getItems().clear();
-
-        column1.setText(translate("bookingNumCol"));
-        column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
-
-        column2.setText(translate("clientIdCol"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
-
-        column3.setText(translate("roomNum"));
-        column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-        column4.setText(translate("startDateCol"));
-        column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-
-        column5.setText(translate("endDateCol"));
-        column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-
-        tableView.getItems().addAll(dbManager.selectJsonBookings());
+//        tableView.getItems().clear();
+//
+//        column1.setText(translate("bookingNumCol"));
+//        column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
+//
+//        column2.setText(translate("clientIdCol"));
+//        column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
+//
+//        column3.setText(translate("roomNum"));
+//        column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+//
+//        column4.setText(translate("startDateCol"));
+//        column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+//
+//        column5.setText(translate("endDateCol"));
+//        column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+//
+//        List<Booking> bookings = dbManager.selectJsonBookings();
+//
+//        bookings.forEach(booking -> {
+//            booking.setStartDate(messageService.useDateLangService(selectedLanguage, LocalDate.parse(booking.getStartDate())));
+//            booking.setEndDate(messageService.useDateLangService(selectedLanguage, LocalDate.parse(booking.getEndDate())));
+//        });
+//
+//        tableView.getItems().addAll(bookings);
+        bookingsDisplay(dbManager.selectJsonBookings());
     }
 
     /**
@@ -767,32 +724,16 @@ public class GUIcontroller {
     @FXML
     private void handleSearchForRoomBtn(){
         try {
-
             int roomNum = Integer.parseInt(roomNoField.getText());
-
-            tableView.getItems().clear();
-
-            column1.setText("Room Num.");
-            column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
-
-            column2.setText("Room Type");
-            column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
-
-            column3.setText("Price Per Night ($)");
-            column3.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-            column4.setText("Available");
-            column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
-
-            column5.setText("Added Date");
-            column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
 
             Room room = dbManager.findRoom(roomNum);
             if (room == null) {
                 throw new IllegalArgumentException();
             }
             room.setIsAvailable(translate("comboBox" + room.getIsAvailable()));
-            tableView.getItems().add(room);
+            List<Room> rooms = new ArrayList<>();
+            rooms.add(room);
+            roomsDisplay(rooms);
             roomNoField.clear();
         } catch (Exception e) {
             showAlert("Error", translate("searchRoomError"));
@@ -829,7 +770,8 @@ public class GUIcontroller {
 //        } catch (Exception e) {
 //            showAlert("Error", translate("deleteClientError"));
 //        }
-//    }
+//    }    Removed the method because it does not make sense to remove a client.
+//         He is just not in the hotel anymore, but we cannot erase that he was once a client.
 
     /**
      * To display popup messages to inform the user about something.
@@ -876,5 +818,55 @@ public class GUIcontroller {
         column5.setCellValueFactory(new PropertyValueFactory<>("isInHotel"));
 
         tableView.getItems().addAll(clients);
+    }
+
+    private void roomsDisplay(List<Room> rooms) {
+        tableView.getItems().clear();
+
+        column1.setText(translate("roomNum"));
+        column1.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+        column2.setText(translate("roomType"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+
+        column3.setText((translate("pricePerNight")));
+        column3.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        column4.setText((translate("available")));
+        column4.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
+
+        column5.setText(translate("addedDate"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
+
+        rooms.forEach(room -> room.setAddedDate(messageService.useDateLangService(selectedLanguage, LocalDate.parse(room.getAddedDate()))));
+
+        tableView.getItems().addAll(rooms);
+    }
+
+    private void bookingsDisplay(List<Booking> bookings) {
+        tableView.getItems().clear();
+
+        column1.setText(translate("bookingNumCol"));
+        column1.setCellValueFactory(new PropertyValueFactory<>("bookingNum"));
+
+        column2.setText(translate("clientIdCol"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("clientId"));
+
+        column3.setText(translate("roomNum"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("roomNum"));
+
+        column4.setText(translate("startDateCol"));
+        column4.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+
+        column5.setText(translate("endDateCol"));
+        column5.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+        bookings.forEach(booking -> {
+            booking.setStartDate(messageService.useDateLangService(selectedLanguage, LocalDate.parse(booking.getStartDate())));
+            if (booking.getEndDate() !=null && !booking.getEndDate().isEmpty())
+                booking.setEndDate(messageService.useDateLangService(selectedLanguage, LocalDate.parse(booking.getEndDate())));
+        });
+
+        tableView.getItems().addAll(bookings);
     }
 }

@@ -3,7 +3,6 @@
 Final Project
 Written by: Mariam Salim #6229528 and Meerab Khan #2388387
 
-
 Mariam's Part:
 -Helped with Deliverable 1 and made a GitHub repository
 -Made db file with Meerab
@@ -16,12 +15,13 @@ Mariam's Part:
 -Made the "Resource Bundle 'messages'" with translations
 -Made the window switching from staff window to client window.
 -Made the final report
--made final working jar
+-made final jar
 
 
 Meerab's part:
 -Majority of Deliverable 1
 -Made db file with Mariam
+-Made the model classes' content
 -Created model classes' structure
 -Made the sign in window and connected it to the client window
 -Added controls to the client window and added some GUI methods
@@ -161,8 +161,10 @@ public class DBManager {
             return "searchRoomError";
 
         //Check if the room is booked: it cannot be updated if a client is in it.
+//        if (roomToUpdate.getIsAvailable().equalsIgnoreCase("false") || roomToUpdate.getIsAvailable().equalsIgnoreCase("faux"))//I'm not sure if we need the OR
+//            return "roomAlreadyBooked";//booked or just not available
         for (Booking booking : allBookings) {
-            if (booking.getRoomNum() == roomNum && !booking.getEndDate().isEmpty()) {
+            if (booking.getRoomNum() == roomNum && (booking.getEndDate() == null || booking.getEndDate().isEmpty())) {
                 return "roomAlreadyBooked";
             }
         }
@@ -434,25 +436,44 @@ public class DBManager {
      * @return the list of room records in the database.
      */
     public List<Room> selectJsonRooms() {
-        String sql = """
-                SELECT json_object(
-                'roomNum', roomNum,
-                'roomType', roomType,
-                'price', price,
-                'isAvailable', isAvailable,
-                'addedDate', addedDate
-                ) AS json_result
-                FROM Rooms;
-                """;
+//        String sql = """
+//                SELECT json_object(
+//                'roomNum', roomNum,
+//                'roomType', roomType,
+//                'price', price,
+//                'isAvailable', isAvailable,
+//                'addedDate', addedDate
+//                ) AS json_result
+//                FROM Rooms;
+//                """;
+//        List<Room> rooms = new ArrayList<>();
+//        Gson gson = new Gson();
+//        try {
+//            Connection con = db.connect();
+//            Statement stmt = con.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+//            while (rs.next()) {
+//                String jsonResult = rs.getString("json_result");
+//                Room room = gson.fromJson(jsonResult, Room.class);
+//                rooms.add(room);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return rooms;
+        String sql = "SELECT roomNum, roomType, price, isAvailable, addedDate FROM rooms;";
         List<Room> rooms = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+        try (Connection con = db.connect();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Room room = gson.fromJson(jsonResult, Room.class);
+                Room room = new Room();
+                room.setRoomNum(rs.getInt("roomNum"));
+                room.setRoomType(rs.getString("roomType"));
+                room.setPrice(rs.getDouble("price"));
+                room.setIsAvailable(rs.getString("isAvailable"));
+                room.setAddedDate(rs.getString("addedDate")); // Assuming it's a String
                 rooms.add(room);
             }
         } catch (SQLException e) {
@@ -466,25 +487,44 @@ public class DBManager {
      * @return the list of booking records in the database.
      */
     public List<Booking> selectJsonBookings() {
-        String sql = """
-                SELECT json_object(
-                'bookingNum', bookingNum,
-                'clientId', clientId,
-                'roomNum', roomNum,
-                'startDate', startDate,
-                'endDate', endDate
-                ) AS json_result
-                FROM bookings;
-                """;
+//        String sql = """
+//                SELECT json_object(
+//                'bookingNum', bookingNum,
+//                'clientId', clientId,
+//                'roomNum', roomNum,
+//                'startDate', startDate,
+//                'endDate', endDate
+//                ) AS json_result
+//                FROM bookings;
+//                """;
+//        List<Booking> bookings = new ArrayList<>();
+//        Gson gson = new Gson();
+//        try {
+//            Connection con = db.connect();
+//            Statement stmt = con.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+//            while (rs.next()) {
+//                String jsonResult = rs.getString("json_result");
+//                Booking booking = gson.fromJson(jsonResult, Booking.class);
+//                bookings.add(booking);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return bookings;
+        String sql = "SELECT bookingNum, clientId, roomNum, startDate, endDate FROM bookings;";
         List<Booking> bookings = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+        try (Connection con = db.connect();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Booking booking = gson.fromJson(jsonResult, Booking.class);
+                Booking booking = new Booking();
+                booking.setBookingNum(rs.getInt("bookingNum"));
+                booking.setClientId(rs.getInt("clientId"));
+                booking.setRoomNum(rs.getInt("roomNum"));
+                booking.setStartDate(rs.getString("startDate")); // or use rs.getDate() if your model accepts it
+                booking.setEndDate(rs.getString("endDate"));     // can be null
                 bookings.add(booking);
             }
         } catch (SQLException e) {
@@ -498,26 +538,44 @@ public class DBManager {
      * @return the list of client records in the database.
      */
     public List<Client> selectJsonClients() {
-
-        String sql = """
-                SELECT json_object(
-                'id', id,
-                'name', name,
-                'contact', contact,
-                'numOfMembers', numOfMembers,
-                'isInHotel', isInHotel
-                ) AS json_result
-                FROM clients;
-                """;
+//        String sql = """
+//                SELECT json_object(
+//                'id', id,
+//                'name', name,
+//                'contact', contact,
+//                'numOfMembers', numOfMembers,
+//                'isInHotel', isInHotel
+//                ) AS json_result
+//                FROM clients;
+//                """;
+//        List<Client> clients = new ArrayList<>();
+//        Gson gson = new Gson();
+//        try {
+//            Connection con = db.connect();
+//            Statement stmt = con.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+//            while (rs.next()) {
+//                String jsonResult = rs.getString("json_result");
+//                Client client = gson.fromJson(jsonResult, Client.class);
+//                clients.add(client);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return clients;                   JSON does not update with the database
+        String sql = "SELECT id, name, contact, numOfMembers, isInHotel FROM clients;";
         List<Client> clients = new ArrayList<>();
-        Gson gson = new Gson();
-        try {
-            Connection con = db.connect();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);//To store the result of the fetch
+        try (Connection con = db.connect();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                String jsonResult = rs.getString("json_result");
-                Client client = gson.fromJson(jsonResult, Client.class);
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String contact = rs.getString("contact");
+                int numOfMembers = rs.getInt("numOfMembers");
+                String isInHotel = rs.getString("isInHotel"); // Assuming this is a String like "True"/"False"
+                Client client = new Client(id, name, contact, numOfMembers, isInHotel);
                 clients.add(client);
             }
         } catch (SQLException e) {

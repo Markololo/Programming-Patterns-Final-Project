@@ -1,4 +1,6 @@
 package org.example;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -12,6 +14,7 @@ interface Language {
      * @return the string that the category represents
      */
     String getMessage(String msgCategory);
+    String formatDate(LocalDate date);
 }
 
 /**
@@ -31,6 +34,11 @@ class FrenchLang implements Language{
         ResourceBundle messages = ResourceBundle.getBundle("messages", francelocale);
         return messages.getString(msgCategory);
     }
+    @Override
+    public String formatDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.FRANCE);
+        return date.format(formatter);
+    }
 }
 
 /**
@@ -48,6 +56,11 @@ class EnglishLang implements Language{
     public String getMessage(String msgCategory) {
         ResourceBundle messages = ResourceBundle.getBundle("messages", uslocale);
         return messages.getString(msgCategory);
+    }
+    @Override
+    public String formatDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.US);
+        return date.format(formatter);
     }
 }
 
@@ -78,12 +91,23 @@ public class MessageService{
     /**
      * Used to translate a message into the chosen language.
      * @param type the language of choice
-     * @param msgCategory the message category in the Ressource Bundle messages file
+     * @param msgCategory the message category in the Resource Bundle messages file
      * @return the string input that is represented by the category, translated into the chose language (type).
      */
     public String useLangService(String type, String msgCategory) {
         Language lang = MessageFactory.returnLang(type);
         return lang.getMessage(msgCategory);
+    }
+
+    /**
+     * Used to format a LocalDate in the chosen language.
+     * @param type the language of choice ("english" or "french")
+     * @param date the LocalDate to be formatted
+     * @return the formatted date string
+     */
+    public String useDateLangService(String type, LocalDate date) {
+        Language lang = MessageFactory.returnLang("french");
+        return lang.formatDate(LocalDate.now());
     }
 }
 
