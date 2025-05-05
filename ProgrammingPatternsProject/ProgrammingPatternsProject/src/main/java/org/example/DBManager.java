@@ -131,8 +131,16 @@ public class DBManager {
      * @param roomType the type of the rooms to look for.
      * @return a list of rooms that match the roomType
      */
-    public List<Room> findRoomByType(String roomType) {
+
+    //return the list of rooms from table
+    public List<Room> findRoomByType(String roomType)
+    {
+
         List<Room> rooms = new ArrayList<>();
+
+        //lambda expression for each room we add to the list based on the room type parameter of method
+        //using stream to perform an action on each element in the stream for each room in list
+        //select from json type for rooms selectJsonRooms method shows in json format the room column names
         selectJsonRooms().stream().forEach(room -> {
             if (room.getRoomType().equalsIgnoreCase(roomType))
                 rooms.add(room);
@@ -590,10 +598,13 @@ public class DBManager {
      */
     public List<Room> findRoomLowToHighPrice() {
         List<Room> rooms = selectJsonRooms();
-
+//to return the stored value for the list of rooms we filter in order for each room if the available is set to true then
+        //then it sorts using the comparator and method comparing
         List<Room> availableSortedRooms = rooms.stream()
                 .filter(r -> "true".equalsIgnoreCase(r.getIsAvailable())) // or "yes"
+                //using method reference to compare the price from the room class
                 .sorted(Comparator.comparing(Room::getPrice))
+                //to convert the stream in to a list
                 .collect(Collectors.toList());
         return availableSortedRooms;
     }
